@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include "integer.h"
 
+typedef struct gba_t gba_t;
+
 #define DRAW_CYCLES 960
 #define HBLANK_CYCLES 272
 #define SCANLINE_CYCLES 1232
@@ -18,7 +20,7 @@
 extern bool isHblank;
 
 void composeDispstat();
-void updatePPU(int cycle_count);
+void updatePPU(gba_t* gba, int cycle_count);
 
 void drawPaletteRam(SDL_Window* win, u8* ptr);
 void drawTileMap(SDL_Window* win);

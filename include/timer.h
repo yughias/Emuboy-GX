@@ -11,7 +11,7 @@ typedef struct
 } timer_t;
 
 void triggerTimer(timer_t* timer);
-void updateTimers(int ticks, timer_t* timers);
+void updateTimers(gba_t* gba, int ticks);
 
 
 #endif

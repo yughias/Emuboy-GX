@@ -3,12 +3,12 @@
 
 #include "integer.h"
 
-typedef u8 (*readFunc)(u32);
-typedef void (*writeFunc)(u32, u8);
+typedef struct arm7tdmi_t arm7tdmi_t;
+typedef u8 (*readFunc)(arm7tdmi_t*, u32);
+typedef void (*writeFunc)(arm7tdmi_t*, u32, u8);
 
-typedef struct {
+typedef struct arm7tdmi_t {
     u32 r[16];
-
     u32 usr_r[16];
     u32 irq_r[2];
     u32 svc_r[2];
@@ -41,6 +41,7 @@ typedef struct {
     readFunc readByte;
     writeFunc writeByte;
 
+    void* master;
 } arm7tdmi_t;
 
 void arm7tdmi_step(arm7tdmi_t* cpu);

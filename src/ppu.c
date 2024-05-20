@@ -43,7 +43,7 @@ i32 geti28(i32 val);
 bool isHblank = false;
 bool oldVcounter = false;
 
-void updatePPU(int cycles){
+void updatePPU(gba_t* gba, int cycles){
     int inter_cycles = cycles % SCANLINE_CYCLES;
     VCOUNT = cycles / SCANLINE_CYCLES;
 
@@ -53,26 +53,32 @@ void updatePPU(int cycles){
         isHblank = false;
 
     if(inter_cycles == DRAW_CYCLES){
-        if(DISPSTAT & (1 << 4))
-            IF |= 0b10;
+        if(DISPSTAT & (1 << 4)){
+            gba->IF |= 0b10;
+            checkInterrupts(gba);
+        }
         if(VCOUNT < SCREEN_HEIGHT){
             renderLine(VCOUNT);
-            updateHblankDma();
+            updateHblankDma(gba);
         }
     }
 
     bool newVcounter = (VCOUNT == ((DISPSTAT >> 8) % 228));
 
-    if((DISPSTAT & (1 << 5)) && newVcounter && !oldVcounter)
-        IF |= 0b100;
+    if((DISPSTAT & (1 << 5)) && newVcounter && !oldVcounter){
+        gba->IF |= 0b100;
+        checkInterrupts(gba);
+    }
 
     oldVcounter = newVcounter;
 
     if(cycles == VBLANK){
-        if(DISPSTAT & (1 << 3))
-            IF |= 0b1;
+        if(DISPSTAT & (1 << 3)){
+            gba->IF |= 0b1;
+            checkInterrupts(gba);
+        }
         renderPixels();
-        updateVblankDma();
+        updateVblankDma(gba);
         for(int i = 0; i < 2; i++){
             INTERNAL_BGX[i] = (i32)BGX[i];
             INTERNAL_BGY[i] = (i32)BGY[i];

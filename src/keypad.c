@@ -4,7 +4,7 @@
 
 #define CHECK_KEY(scancode, bit) \
 if(keystate[scancode]) \
-    KEYINPUT &= ~(1 << bit)
+    keyinput &= ~(1 << bit)
 
 const Uint8* keystate;
 
@@ -12,12 +12,15 @@ void init_keypad(){
     keystate = SDL_GetKeyboardState(NULL);
 }
 
-void update_keypad(){
-    KEYINPUT = 0xFFFF;
+u16 update_keypad(){
+    u16 keyinput = 0xFFFF;
     
     CHECK_KEY(SDL_SCANCODE_X, 0);
     CHECK_KEY(SDL_SCANCODE_Z, 1);
     CHECK_KEY(SDL_SCANCODE_RSHIFT, 2);
+    #ifdef EMSCRIPTEN
+    CHECK_KEY(SDL_SCANCODE_LSHIFT, 2);
+    #endif
     CHECK_KEY(SDL_SCANCODE_RETURN, 3);
     CHECK_KEY(SDL_SCANCODE_RIGHT, 4);
     CHECK_KEY(SDL_SCANCODE_LEFT, 5);
@@ -26,4 +29,5 @@ void update_keypad(){
     CHECK_KEY(SDL_SCANCODE_S, 8);
     CHECK_KEY(SDL_SCANCODE_A, 9);
     
+    return keyinput;
 }

@@ -257,11 +257,11 @@ void arm_halfword_data_transfer(arm7tdmi_t* cpu, u32 opcode){
 
         case 0x02:
         if(load_bit){
-            *rd = cpu->readByte(addr);
+            *rd = cpu->readByte(cpu, addr);
             if(*rd & 0x80)
                 *rd |= 0xFFFFFF00; 
         } else
-            cpu->writeByte(addr, *rd);
+            cpu->writeByte(cpu, addr, *rd);
         break;
 
         case 0x03:
@@ -311,7 +311,7 @@ void arm_single_data_transfer(arm7tdmi_t* cpu, u32 opcode){
 
     if(l_bit){
         if(b_bit)
-            *rd = cpu->readByte(addr);
+            *rd = cpu->readByte(cpu, addr);
         else{
             if(((opcode >> 12) & 0xF) == 15)
                 cpu->pipeline_valid = false;
@@ -323,7 +323,7 @@ void arm_single_data_transfer(arm7tdmi_t* cpu, u32 opcode){
         if(rd_idx == 15)
             val += 4;
         if(b_bit)
-            cpu->writeByte(addr, val);
+            cpu->writeByte(cpu, addr, val);
         else
             writeWord(cpu, addr, val);
     }
@@ -396,16 +396,7 @@ void arm_block_data_transfer(arm7tdmi_t* cpu, u32 opcode){
         regs = cpu->usr_r;
     }
 
-    // INEFFICIENT
-    u32 reg_count = 0;
-    for(int i = 0; i < 16 && reg_list; i++){ 
-        bool should_transfer = reg_list & 1;
-        reg_list >>= 1;
-        if(should_transfer)
-            reg_count++;
-    }
-    u32 rlist_size = reg_count;
-    reg_list = opcode & 0xFFFF;
+    u32 reg_count = regcount_LUT[reg_list & 0xFF] + regcount_LUT[reg_list >> 8];
     if(!u_bit){
         addr -= reg_count*4;
         p_bit ^= 1;
@@ -448,9 +439,9 @@ void arm_block_data_transfer(arm7tdmi_t* cpu, u32 opcode){
             } else {
                 if(i == base_idx && !first_transfer) {
                     if(!u_bit)
-                        writeWord(cpu, addr, *rn - (rlist_size << 2));
+                        writeWord(cpu, addr, *rn - (reg_count << 2));
                     else
-                        writeWord(cpu, addr, *rn + (rlist_size << 2));
+                        writeWord(cpu, addr, *rn + (reg_count << 2));
                 } else
                     writeWord(cpu, addr, i == 15 ? regs[i] + 4 : regs[i]);
             }

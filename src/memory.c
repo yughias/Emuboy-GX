@@ -1,21 +1,12 @@
-#include "hardware.h"
+#include "gba.h"
 #include "arm7tdmi/arm7tdmi.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-u8 WRAM_BOARD[1 << 18];
-u8 WRAM_CHIP[1 << 15];
-
 u8 PALETTE_RAM[1 << 10];
 u8 VRAM[0x18000];
 u8 OAM[1 << 10];
-
-u8 SRAM[1 << 16];
-
-u8* BIOS;
-u8* ROM;
-size_t ROM_SIZE;
 
 u16 DISPCNT;
 u16 DISPSTAT;
@@ -31,43 +22,27 @@ u32 INTERNAL_BGX[2];
 u32 INTERNAL_BGY[2];
 u16 BGP[2*4];
 
-u16 KEYINPUT = 0xFFFF;
-u16 KEYCNT = 0x0;
-
-u32 DMASAD[4];
-u32 DMADAD[4];
-u32 DMACNT[4];
-
 u16 WINH[2];
 u16 WINV[2];
 u16 WININ;
 u16 WINOUT;
 
-u16 IE;
-u16 IF;
-u16 IME;
-
 u16 BLDCNT;
 u16 BLDALPHA;
 u16 BLDY; 
 
-u16 RCNT = 0x8000;
-u8 POSTFLG;
-u16 SOUNDBIAS;
-u16 WAITCNT;
+void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
+    gba_t* gba = (gba_t*)cpu->master;
 
-bool HALTCNT;
-
-void writeByte(u32 addr, u8 val){
     if(addr >= 0x2000000 && addr < 0x3000000){
         addr &= 0x003FFFF;
-        WRAM_BOARD[addr & 0x3FFFF] = val;
+        gba->WRAM_BOARD[addr & 0x3FFFF] = val;
         return;
     }
     
     if(addr >= 0x3000000 & addr < 0x4000000){
         addr &= 0x7FFF;
-        WRAM_CHIP[addr] = val;
+        gba->WRAM_CHIP[addr] = val;
         return;
     }
 
@@ -189,7 +164,7 @@ void writeByte(u32 addr, u8 val){
 
     if(addr >= 0x4000088 && addr < 0x400008A){
         addr -= 0x4000088;
-        ((u8*)&SOUNDBIAS)[addr] = val;
+        ((u8*)&gba->SOUNDBIAS)[addr] = val;
         return;
     }
 
@@ -198,19 +173,19 @@ void writeByte(u32 addr, u8 val){
             addr -= 0x40000B0 + 0xC*i;
            
             if(addr < 0x4){
-                ((u8*)&DMASAD[i])[addr] = val;
+                ((u8*)&gba->DMASAD[i])[addr] = val;
                 return;
             }
 
             if(addr < 0x8){
-                ((u8*)&DMADAD[i])[addr - 0x4] = val;
+                ((u8*)&gba->DMADAD[i])[addr - 0x4] = val;
                 return;
             }
 
             if(addr < 0xC){
-                ((u8*)&DMACNT[i])[addr - 0x8] = val;
-                if(DMACNT[i] >> 31)
-                    triggerDma(i);
+                ((u8*)&gba->DMACNT[i])[addr - 0x8] = val;
+                if(gba->DMACNT[i] >> 31)
+                    triggerDma(gba, i);
                 return;
             }          
         }
@@ -219,6 +194,7 @@ void writeByte(u32 addr, u8 val){
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000100 + i*4 && addr < 0x4000100 + (i+1)*4){
             addr -=  0x4000100 + i*4;
+            timer_t* timers = gba->timers;
             u32 old_TMCNT = timers[i].TMCNT;
             ((u8*)&timers[i].TMCNT)[addr] = val;
             if(!((old_TMCNT >> 16) & 0x80) && ((timers[i].TMCNT >> 16) & 0x80)){
@@ -230,42 +206,43 @@ void writeByte(u32 addr, u8 val){
 
     if(addr >= 0x4000134 && addr < 0x4000136){
         addr -= 0x4000134;
-        ((u8*)&RCNT)[addr] = val;
+        ((u8*)&gba->RCNT)[addr] = val;
         return;
     }
 
     if(addr >= 0x4000200 && addr < 0x4000202){
         addr -= 0x4000200;
-        ((u8*)&IE)[addr] = val;
+        ((u8*)&gba->IE)[addr] = val;
+        checkInterrupts(gba);
         return;
     }
 
     
     if(addr >= 0x4000202 && addr < 0x4000204){
         addr -= 0x4000202;
-        ((u8*)&IF)[addr] &= ~(val);
+        ((u8*)&gba->IF)[addr] &= ~(val);
         return;
     }
 
     if(addr >= 0x4000204 && addr < 0x4000206){
         addr -= 0x4000204;
-        ((u8*)&WAITCNT)[addr] = val;
+        ((u8*)&gba->WAITCNT)[addr] = val;
         return;
     }
 
     if(addr >= 0x4000208 && addr < 0x400020A){
         addr -= 0x4000208;
-        ((u8*)&IME)[addr] = val;
+        ((u8*)&gba->IME)[addr] = val;
         return;
     }
 
     if(addr == 0x4000300){
-        POSTFLG = val;
+        gba->POSTFLG = val;
         return;
     }
 
     if(addr == 0x4000301){
-        HALTCNT = true;
+        gba->HALTCNT = true;
         return;
     }
 
@@ -291,7 +268,7 @@ void writeByte(u32 addr, u8 val){
 
     if(addr >= 0xE000000 && addr < 0xE010000){
         addr -= 0xE000000;
-        SRAM[addr] = val;
+        gba->SRAM[addr] = val;
         return;
     }
 
@@ -300,18 +277,20 @@ void writeByte(u32 addr, u8 val){
     //exit(0);
 }
 
-u8 readByte(u32 addr){
+u8 readByte(arm7tdmi_t* cpu, u32 addr){
+    gba_t* gba = (gba_t*)cpu->master;
+
     if(addr < 0x02000000)
-        return BIOS[addr & 0x3FFF];
+        return gba->BIOS[addr & 0x3FFF];
 
     if(addr >= 0x2000000 && addr < 0x3000000){
         addr -= 0x2000000;
-        return WRAM_BOARD[addr & 0x3FFFF];
+        return gba->WRAM_BOARD[addr & 0x3FFFF];
     }
 
     if(addr >= 0x3000000 && addr < 0x4000000){
         addr &= 0x7FFF;
-        return WRAM_CHIP[addr];
+        return gba->WRAM_CHIP[addr];
     }
 
     for(int i = 0; i < 4; i++){
@@ -328,7 +307,7 @@ u8 readByte(u32 addr){
 
     if(addr >= 0x4000088 && addr < 0x400008A){
         addr -= 0x4000088;
-        return ((u8*)&SOUNDBIAS)[addr];
+        return ((u8*)&gba->SOUNDBIAS)[addr];
     }
 
     if(addr >= 0x400004A && addr < 0x400004C){
@@ -339,13 +318,14 @@ u8 readByte(u32 addr){
     for(int i = 0; i < 4; i++){
         if(addr >= 0x40000BA + 0xC*i && addr < 0x40000BA + 0xC*i + 2){    
             addr -= 0x40000BA + 0xC*i;
-            return ((u8*)&DMACNT[i])[addr];
+            return ((u8*)&gba->DMACNT[i])[addr];
         }
     }
 
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000100 + i*4 && addr < 0x4000100 + (i+1)*4){
             addr -=  0x4000100 + i*4;
+            timer_t* timers = gba->timers;
             if(addr < 2)
                 return ((u8*)&timers[i].counter)[addr];
             else
@@ -355,12 +335,12 @@ u8 readByte(u32 addr){
 
     if(addr >= 0x4000130 && addr < 0x4000132){
         addr -= 0x4000130;
-        return ((u8*)&KEYINPUT)[addr];
+        return ((u8*)&gba->KEYINPUT)[addr];
     }
 
     if(addr >= 0x4000132 && addr < 0x4000134){
         addr -= 0x4000132;
-        return ((u8*)&KEYCNT)[addr];
+        return ((u8*)&gba->KEYCNT)[addr];
     }
 
     if(addr >= 0x4000000 && addr < 0x4000002){
@@ -392,32 +372,32 @@ u8 readByte(u32 addr){
 
     if(addr >= 0x4000134 && addr < 0x4000136){
         addr -= 0x4000134;
-        return ((u8*)&RCNT)[addr];
+        return ((u8*)&gba->RCNT)[addr];
     }
 
     if(addr >= 0x4000200 && addr < 0x4000202){
         addr -= 0x4000200;
-        return ((u8*)&IE)[addr];
+        return ((u8*)&gba->IE)[addr];
     }
 
     
     if(addr >= 0x4000202 && addr < 0x4000204){
         addr -= 0x4000202;
-        return ((u8*)&IF)[addr];
+        return ((u8*)&gba->IF)[addr];
     }
 
     if(addr >= 0x4000204 && addr < 0x4000206){
         addr -= 0x4000204;
-        return ((u8*)&WAITCNT)[addr];
+        return ((u8*)&gba->WAITCNT)[addr];
     }
 
     if(addr >= 0x4000208 && addr < 0x400020A){
         addr -= 0x4000208;
-        return ((u8*)&IME)[addr];
+        return ((u8*)&gba->IME)[addr];
     }
 
     if(addr == 0x4000300){
-        return POSTFLG;
+        return gba->POSTFLG;
     }
 
     if(addr >= 0x5000000 && addr < 0x6000000){
@@ -439,10 +419,10 @@ u8 readByte(u32 addr){
 
     if(addr >= 0x8000000 && addr < 0x0E000000){
         addr -= 0x8000000;
-        if(addr >= ROM_SIZE){
+        if(addr >= gba->ROM_SIZE){
             return 0x00;
         }
-        return ROM[addr];
+        return gba->ROM[addr];
     }
 
     if(addr == 0x0E000000)
@@ -454,7 +434,7 @@ u8 readByte(u32 addr){
     if(addr >= 0xE000000 && addr < 0xE010000){
         addr -= 0xE000000;
         addr &= 0xFFFF;
-        return SRAM[addr];
+        return gba->SRAM[addr];
     }
 
     //printf("WRONG READ %X %X\n", addr, cpu.r[15]);
@@ -463,34 +443,36 @@ u8 readByte(u32 addr){
     return 0x00;
 }
 
-void loadBios(const char* filename){
+void loadBios(const char* filename, u8** bios){
     FILE* fptr = fopen(filename, "rb");
     if(!fptr){
         printf("can't open bios\n");
         return;
     }
 
-    BIOS = (u8*)malloc(BIOS_SIZE);
+    *bios = (u8*)malloc(BIOS_SIZE);
 
-    fread(BIOS, 1, BIOS_SIZE, fptr);
+    fread(*bios, 1, BIOS_SIZE, fptr);
 
     fclose(fptr);
 }
 
-void loadRom(const char* filename){
+size_t loadRom(const char* filename, u8** rom){
     FILE* fptr = fopen(filename, "rb");
     if(!fptr){
         printf("can't open rom\n");
-        return;
+        return 0;
     }
 
     fseek(fptr, 0, SEEK_END);
-    ROM_SIZE = ftell(fptr);
+    size_t size = ftell(fptr);
     rewind(fptr);
 
-    ROM = (u8*)malloc(ROM_SIZE);
+    *rom = (u8*)malloc(size);
 
-    fread(ROM, 1, ROM_SIZE, fptr);
+    fread(*rom, 1, size, fptr);
 
     fclose(fptr);
+
+    return size;
 }

@@ -1,7 +1,8 @@
-#include "hardware.h"
+#include "gba.h"
 
-void updateTimers(int ticks, timer_t* timers){
+void updateTimers(gba_t* gba, int ticks){
     static u32 timerSpeed[4] = {1, 64, 256, 1024};
+    timer_t* timers = gba->timers;
     bool prev_overflow = false;
     for(int i = 0; i < 4; i++){
         timer_t* timer = &timers[i];
@@ -27,8 +28,10 @@ void updateTimers(int ticks, timer_t* timers){
             timer->counter %= 0x10000;
             prev_overflow = true;
             timer->counter += timer->TMCNT & 0xFFFF;
-            if(irq_enabled)
-                IF |= 1 << (3+i);
+            if(irq_enabled){
+                gba->IF |= 1 << (3+i);
+                checkInterrupts(gba);
+            }
         } else
             prev_overflow = false;
     }
