@@ -1,7 +1,7 @@
 #ifndef __DMA_H__
 #define __DMA_H__
 
-#include "gba.h"
+typedef struct gba_t gba_t;
 
 void triggerDma(gba_t* gba, int i);
 void transferDma(gba_t* gba, int i);

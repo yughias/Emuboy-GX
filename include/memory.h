@@ -1,8 +1,10 @@
 #ifndef __MEMORY_H__
 #define __MEMORY_H__
 
-#include "gba.h"
 #include "integer.h"
+
+typedef struct gba_t gba_t;
+typedef struct arm7tdmi_t arm7tdmi_t;
 
 #define BIOS_SIZE 0x4000
 

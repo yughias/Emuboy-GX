@@ -1,4 +1,5 @@
 #include "dma.h"
+#include "gba.h"
 #include "memory.h"
 
 #include "integer.h"

@@ -3,6 +3,8 @@
 
 #include "integer.h"
 
+typedef struct gba_t gba_t;
+
 typedef struct
 {
     u32 counter;

@@ -1,6 +1,7 @@
 #include "integer.h"
 #include "SDL_MAINLOOP.h"
 #include "ppu.h"
+#include "gba.h"
 #include "memory.h"
 #include "dma.h"
 
