@@ -20,14 +20,14 @@ u32 arm_roller_imm(arm7tdmi_t* cpu, u32 opcode, bool s);
 
 void arm_step(arm7tdmi_t* cpu){
     if(!cpu->pipeline_valid){
-        cpu->pipeline_opcode = readWord(cpu, cpu->r[15]);
+        cpu->pipeline_opcode = cpu->readWord(cpu, cpu->r[15]);
         cpu->r[15] += 4;
         cpu->pipeline_valid = true;
         return;
     }
 
     u32 opcode = cpu->pipeline_opcode;
-    cpu->pipeline_opcode = readWord(cpu, cpu->r[15]);
+    cpu->pipeline_opcode = cpu->readWord(cpu, cpu->r[15]);
     cpu->r[15] += 4;
     u8 cond = opcode >> 28;
 
@@ -248,11 +248,11 @@ void arm_halfword_data_transfer(arm7tdmi_t* cpu, u32 opcode){
 
         case 0x01:
         if(load_bit) {
-            *rd = readHalfWord(cpu, addr);
+            *rd = cpu->readHalfWord(cpu, addr);
             if(addr & 1)
                 *rd = (*rd >> 8) | (*rd << 24);
         } else
-            writeHalfWord(cpu, addr, *rd);
+            cpu->writeHalfWord(cpu, addr, *rd);
         break;
 
         case 0x02:
@@ -266,13 +266,13 @@ void arm_halfword_data_transfer(arm7tdmi_t* cpu, u32 opcode){
 
         case 0x03:
         if(load_bit){
-            *rd = readHalfWord(cpu, addr);
+            *rd = cpu->readHalfWord(cpu, addr);
             if(*rd & 0x8000)
                 *rd |= 0xFFFF0000;  
             if(addr & 1)
             *rd = (*rd >> 8) | (*rd & 0x00800000 ? 0xFF000000 : 0);
         } else
-            writeHalfWord(cpu, addr, *rd);
+            cpu->writeHalfWord(cpu, addr, *rd);
         break;
     }
 
@@ -315,7 +315,7 @@ void arm_single_data_transfer(arm7tdmi_t* cpu, u32 opcode){
         else{
             if(((opcode >> 12) & 0xF) == 15)
                 cpu->pipeline_valid = false;
-            *rd = readWord(cpu, addr);
+            *rd = cpu->readWord(cpu, addr);
             *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
         }
     } else {
@@ -325,7 +325,7 @@ void arm_single_data_transfer(arm7tdmi_t* cpu, u32 opcode){
         if(b_bit)
             cpu->writeByte(cpu, addr, val);
         else
-            writeWord(cpu, addr, val);
+            cpu->writeWord(cpu, addr, val);
     }
 
     if(!p_bit)
@@ -404,13 +404,13 @@ void arm_block_data_transfer(arm7tdmi_t* cpu, u32 opcode){
 
     if(!reg_count){
         if(l_bit){
-            cpu->r[15] = readWord(cpu, *rn);
+            cpu->r[15] = cpu->readWord(cpu, *rn);
             cpu->pipeline_valid = false;
         } else {
             if(!u_bit)
-                writeWord(cpu, *rn - (p_bit ? 0x3C : 0x40), cpu->r[15] + 4);
+                cpu->writeWord(cpu, *rn - (p_bit ? 0x3C : 0x40), cpu->r[15] + 4);
             else
-                writeWord(cpu, *rn + (p_bit ? 0x04 : 0x00), cpu->r[15] + 4);
+                cpu->writeWord(cpu, *rn + (p_bit ? 0x04 : 0x00), cpu->r[15] + 4);
         }
         if(!u_bit)
             cpu->r[base_idx] -= 0x40;
@@ -435,15 +435,15 @@ void arm_block_data_transfer(arm7tdmi_t* cpu, u32 opcode){
                         printf("NOT SUPPORTED!\n");
                     }
                 }
-                regs[i] = readWord(cpu, addr);
+                regs[i] = cpu->readWord(cpu, addr);
             } else {
                 if(i == base_idx && !first_transfer) {
                     if(!u_bit)
-                        writeWord(cpu, addr, *rn - (reg_count << 2));
+                        cpu->writeWord(cpu, addr, *rn - (reg_count << 2));
                     else
-                        writeWord(cpu, addr, *rn + (reg_count << 2));
+                        cpu->writeWord(cpu, addr, *rn + (reg_count << 2));
                 } else
-                    writeWord(cpu, addr, i == 15 ? regs[i] + 4 : regs[i]);
+                    cpu->writeWord(cpu, addr, i == 15 ? regs[i] + 4 : regs[i]);
             }
 
             if(!p_bit)

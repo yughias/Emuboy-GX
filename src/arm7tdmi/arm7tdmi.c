@@ -38,36 +38,6 @@ void arm7tdmi_step(arm7tdmi_t* cpu){
         arm_step(cpu);
 }
 
-u32 readWord(arm7tdmi_t* cpu, u32 addr){
-    addr &= ~0b11;
-    return
-        cpu->readByte(cpu, addr)           |
-        (cpu->readByte(cpu, addr+1) << 8)  |
-        (cpu->readByte(cpu, addr+2) << 16) |
-        (cpu->readByte(cpu, addr+3) << 24);
-}
-
-u16 readHalfWord(arm7tdmi_t* cpu, u32 addr){
-    addr &= ~0b1;
-    return
-        cpu->readByte(cpu, addr)           |
-        (cpu->readByte(cpu, addr+1) << 8);
-}
-
-void writeHalfWord(arm7tdmi_t* cpu, u32 addr, u16 halfword){
-    addr &= ~0b1;
-    cpu->writeByte(cpu, addr, halfword & 0xFF);
-    cpu->writeByte(cpu, addr+1, halfword >> 8);
-}
-
-void writeWord(arm7tdmi_t* cpu, u32 addr, u32 word){
-    addr &= ~0b11;
-    cpu->writeByte(cpu, addr, word);
-    cpu->writeByte(cpu, addr+1, word >> 8);
-    cpu->writeByte(cpu, addr+2, word >> 16);
-    cpu->writeByte(cpu, addr+3, word >> 24);
-}
-
 void saveBankedReg(arm7tdmi_t* cpu){
     switch(cpu->mode_bits){
         case 0x10:

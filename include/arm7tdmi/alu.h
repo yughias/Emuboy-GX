@@ -241,8 +241,8 @@ INLINE void alu_SWP(arm7tdmi_t* cpu, u32 opcode){
         cpu->writeByte(cpu, rn, rm);
         *rd = byte;
     } else {
-        u32 word = readWord(cpu, rn & ~(0b11));
-        writeWord(cpu, rn & ~(0b11), rm);
+        u32 word = cpu->readWord(cpu, rn & ~(0b11));
+        cpu->writeWord(cpu, rn & ~(0b11), rm);
         *rd = word;
         *rd = alu_ROR(cpu, *rd, (rn & 0b11) << 3, false);
     }

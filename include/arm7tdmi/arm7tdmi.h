@@ -4,8 +4,12 @@
 #include "integer.h"
 
 typedef struct arm7tdmi_t arm7tdmi_t;
-typedef u8 (*readFunc)(arm7tdmi_t*, u32);
-typedef void (*writeFunc)(arm7tdmi_t*, u32, u8);
+typedef u8 (*readByteFunc)(arm7tdmi_t*, u32);
+typedef u16 (*readHalfWordFunc)(arm7tdmi_t*, u32);
+typedef u32 (*readWordFunc)(arm7tdmi_t*, u32);
+typedef void (*writeByteFunc)(arm7tdmi_t*, u32, u8);
+typedef void (*writeHalfWordFunc)(arm7tdmi_t*, u32, u16);
+typedef void (*writeWordFunc)(arm7tdmi_t*, u32, u32);
 
 typedef struct arm7tdmi_t {
     u32 r[16];
@@ -38,8 +42,13 @@ typedef struct arm7tdmi_t {
     bool pipeline_valid;
     u32 pipeline_opcode;
 
-    readFunc readByte;
-    writeFunc writeByte;
+    readByteFunc readByte;
+    readHalfWordFunc readHalfWord;
+    readWordFunc readWord;
+
+    writeByteFunc writeByte;
+    writeHalfWordFunc writeHalfWord;
+    writeWordFunc writeWord;
 
     void* master;
 } arm7tdmi_t;
@@ -47,11 +56,6 @@ typedef struct arm7tdmi_t {
 void arm7tdmi_step(arm7tdmi_t* cpu);
 void arm7tdmi_print(arm7tdmi_t* cpu);
 void arm7tdmi_trigger_exception(arm7tdmi_t* cpu, u32 addr, u8 mode);
-
-u32 readWord(arm7tdmi_t* cpu, u32 addr);
-u16 readHalfWord(arm7tdmi_t* cpu, u32 addr);
-void writeWord(arm7tdmi_t* cpu, u32 addr, u32 word);
-void writeHalfWord(arm7tdmi_t* cpu, u32 addr, u16 halfword);
 
 void saveBankedReg(arm7tdmi_t* cpu);
 void loadBankedReg(arm7tdmi_t* cpu);

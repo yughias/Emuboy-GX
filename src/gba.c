@@ -1,5 +1,7 @@
 #include "gba.h"
 
+#include <string.h>
+
 void checkInterrupts(gba_t* gba){
     if(!(gba->IME & 1) || gba->cpu.irq_disable)
         return;
@@ -39,7 +41,11 @@ void initGba(gba_t* gba){
     gba->cpu.irq_disable = true,
     #endif
     gba->cpu.readByte = readByte;
+    gba->cpu.readHalfWord = readHalfWord;
+    gba->cpu.readWord = readWord;
     gba->cpu.writeByte = writeByte;
+    gba->cpu.writeHalfWord = writeHalfWord;
+    gba->cpu.writeWord = writeWord;
     gba->cpu.master = gba;
 
     gba->KEYINPUT = 0xFFFF;

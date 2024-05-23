@@ -1,6 +1,5 @@
 #include "dma.h"
 #include "gba.h"
-#include "memory.h"
 
 #include "integer.h"
 
@@ -32,12 +31,12 @@ void transferDma(gba_t* gba, int i){
         int step;
         if(transfer_size){
             step = 4;
-            u32 word = readWord(cpu, source);
-            writeWord(cpu, dest, word);
+            u32 word = cpu->readWord(cpu, source);
+            cpu->writeWord(cpu, dest, word);
         } else {
             step = 2;
-            u16 halfword = readHalfWord(cpu, source);
-            writeHalfWord(cpu, dest, halfword);
+            u16 halfword = cpu->readHalfWord(cpu, source);
+            cpu->writeHalfWord(cpu, dest, halfword);
         }
 
         switch(sa){
