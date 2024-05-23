@@ -25,15 +25,15 @@ INLINE bool isInsideWindow(u8 x, u8 y, u16 winh, u16 winv){
     return x >= left && x < right && y >= top && y < bottom; 
 }
 
-INLINE bool isBldTop(u8 bldcnt_reg, u8 type){
+INLINE bool isBldTop(u16 bldcnt_reg, u8 type){
     return bldcnt_reg & (1 << type);
 }
 
-INLINE bool isBldBot(u8 bldcnt_reg, u8 type){
+INLINE bool isBldBot(u16 bldcnt_reg, u8 type){
     return bldcnt_reg & (1 << (0x8 + type));
 }
 
-INLINE int brightnessBlend(u8 bldy, int col, int mode){
+INLINE int brightnessBlend(u16 bldy, int col, int mode){
     u8 ey = (bldy & 0x1F);
     if(ey > 16)
         ey = 16;
@@ -51,7 +51,7 @@ INLINE int brightnessBlend(u8 bldy, int col, int mode){
     return out;
 }
 
-INLINE int colorBlend(u8 bldalpha, int topCol, int botCol){
+INLINE int colorBlend(u16 bldalpha, int topCol, int botCol){
     u8 evTop = bldalpha & 0x1F;
     if(evTop > 16)
         evTop = 16;
