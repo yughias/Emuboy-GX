@@ -5,7 +5,7 @@ typedef struct gba_t gba_t;
 
 void triggerDma(gba_t* gba, int i);
 void transferDma(gba_t* gba, int i);
-void updateHblankDma();
-void updateVblankDma();
+void updateHblankDma(gba_t* gba);
+void updateVblankDma(gba_t* gba);
 
 #endif

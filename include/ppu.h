@@ -17,12 +17,47 @@ typedef struct gba_t gba_t;
 #define REFRESH_RATE 59.73
 #define SCANLINE 228
 
-extern bool isHblank;
+#define PALETTE_RAM_SIZE (1 << 10)
+#define VRAM_SIZE (0x18000)
+#define OAM_SIZE (1 << 10)
 
-void composeDispstat();
+typedef struct ppu_t {
+    u8 PALETTE_RAM[PALETTE_RAM_SIZE];
+    u8 VRAM[VRAM_SIZE];
+    u8 OAM[OAM_SIZE];
+
+    u16 DISPCNT;
+    u16 DISPSTAT;
+    u16 VCOUNT;
+
+    u16 BGCNT[4];
+    u16 BGHOFS[4];
+    u16 BGVOFS[4];
+
+    u32 BGX[2];
+    u32 BGY[2];
+    u32 INTERNAL_BGX[2];
+    u32 INTERNAL_BGY[2];
+    u16 BGP[2*4];
+
+    u16 WINH[2];
+    u16 WINV[2];
+    u16 WININ;
+    u16 WINOUT;
+
+    u16 BLDCNT;
+    u16 BLDALPHA;
+    u16 BLDY;
+
+    bool isHBlank;
+    bool isVBlank;
+    bool isVCount;    
+} ppu_t;
+
+void composeDispstat(ppu_t* ppu);
 void updatePPU(gba_t* gba, int cycle_count);
 
 void drawPaletteRam(SDL_Window* win, u8* ptr);
-void drawTileMap(SDL_Window* win);
+void drawTileMap(SDL_Window* win, ppu_t* ppu);
 
 #endif

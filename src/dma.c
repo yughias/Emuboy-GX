@@ -85,7 +85,7 @@ void transferDma(gba_t* gba, int i){
 }
 
 void updateHblankDma(gba_t* gba){
-    if(VCOUNT < SCREEN_HEIGHT)
+    if(gba->ppu.VCOUNT < SCREEN_HEIGHT)
         for(int i = 0; i < 4; i++){
             if(gba->dma_enabled[i] && (((gba->DMACNT[i] >> 0x1C) & 0b11) == 0b10)){
                 transferDma(gba, i);
@@ -95,7 +95,7 @@ void updateHblankDma(gba_t* gba){
 
 
 void updateVblankDma(gba_t* gba){
-    if(VCOUNT == SCREEN_HEIGHT)
+    if(gba->ppu.VCOUNT == SCREEN_HEIGHT)
         for(int i = 0; i < 4; i++)
             if(gba->dma_enabled[i] && (((gba->DMACNT[i] >> 0x1C) & 0b11) == 0b01))
                 transferDma(gba, i);

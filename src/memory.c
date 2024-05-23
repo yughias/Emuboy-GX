@@ -4,35 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-u8 PALETTE_RAM[1 << 10];
-u8 VRAM[0x18000];
-u8 OAM[1 << 10];
-
-u16 DISPCNT;
-u16 DISPSTAT;
-u16 VCOUNT;
-
-u16 BGCNT[4];
-u16 BGHOFS[4];
-u16 BGVOFS[4];
-
-u32 BGX[2];
-u32 BGY[2];
-u32 INTERNAL_BGX[2];
-u32 INTERNAL_BGY[2];
-u16 BGP[2*4];
-
-u16 WINH[2];
-u16 WINV[2];
-u16 WININ;
-u16 WINOUT;
-
-u16 BLDCNT;
-u16 BLDALPHA;
-u16 BLDY; 
-
 void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     gba_t* gba = (gba_t*)cpu->master;
+    ppu_t* ppu = (ppu_t*)&gba->ppu;
 
     if(addr >= 0x2000000 && addr < 0x3000000){
         addr &= 0x003FFFF;
@@ -48,7 +22,7 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
 
     if(addr >= 0x4000000 && addr < 0x4000002){
         addr -= 0x4000000;
-        ((u8*)&DISPCNT)[addr] = val;
+        ((u8*)&ppu->DISPCNT)[addr] = val;
         return;
     }
 
@@ -59,21 +33,21 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000008 + 0x2*i && addr < 0x4000008 + 0x2*(i+1)){
             addr -= 0x4000008 + 0x2*i;
-            ((u8*)&BGCNT[i])[addr] = val;
+            ((u8*)&ppu->BGCNT[i])[addr] = val;
             return;
         }
     }
 
     if(addr >= 0x4000004 && addr < 0x4000006){
         addr -= 0x4000004;
-        ((u8*)&DISPSTAT)[addr] = val;
+        ((u8*)&ppu->DISPSTAT)[addr] = val;
         return;
     }
 
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000010 + 0x4*i && addr < 0x4000010 + 0x4*i + 2){
             addr -= 0x4000010 + 0x4*i;
-            ((u8*)&BGHOFS[i])[addr] = val;
+            ((u8*)&ppu->BGHOFS[i])[addr] = val;
             return;    
         }
     }
@@ -82,7 +56,7 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000012 + 0x4*i && addr < 0x4000012 + 0x4*i + 2){
             addr -= 0x4000012 + 0x4*i;
-            ((u8*)&BGVOFS[i])[addr] = val;
+            ((u8*)&ppu->BGVOFS[i])[addr] = val;
             return;    
         }
     }
@@ -90,8 +64,8 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 2; i++){
         if(addr >= 0x4000028 + 0x10*i && addr < 0x4000028 + 0x10*i + 4){
             addr -= 0x4000028 + 0x10*i;
-            ((u8*)&BGX[i])[addr] = val;
-            INTERNAL_BGX[i] = BGX[i];
+            ((u8*)&ppu->BGX[i])[addr] = val;
+            ppu->INTERNAL_BGX[i] = ppu->BGX[i];
             return; 
         }
     }
@@ -99,8 +73,8 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 2; i++){
         if(addr >= 0x400002C + 0x10*i && addr < 0x400002C + 0x10*i + 4){
             addr -= 0x400002C + 0x10*i;
-            ((u8*)&BGY[i])[addr] = val;
-            INTERNAL_BGY[i] = BGY[i];
+            ((u8*)&ppu->BGY[i])[addr] = val;
+            ppu->INTERNAL_BGY[i] = ppu->BGY[i];
             return; 
         }
     }
@@ -109,7 +83,7 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
         for(int j = 0; j < 4; j++){
             if(addr >= 0x4000020 + 0x10*i + 0x02*j && addr < 0x4000020 + 0x10*i + 0x02*j + 2){
                 addr -= 0x4000020 + 0x10*i + 0x02*j;
-                ((u8*)&BGP[i*4 + j])[addr] = val;
+                ((u8*)&ppu->BGP[i*4 + j])[addr] = val;
                 return;
             }
         }
@@ -119,7 +93,7 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 2; i++){
         if(addr >= 0x4000040 + 0x2*i && addr < 0x4000040 + 0x2*(i+1)){
             addr -= 0x4000040 + 0x2*i;
-            ((u8*)&WINH[i])[addr] = val;
+            ((u8*)&ppu->WINH[i])[addr] = val;
             return;
         }
     }
@@ -127,38 +101,38 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
     for(int i = 0; i < 2; i++){
         if(addr >= 0x4000044 + 0x2*i && addr < 0x4000044 + 0x2*(i+1)){
             addr -= 0x4000044 + 0x2*i;
-            ((u8*)&WINV[i])[addr] = val;
+            ((u8*)&ppu->WINV[i])[addr] = val;
             return;
         }
     }
 
     if(addr >= 0x4000048 && addr < 0x400004A){
         addr -= 0x4000048;
-        ((u8*)&WININ)[addr] = val;
+        ((u8*)&ppu->WININ)[addr] = val;
         return;
     }
 
     if(addr >= 0x400004A && addr < 0x400004C){
         addr -= 0x400004A;
-        ((u8*)&WINOUT)[addr] = val;
+        ((u8*)&ppu->WINOUT)[addr] = val;
         return;
     }
 
     if(addr >= 0x4000050 && addr < 0x4000052){
         addr -= 0x4000050;
-        ((u8*)&BLDCNT)[addr] = val;
+        ((u8*)&ppu->BLDCNT)[addr] = val;
         return;
     }
 
     if(addr >= 0x4000052 && addr < 0x4000054){
         addr -= 0x4000052;
-        ((u8*)&BLDALPHA)[addr] = val;
+        ((u8*)&ppu->BLDALPHA)[addr] = val;
         return;
     }
 
     if(addr >= 0x4000054 && addr < 0x4000056){
         addr -= 0x4000054;
-        ((u8*)&BLDY)[addr] = val;
+        ((u8*)&ppu->BLDY)[addr] = val;
         return;
     }
 
@@ -248,21 +222,21 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
 
     if(addr >= 0x5000000 && addr < 0x6000000){
         addr &= 0x3FF;
-        PALETTE_RAM[addr] = val;
+        ppu->PALETTE_RAM[addr] = val;
         return;
     }
 
     if(addr >= 0x6000000 && addr < 0x6018000){
         addr -= 0x6000000;
-        VRAM[addr] = val;
-        VRAM[(addr & ~(0b1)) + 1] = val;
+        ppu->VRAM[addr] = val;
+        ppu->VRAM[(addr & ~(0b1)) + 1] = val;
         return;
     }
 
     if(addr >= 0x7000000 && addr < 0x8000000){
         addr -= 0x7000000;
         addr &= 0x3FF;
-        OAM[addr] = val;
+        ppu->OAM[addr] = val;
         return;
     }
 
@@ -279,6 +253,7 @@ void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
 
 u8 readByte(arm7tdmi_t* cpu, u32 addr){
     gba_t* gba = (gba_t*)cpu->master;
+    ppu_t* ppu = &gba->ppu;
 
     if(addr < 0x02000000)
         return gba->BIOS[addr & 0x3FFF];
@@ -296,13 +271,13 @@ u8 readByte(arm7tdmi_t* cpu, u32 addr){
     for(int i = 0; i < 4; i++){
         if(addr >= 0x4000008 + 0x2*i && addr < 0x4000008 + 0x2*(i+1)){
             addr -= 0x4000008 + 0x2*i;
-            return ((u8*)&BGCNT[i])[addr];
+            return ((u8*)&ppu->BGCNT[i])[addr];
         }
     }
 
     if(addr >= 0x4000048 && addr < 0x400004A){
         addr -= 0x4000048;
-        return ((u8*)&WININ)[addr];
+        return ((u8*)&ppu->WININ)[addr];
     }
 
     if(addr >= 0x4000088 && addr < 0x400008A){
@@ -312,7 +287,7 @@ u8 readByte(arm7tdmi_t* cpu, u32 addr){
 
     if(addr >= 0x400004A && addr < 0x400004C){
         addr -= 0x400004A;
-        return ((u8*)&WINOUT)[addr];
+        return ((u8*)&ppu->WINOUT)[addr];
     }
 
     for(int i = 0; i < 4; i++){
@@ -345,29 +320,29 @@ u8 readByte(arm7tdmi_t* cpu, u32 addr){
 
     if(addr >= 0x4000000 && addr < 0x4000002){
         addr -= 0x4000000;
-        return ((u8*)&DISPCNT)[addr];
+        return ((u8*)&ppu->DISPCNT)[addr];
     }
 
     if(addr >= 0x4000004 && addr < 0x4000006){
         addr -= 0x4000004;
-        composeDispstat();
-        return ((u8*)&DISPSTAT)[addr];
+        composeDispstat(ppu);
+        return ((u8*)&ppu->DISPSTAT)[addr];
     }
 
     if(addr >= 0x4000006 && addr < 0x4000008){
         addr -= 0x4000006;
-        return ((u8*)&VCOUNT)[addr];
+        return ((u8*)&ppu->VCOUNT)[addr];
     }
 
     
     if(addr >= 0x4000050 && addr < 0x4000052){
         addr -= 0x4000050;
-        return ((u8*)&BLDCNT)[addr];
+        return ((u8*)&ppu->BLDCNT)[addr];
     }
 
     if(addr >= 0x4000052 && addr < 0x4000054){
         addr -= 0x4000052;
-        return ((u8*)&BLDALPHA)[addr];
+        return ((u8*)&ppu->BLDALPHA)[addr];
     }
 
     if(addr >= 0x4000134 && addr < 0x4000136){
@@ -402,18 +377,18 @@ u8 readByte(arm7tdmi_t* cpu, u32 addr){
 
     if(addr >= 0x5000000 && addr < 0x6000000){
         addr &= 0x3FF;
-        return PALETTE_RAM[addr];
+        return ppu->PALETTE_RAM[addr];
     }
 
     if(addr >= 0x6000000 && addr < 0x6018000){
         addr -= 0x6000000;
-        return VRAM[addr];
+        return ppu->VRAM[addr];
     }
 
     if(addr >= 0x7000000 && addr < 0x8000000){
         addr -= 0x7000000;
         addr &= 0x3FF;
-        return OAM[addr];
+        return ppu->OAM[addr];
     }
 
 

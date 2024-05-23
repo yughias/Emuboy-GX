@@ -159,26 +159,6 @@ INLINE void alu_MVN(arm7tdmi_t* cpu, u32* rd, u32 op1, u32 op2, bool s){
     alu_MOV(cpu, rd, op1, ~op2, s);
 }
 
-INLINE void alu_SWP(arm7tdmi_t* cpu, u32 opcode){
-    bool b = (opcode >> 22) & 1;
-    u32* rd = &cpu->r[(opcode >> 12) & 0xF];
-    u32 rn = cpu->r[(opcode >> 16) & 0xF];
-    u32 rm = cpu->r[opcode & 0xF];
-
-    if(b){
-        u8 byte = cpu->readByte(cpu, rn);
-        cpu->writeByte(cpu, rn, rm);
-        *rd = byte;
-    } else {
-        u32 word = readWord(cpu, rn & ~(0b11));
-        writeWord(cpu, rn & ~(0b11), rm);
-        *rd = word;
-        int rot_amnt = (rn & 0b11) << 3;
-        for(int i = 0; i < rot_amnt; i++)
-            *rd = (*rd >> 1) | (*rd << 31);
-    }
-}
-
 INLINE u32 alu_LSL(arm7tdmi_t* cpu, u32 val, u8 shift_amnt, bool s){
     if(s){
         if(shift_amnt > 32)
@@ -248,6 +228,24 @@ INLINE u32 alu_RRX(arm7tdmi_t* cpu, u32 val, u8 shift_amnt, bool s){
     if(s)
         cpu->C_FLAG = new_flag;
     return val;
+}
+
+INLINE void alu_SWP(arm7tdmi_t* cpu, u32 opcode){
+    bool b = (opcode >> 22) & 1;
+    u32* rd = &cpu->r[(opcode >> 12) & 0xF];
+    u32 rn = cpu->r[(opcode >> 16) & 0xF];
+    u32 rm = cpu->r[opcode & 0xF];
+
+    if(b){
+        u8 byte = cpu->readByte(cpu, rn);
+        cpu->writeByte(cpu, rn, rm);
+        *rd = byte;
+    } else {
+        u32 word = readWord(cpu, rn & ~(0b11));
+        writeWord(cpu, rn & ~(0b11), rm);
+        *rd = word;
+        *rd = alu_ROR(cpu, *rd, (rn & 0b11) << 3, false);
+    }
 }
 
 static const condFunc condFuncs[16] = {

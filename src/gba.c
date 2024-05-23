@@ -24,7 +24,7 @@ void emulateGba(gba_t* gba){
 }
 
 void initGba(gba_t* gba){
-    memset(gba, 0, sizeof(gba));
+    memset(gba, 0, sizeof(gba_t));
     #ifdef EMSCRIPTEN
     gba->cpu.r[13] = 0x3007F00;
     gba->cpu.r[15] = 0x8000000;

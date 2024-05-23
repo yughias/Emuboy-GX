@@ -20,7 +20,7 @@ void setup(){
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
     setWindowIcon("data/logo.bmp");
-    frameRate(REFRESH_RATE*4);
+    frameRate(REFRESH_RATE);
     initGba(&gba);
     #ifndef EMSCRIPTEN
     loadBios("data/gba_bios.bin", &gba.BIOS);
@@ -42,17 +42,19 @@ void setup(){
 }
 
 void loop(){
-    printf("%f\n", 1000.0f/ deltaTime);
+    printf("%f\n", 1000.0f / deltaTime);
 
     emulateGba(&gba);
 
     #ifndef EMSCRIPTEN
-    drawPaletteRam(bgPaletteWin, PALETTE_RAM);
-    drawPaletteRam(objPaletteWin, PALETTE_RAM + 512);
-    drawTileMap(tileMapWin);
+    /*
+    drawPaletteRam(bgPaletteWin, gba.ppu.PALETTE_RAM);
+    drawPaletteRam(objPaletteWin, gba.ppu.PALETTE_RAM + 512);
+    drawTileMap(tileMapWin, &gba.ppu);
 
     SDL_UpdateWindowSurface(bgPaletteWin);
     SDL_UpdateWindowSurface(objPaletteWin);
     SDL_UpdateWindowSurface(tileMapWin);
+    */
     #endif
 }
