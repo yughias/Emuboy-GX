@@ -281,6 +281,9 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
         for(int i = 127; i >= 0; i--){
             u16* obj_attr_ptr = (u16*)(&ppu->OAM[i*8]);
             u8 obj_prio = (obj_attr_ptr[2] >> 0xA) & 0b11;
+            u16 tid = obj_attr_ptr[2] & 0x3FF;
+            if(tid < 512 && bg_type[2] >= BITMAP_3)
+                continue;
             if(obj_prio == prio)
                 renderLineSprite(ppu, obj_attr_ptr, blend_info, obj_win_mask);
         }
