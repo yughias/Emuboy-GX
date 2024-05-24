@@ -7,7 +7,7 @@
 
 #include "ppu_utils.h"
 
-typedef enum {NO_BG, TILED, AFFINE, BITMAP_3, BITMAP_4, BITMAP_5} bgType;
+typedef enum {NO_BG = 0, TILED, AFFINE, BITMAP_3, BITMAP_4, BITMAP_5} bgType;
 typedef enum {IN_WIN0 = 0, IN_WIN1 = 1, IN_WINOUT = 2, IN_OBJWIN = 3, WIN_DISABLED = 0xFF} winType; 
 
 void renderLineMode(ppu_t* ppu, bgType* bg_type);

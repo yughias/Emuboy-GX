@@ -6,10 +6,16 @@
 if(keystate[scancode]) \
     keyinput &= ~(1 << bit)
 
+#define CHECK_CONTROLLER(code, bit) \
+if(gameController && SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_ ## code))  \
+    keyinput &= ~(1 << bit)
+
 const Uint8* keystate;
+SDL_GameController* gameController;
 
 void init_keypad(){
     keystate = SDL_GetKeyboardState(NULL);
+    gameController = SDL_GameControllerOpen(0);
 }
 
 u16 update_keypad(){
@@ -28,6 +34,19 @@ u16 update_keypad(){
     CHECK_KEY(SDL_SCANCODE_DOWN, 7);
     CHECK_KEY(SDL_SCANCODE_S, 8);
     CHECK_KEY(SDL_SCANCODE_A, 9);
+
+    CHECK_CONTROLLER(B, 0);
+    CHECK_CONTROLLER(A, 1);
+    CHECK_CONTROLLER(BACK, 2);
+    CHECK_CONTROLLER(START, 3);
+    CHECK_CONTROLLER(DPAD_RIGHT, 4);
+    CHECK_CONTROLLER(DPAD_LEFT, 5);
+    CHECK_CONTROLLER(DPAD_UP, 6);
+    CHECK_CONTROLLER(DPAD_DOWN, 7);
+    CHECK_CONTROLLER(RIGHTSHOULDER, 8);
+    CHECK_CONTROLLER(LEFTSHOULDER, 9);
+
+
     
     return keyinput;
 }
