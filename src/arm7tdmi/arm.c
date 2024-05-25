@@ -396,7 +396,7 @@ void arm_block_data_transfer(arm7tdmi_t* cpu, u32 opcode){
         regs = cpu->usr_r;
     }
 
-    u32 reg_count = regcount_LUT[reg_list & 0xFF] + regcount_LUT[reg_list >> 8];
+    u32 reg_count = __builtin_popcount(reg_list);
     if(!u_bit){
         addr -= reg_count*4;
         p_bit ^= 1;

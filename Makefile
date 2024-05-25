@@ -2,7 +2,7 @@ SRC = $(wildcard src/*.c) $(wildcard src/arm7tdmi/*.c)
 
 gcc:
 	windres config.rc -O coff -o config.res
-	gcc -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -O2 -flto -DMAINLOOP_GL config.res -o "emuboy gx.exe"
+	gcc -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -mavx -O2 -flto -DMAINLOOP_GL config.res -o "emuboy gx.exe"
 	del config.res
 
 emcc:

@@ -4225,7 +4225,7 @@ thumb_op_02CF:
 return;
 thumb_op_02D0:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 0) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4240,7 +4240,7 @@ cpu->r[13] -= (count + 0) * 4;
 return;
 thumb_op_02D1:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 0) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4255,7 +4255,7 @@ cpu->r[13] -= (count + 0) * 4;
 return;
 thumb_op_02D2:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 0) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4270,7 +4270,7 @@ cpu->r[13] -= (count + 0) * 4;
 return;
 thumb_op_02D3:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 0) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4285,7 +4285,7 @@ cpu->r[13] -= (count + 0) * 4;
 return;
 thumb_op_02D4:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 1) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4302,7 +4302,7 @@ cpu->r[13] -= (count + 1) * 4;
 return;
 thumb_op_02D5:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 1) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4319,7 +4319,7 @@ cpu->r[13] -= (count + 1) * 4;
 return;
 thumb_op_02D6:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 1) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4336,7 +4336,7 @@ cpu->r[13] -= (count + 1) * 4;
 return;
 thumb_op_02D7:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 1) * 4;
 rlist = opcode & 0xFF;
 for(int i = 0; i < 16 && rlist; i++){
@@ -4401,7 +4401,7 @@ thumb_op_02EF:
 return;
 thumb_op_02F0:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4413,7 +4413,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F1:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4425,7 +4425,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F2:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4437,7 +4437,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F3:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4449,7 +4449,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F4:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4465,7 +4465,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F5:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4481,7 +4481,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F6:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4497,7 +4497,7 @@ cpu->r[13] += 4;
 return;
 thumb_op_02F7:
 rlist = opcode & 0xFF;
-count = regcount_LUT[rlist];
+count = __builtin_popcount(rlist);
 for(int i = 0; i < 16 && rlist; i++){
 should_transfer = rlist & 1;
 rlist >>= 1;
@@ -4535,7 +4535,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4560,7 +4560,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4585,7 +4585,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4610,7 +4610,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4635,7 +4635,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4660,7 +4660,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4685,7 +4685,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4710,7 +4710,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4735,7 +4735,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4760,7 +4760,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4785,7 +4785,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4810,7 +4810,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4835,7 +4835,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4860,7 +4860,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4885,7 +4885,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4910,7 +4910,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4935,7 +4935,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4960,7 +4960,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -4985,7 +4985,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5010,7 +5010,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5035,7 +5035,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5060,7 +5060,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5085,7 +5085,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5110,7 +5110,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5135,7 +5135,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5160,7 +5160,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5185,7 +5185,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5210,7 +5210,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5235,7 +5235,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5260,7 +5260,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5285,7 +5285,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5310,7 +5310,7 @@ if(!rlist){
 cpu->writeWord(cpu, base, cpu->r[15] + 2);
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5336,7 +5336,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5360,7 +5360,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5384,7 +5384,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5408,7 +5408,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[0] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5432,7 +5432,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5456,7 +5456,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5480,7 +5480,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5504,7 +5504,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[1] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5528,7 +5528,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5552,7 +5552,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5576,7 +5576,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5600,7 +5600,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[2] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5624,7 +5624,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5648,7 +5648,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5672,7 +5672,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5696,7 +5696,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[3] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5720,7 +5720,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5744,7 +5744,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5768,7 +5768,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5792,7 +5792,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[4] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5816,7 +5816,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5840,7 +5840,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5864,7 +5864,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5888,7 +5888,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[5] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5912,7 +5912,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5936,7 +5936,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5960,7 +5960,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -5984,7 +5984,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[6] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -6008,7 +6008,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -6032,7 +6032,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -6056,7 +6056,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
@@ -6080,7 +6080,7 @@ cpu->r[15] = cpu->readWord(cpu, base);
 cpu->pipeline_valid = false;
 cpu->r[7] += 0x40;
 } else{
-rlist_size = regcount_LUT[rlist];
+rlist_size = __builtin_popcount(rlist);
 first_transfer = true;
 while(rlist){
 should_transfer = rlist & 1;
