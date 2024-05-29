@@ -20,9 +20,9 @@ ppu_t* ppu = &gba->ppu; \
 ppu->VRAM[addr] = val; \
 ppu->VRAM[(addr & ~0b1) + 1] = val; \
 
-#define WRITE_VRAM_16 WRITE_VRAM_NORMAL(16)
-#define WRITE_VRAM_32 WRITE_VRAM_NORMAL(32)
-#define WRITE_VRAM_NORMAL(type) \
+#define WRITE_VRAM_16 WRITE_VRAM_DEFAULT(16)
+#define WRITE_VRAM_32 WRITE_VRAM_DEFAULT(32)
+#define WRITE_VRAM_DEFAULT(type) \
 *((u ## type*)&ppu->VRAM[addr]) = val;
 
 #define MEMORY_TABLE_READ(type) \
@@ -292,6 +292,8 @@ void writeIo8(arm7tdmi_t* cpu, u32 addr, u8 val){
                 ((u8*)&gba->DMACNT[i])[addr - 0x8] = val;
                 if(gba->DMACNT[i] >> 31)
                     triggerDma(gba, i);
+                else
+                    gba->dma_enabled[i] = false;
                 return;
             }          
         }
