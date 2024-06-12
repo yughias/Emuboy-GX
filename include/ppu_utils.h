@@ -10,9 +10,9 @@ INLINE u32 rgb555torgb888(u16 rgb555){
     u8 red = rgb555 & 0x1F;
     u8 green = (rgb555 >> 5) & 0x1F;
     u8 blue = (rgb555 >> 10) & 0x1F;
-    red = red & 1 ? (red << 3) | 0b111 : red << 3;
-    blue = blue & 1 ? (blue << 3) | 0b111 : blue << 3;
-    green = green & 1 ? (green << 3) | 0b111 : green << 3;
+    red = (red << 3) | (red >> 2);
+    green = (green << 3) | (green >> 2);
+    blue = (blue << 3) | (blue >> 2);
     return color(red, green, blue);
 }
 

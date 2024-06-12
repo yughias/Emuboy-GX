@@ -58,7 +58,7 @@ void arm_step(arm7tdmi_t* cpu){
 
     if(
         !(opcode & 0xFFF) &&
-        (((opcode >> 16) & 0b111111) == 0b001111) &&
+        (((opcode >> 20) & 0b11) == 0b00) &&
         (((opcode >> 23) & 0b11111) == 0b00010)
     ){
         arm_mrs(cpu, opcode);
@@ -67,8 +67,7 @@ void arm_step(arm7tdmi_t* cpu){
 
     if(
         (((opcode >> 23) & 0b11111) == 0b00110) && 
-        (((opcode >> 20) & 0b11) == 0b10) && 
-        (((opcode >> 12) & 0b1111) == 0b1111)
+        (((opcode >> 20) & 0b11) == 0b10)
     ){
         arm_msr(cpu, opcode);
         return;
@@ -77,15 +76,17 @@ void arm_step(arm7tdmi_t* cpu){
     if(
         (((opcode >> 23) & 0b11111) == 0b00010) && 
         (((opcode >> 20) & 0b11) == 0b10) && 
-        (((opcode >> 12) & 0b1111) == 0b1111) &&
-        !(((opcode >> 4) & 0xFF))
+        !(((opcode >> 4) & 0xF))
     ){
         arm_msr(cpu, opcode);
         return;
     }
     
 
-    if(((opcode >> 4) & 0xFFFFFF) == 0b000100101111111111110001){
+    if(
+        (((opcode >> 20) & 0xFF) == 0b00010010) &&
+        (((opcode >> 4) & 0xF) == 0b0001)
+    ){
         arm_bx(cpu, opcode);
         return;
     }
