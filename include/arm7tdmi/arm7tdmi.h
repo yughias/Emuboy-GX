@@ -39,8 +39,7 @@ typedef struct arm7tdmi_t {
     u32 SPSR_svc;
     u32 SPSR_irq;
 
-    bool pipeline_valid;
-    u32 pipeline_opcode;
+    u32 pipeline_opcode[2];
 
     readByteFunc readByte;
     readHalfWordFunc readHalfWord;
@@ -50,15 +49,19 @@ typedef struct arm7tdmi_t {
     writeHalfWordFunc writeHalfWord;
     writeWordFunc writeWord;
 
+    u32 cycles;
+
     void* master;
 } arm7tdmi_t;
 
 void arm7tdmi_step(arm7tdmi_t* cpu);
 void arm7tdmi_print(arm7tdmi_t* cpu);
 void arm7tdmi_trigger_exception(arm7tdmi_t* cpu, u32 addr, u8 mode);
+void arm7tdmi_pipeline_refill(arm7tdmi_t* cpu);
 
 void saveBankedReg(arm7tdmi_t* cpu);
 void loadBankedReg(arm7tdmi_t* cpu);
 u32* getSPSR(arm7tdmi_t* cpu);
+
 
 #endif

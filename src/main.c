@@ -28,6 +28,7 @@ void setup(){
     loadBios("data/vba_bios.bin", &gba.BIOS);
     #endif
     gba.ROM_SIZE = loadRom(getArgv(1),&gba.ROM);
+    arm7tdmi_pipeline_refill(&gba.cpu);
     init_keypad();
 
     noRender();

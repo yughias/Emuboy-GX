@@ -25,13 +25,13 @@ void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, bool* obj_win_mask);
 bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, bool obj_win_mask, winType* winType_out);
 u16 applyColorEffect(ppu_t* ppu, u16 inCol, u8 topType, u8 botType, u16 backCol, winType winType);
 
-void updatePPU(gba_t* gba, int cycles){
+void updatePPU(gba_t* gba, u32 cycles){
     ppu_t* ppu = &gba->ppu;
     int inter_cycles = cycles % SCANLINE_CYCLES;
     bool new_isHBlank = inter_cycles >= DRAW_CYCLES;
     bool new_isVBlank = cycles >= VBLANK;
     bool new_isVCount = (ppu->VCOUNT == ((ppu->DISPSTAT >> 8) % 228));
-    ppu->VCOUNT = cycles / SCANLINE_CYCLES;
+    ppu->VCOUNT = (cycles / SCANLINE_CYCLES) % 228;
 
     if(!ppu->isHBlank && new_isHBlank){
         if(ppu->DISPSTAT & (1 << 4)){

@@ -15,14 +15,20 @@ void checkInterrupts(gba_t* gba){
 void emulateGba(gba_t* gba){
     gba->KEYINPUT = update_keypad();
 
-    for(int i = 0; i < CYCLES_PER_FRAME; i++){
-        if(gba->HALTCNT)
+    u32 cycles = gba->cpu.cycles;
+    while(gba->cpu.cycles < CYCLES_PER_FRAME){
+        if(gba->HALTCNT){
             gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
-        else
+            gba->cpu.cycles += 2;
+        } else
             arm7tdmi_step(&gba->cpu);
-        updatePPU(gba, i);
-        updateTimers(gba, 1);
+
+        updatePPU(gba, gba->cpu.cycles);        
+        updateTimers(gba, gba->cpu.cycles - cycles);
+        cycles = gba->cpu.cycles;
     }
+
+    gba->cpu.cycles -= CYCLES_PER_FRAME;
 }
 
 void initGba(gba_t* gba){

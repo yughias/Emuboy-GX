@@ -18,10 +18,17 @@ codegen-thumb:
 	codegen_thumb.exe src/arm7tdmi/thumb.c
 	del codegen_thumb.exe
 
+codegen-arm:
+	gcc codegen/src/arm.c -o codegen_arm.exe
+	codegen_arm.exe src/arm7tdmi/arm.c
+	del codegen_arm.exe
+
+codegen: codegen-arm codegen-thumb
+
 debug-compile:
 	gcc -pg -no-pie -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -DMAINLOOP_GL -o "emuboy gx.exe"
 	
 debug-graph:
 	gprof "emuboy gx.exe" | gprof2dot -n0 -e0 | dot -Tsvg -o graph.svg
 
-.PHONY: gcc emcc codegen-thumb debug-compile debug-graph
+.PHONY: gcc emcc codegen codegen-thumb codegen-arm debug-compile debug-graph

@@ -15,7 +15,7 @@ typedef struct gba_t gba_t;
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 160
 #define REFRESH_RATE 59.73
-#define SCANLINE 228
+#define N_SCANLINES 228
 
 #define PALETTE_RAM_SIZE (1 << 10)
 #define VRAM_SIZE (0x18000)
@@ -55,7 +55,7 @@ typedef struct ppu_t {
 } ppu_t;
 
 void composeDispstat(ppu_t* ppu);
-void updatePPU(gba_t* gba, int cycle_count);
+void updatePPU(gba_t* gba, u32 cycle_count);
 
 void drawPaletteRam(SDL_Window* win, u8* ptr);
 void drawTileMap(SDL_Window* win, ppu_t* ppu);

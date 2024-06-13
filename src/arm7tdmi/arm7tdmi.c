@@ -1,6 +1,7 @@
 #include "arm7tdmi/arm7tdmi.h"
 #include "arm7tdmi/arm.h"
 #include "arm7tdmi/thumb.h"
+#include "arm7tdmi/arm7tdmi_util.h"
 #include "integer.h"
 
 #include <stdio.h>
@@ -13,12 +14,10 @@ void arm7tdmi_print(arm7tdmi_t* cpu){
     }
 
     u32 pc = cpu->r[15];
-    if(cpu->pipeline_valid){
-        if(cpu->thumb_mode)
-            pc -= 2;
-        else
-            pc -= 4;
-    }
+    if(cpu->thumb_mode)
+        pc -= 2;
+    else
+        pc -= 4;
 
     printf("CPSR: %08X\n", cpu->CPSR);
     printf("SPSR: %08X\n", *getSPSR(cpu));
@@ -36,6 +35,10 @@ void arm7tdmi_step(arm7tdmi_t* cpu){
         thumb_step(cpu);
     else
         arm_step(cpu);
+}
+
+void arm7tdmi_pipeline_refill(arm7tdmi_t* cpu){
+    cpu->thumb_mode ? thumb_pipeline_refill(cpu) : arm_pipeline_refill(cpu);
 }
 
 void saveBankedReg(arm7tdmi_t* cpu){
@@ -126,15 +129,14 @@ void arm7tdmi_trigger_exception(arm7tdmi_t* cpu, u32 addr, u8 mode){
     *getSPSR(cpu) = (cpu->CPSR & ~(0x1F)) |  old_mode;
     loadBankedReg(cpu);
     u32 ret_addr = cpu->r[15];
-    if(cpu->pipeline_valid)
-        ret_addr -= cpu->thumb_mode ? 2 : 4;
+    ret_addr -= cpu->thumb_mode ? 2 : 4;
     if(mode == 0x13)
         cpu->r[14] = ret_addr;
     if(mode == 0x12)
         cpu->r[14] = ret_addr + 4;
     cpu->r[15] = addr;
     saveBankedReg(cpu);
-    cpu->pipeline_valid = false;
     cpu->thumb_mode = false;
     cpu->irq_disable = true;
+    arm7tdmi_pipeline_refill(cpu);
 }
