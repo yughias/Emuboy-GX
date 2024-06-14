@@ -46,6 +46,7 @@ void loop(){
     emulateGba(&gba);
 
     #ifndef EMSCRIPTEN
+    /*
     drawPaletteRam(bgPaletteWin, gba.ppu.PALETTE_RAM);
     drawPaletteRam(objPaletteWin, gba.ppu.PALETTE_RAM + 512);
     drawTileMap(tileMapWin, &gba.ppu);
@@ -53,5 +54,6 @@ void loop(){
     SDL_UpdateWindowSurface(bgPaletteWin);
     SDL_UpdateWindowSurface(objPaletteWin);
     SDL_UpdateWindowSurface(tileMapWin);
+    */
     #endif
 }

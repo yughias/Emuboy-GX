@@ -19,7 +19,7 @@ void emulateGba(gba_t* gba){
     while(gba->cpu.cycles < CYCLES_PER_FRAME){
         if(gba->HALTCNT){
             gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
-            gba->cpu.cycles += 2;
+            gba->cpu.cycles += 1;
         } else
             arm7tdmi_step(&gba->cpu);
 

@@ -428,6 +428,7 @@ void arm_single_data_transfer(u32 opcode){
         printf("addr += %s;\n", u_bit ? "offset" : "-offset");
 
     if(l_bit){
+        GEN(cpu->cycles += I_CYCLES;);
         if(b_bit)
             GEN(*rd = readByteN(cpu, addr););
         else{
