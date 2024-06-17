@@ -8,7 +8,8 @@ INLINE void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val);
 
 #define GET_POINTERS \
 gba_t* gba = (gba_t*)cpu->master; \
-ppu_t* ppu = &gba->ppu \
+ppu_t* ppu = &gba->ppu; \
+gamepak_t* gamepak = &gba->gamepak \
 
 #define GET_ARRAY_PTR(type, name) \
 ((u ## type*)&name)
@@ -29,6 +30,21 @@ ppu->VRAM[(addr & ~0b1) + 1] = val \
 #define WRITE_IO_8(cpu, addr, val) writeIo8(cpu, addr, val)
 #define WRITE_IO_16(cpu, addr, val) writeIo8(cpu, addr, val); writeIo8(cpu, (addr) + 1, (val) >> 8)
 #define WRITE_IO_32(cpu, addr, val) WRITE_IO_16(cpu, addr, val); WRITE_IO_16(cpu, (addr) + 2, (val) >> 16)
+
+#define MEMORY_READ_SAVE_DATA_32
+#define MEMORY_READ_SAVE_DATA_16
+#define MEMORY_READ_SAVE_DATA_8 \
+case 0xE: \
+case 0xF: \
+return (*gamepak->readByte)(gamepak, addr);
+
+#define MEMORY_WRITE_SAVE_DATA_32
+#define MEMORY_WRITE_SAVE_DATA_16
+#define MEMORY_WRITE_SAVE_DATA_8 \
+case 0xE: \
+case 0xF: \
+(*gamepak->writeByte)(gamepak, addr, val); \
+return; \
 
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
@@ -62,21 +78,11 @@ switch((addr >> 24) & 0xF){ \
     case 0xC: \
     case 0xD: \
     addr -= 0x08000000; \
-    if(unlikely(addr >= gba->ROM_SIZE)) \
+    if(unlikely(addr >= gamepak->ROM_SIZE)) \
             return 0x00; \
-    return *GET_ARRAY_PTR(type, gba->ROM[addr]); \
+    return *GET_ARRAY_PTR(type, gba->gamepak.ROM[addr]); \
 \
-    case 0xE: \
-    case 0xF: \
-    if(addr == 0x0E000000) \
-        return 0x62; \
-\
-    if(addr == 0x0E000001) \
-        return 0x13; \
-\
-    if(addr >= 0xE000000 && addr < 0xE010000) \
-        return *GET_ARRAY_PTR(type, gba->SRAM[(addr - 0xE000000) & 0xFFFF]); \
-    return 0x00; \
+    MEMORY_READ_SAVE_DATA_ ## type \
 \
     default: \
     return 0x00; \
@@ -111,10 +117,7 @@ switch((addr >> 24) & 0xF){ \
     *GET_ARRAY_PTR(type, ppu->OAM[addr & 0x3FF]) = val; \
     return; \
 \
-    case 0xE: \
-    case 0xF: \
-    if(addr >= 0xE000000 && addr < 0xE010000) \
-        *GET_ARRAY_PTR(type, gba->SRAM[(addr - 0xE000000) & 0xFFFF]) = val; \
+    MEMORY_WRITE_SAVE_DATA_ ## type \
 } \
 
 u8 readIo8(arm7tdmi_t* cpu, u16 addr){

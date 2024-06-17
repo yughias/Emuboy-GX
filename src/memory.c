@@ -50,23 +50,3 @@ void loadBios(const char* filename, u8** bios){
 
     fclose(fptr);
 }
-
-size_t loadRom(const char* filename, u8** rom){
-    FILE* fptr = fopen(filename, "rb");
-    if(!fptr){
-        printf("can't open rom\n");
-        return 0;
-    }
-
-    fseek(fptr, 0, SEEK_END);
-    size_t size = ftell(fptr);
-    rewind(fptr);
-
-    *rom = (u8*)malloc(size);
-
-    fread(*rom, 1, size, fptr);
-
-    fclose(fptr);
-
-    return size;
-}

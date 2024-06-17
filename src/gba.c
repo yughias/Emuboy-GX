@@ -1,4 +1,5 @@
 #include "gba.h"
+#include "gamepak.h"
 
 #include <string.h>
 
@@ -58,7 +59,7 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     gba->RCNT = 0x8000;
 
     loadBios(biosFilename, &gba->BIOS);
-    gba->ROM_SIZE = loadRom(romFilename, &gba->ROM);
+    loadGamePak(&gba->gamepak, romFilename);
 
     arm7tdmi_pipeline_refill(&gba->cpu);
 }

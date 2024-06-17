@@ -7,6 +7,7 @@
 #include "keypad.h"
 #include "dma.h"
 #include "timer.h"
+#include "gamepak.h"
 
 typedef struct gba_t {
     arm7tdmi_t cpu;
@@ -16,13 +17,10 @@ typedef struct gba_t {
     u8 WRAM_BOARD[WRAM_BOARD_SIZE];
     u8 WRAM_CHIP[WRAM_CHIP_SIZE];
     
-    // BIOS + ROM
+    // BIOS
     u8* BIOS;
-    u8* ROM;
-    size_t ROM_SIZE;
-
-    // EXTERNAL MEMORY RAM
-    u8 SRAM[SRAM_SIZE];
+    
+    gamepak_t gamepak;
 
     timer_t timers[4];
 

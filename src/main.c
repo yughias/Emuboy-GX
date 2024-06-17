@@ -12,7 +12,9 @@ gba_t gba;
 
 void freeAll(){
     free(gba.BIOS);
-    free(gba.ROM);
+    free(gba.gamepak.ROM);
+    if(gba.gamepak.type != GAMEPAK_ROM_ONLY)
+        free(gba.gamepak.SRAM);
 }
 
 void setup(){
@@ -39,7 +41,7 @@ void setup(){
     onExit = freeAll;
 }
 
-void loop(){
+void loop(){    
     emulateGba(&gba);
 
     #ifndef EMSCRIPTEN
