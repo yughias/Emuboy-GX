@@ -3,6 +3,10 @@
 
 #include "integer.h"
 
+#define I_CYCLES 1
+#define S_CYCLES 1
+#define N_CYCLES 1
+
 typedef struct arm7tdmi_t arm7tdmi_t;
 typedef u8 (*readByteFunc)(arm7tdmi_t*, u32);
 typedef u16 (*readHalfWordFunc)(arm7tdmi_t*, u32);

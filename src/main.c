@@ -21,14 +21,11 @@ void setup(){
     setTitle(u8"エミュボーイ　GX");
     setWindowIcon("data/logo.bmp");
     frameRate(REFRESH_RATE);
-    initGba(&gba);
     #ifndef EMSCRIPTEN
-    loadBios("data/gba_bios.bin", &gba.BIOS);
+    initGba(&gba, "data/gba_bios.bin", getArgv(1));
     #else
-    loadBios("data/vba_bios.bin", &gba.BIOS);
+    initGba(&gba, "data/vba_bios.bin", getArgv(1));
     #endif
-    gba.ROM_SIZE = loadRom(getArgv(1),&gba.ROM);
-    arm7tdmi_pipeline_refill(&gba.cpu);
     init_keypad();
 
     noRender();

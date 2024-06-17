@@ -31,7 +31,7 @@ void emulateGba(gba_t* gba){
     gba->cpu.cycles -= CYCLES_PER_FRAME;
 }
 
-void initGba(gba_t* gba){
+void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     memset(gba, 0, sizeof(gba_t));
     #ifdef EMSCRIPTEN
     gba->cpu.r[13] = 0x3007F00;
@@ -56,4 +56,9 @@ void initGba(gba_t* gba){
 
     gba->KEYINPUT = 0xFFFF;
     gba->RCNT = 0x8000;
+
+    loadBios(biosFilename, &gba->BIOS);
+    gba->ROM_SIZE = loadRom(romFilename, &gba->ROM);
+
+    arm7tdmi_pipeline_refill(&gba->cpu);
 }

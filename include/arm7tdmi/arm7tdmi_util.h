@@ -8,12 +8,68 @@
 
 #define INLINE static inline __attribute__ ((always_inline))
 
-#define I_CYCLES 1
-#define S_CYCLES 1
-#define N_CYCLES 1
-
 typedef bool (*condFunc)(arm7tdmi_t* cpu);
 typedef void (*dataProcessingFunc)(arm7tdmi_t* cpu, u32* rd, u32 op1, u32 op2, bool s);  
+
+INLINE u8 readByteS(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += S_CYCLES;
+    return cpu->readByte(cpu, addr);
+}
+
+INLINE u16 readHalfWordS(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += S_CYCLES;
+    return cpu->readHalfWord(cpu, addr);
+}
+
+INLINE u32 readWordS(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += S_CYCLES;
+    return cpu->readWord(cpu, addr);
+}
+
+INLINE u8 readByteN(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += N_CYCLES;
+    return cpu->readByte(cpu, addr);
+}
+
+INLINE u16 readHalfWordN(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += N_CYCLES;
+    return cpu->readHalfWord(cpu, addr);
+}
+
+INLINE u32 readWordN(arm7tdmi_t* cpu, u32 addr){
+    cpu->cycles += N_CYCLES;
+    return cpu->readWord(cpu, addr);
+}
+
+INLINE void writeByteS(arm7tdmi_t* cpu, u32 addr, u8 val){
+    cpu->cycles += S_CYCLES;
+    cpu->writeByte(cpu, addr, val);
+}
+
+INLINE void writeHalfWordS(arm7tdmi_t* cpu, u32 addr, u16 val){
+    cpu->cycles += S_CYCLES;
+    cpu->writeHalfWord(cpu, addr, val);
+}
+
+INLINE void writeWordS(arm7tdmi_t* cpu, u32 addr, u32 val){
+    cpu->cycles += S_CYCLES;
+    cpu->writeWord(cpu, addr, val);
+}
+
+INLINE void writeByteN(arm7tdmi_t* cpu, u32 addr, u8 val){
+    cpu->cycles += N_CYCLES;
+    cpu->writeByte(cpu, addr, val);
+}
+
+INLINE void writeHalfWordN(arm7tdmi_t* cpu, u32 addr, u16 val){
+    cpu->cycles += N_CYCLES;
+    cpu->writeHalfWord(cpu, addr, val);
+}
+
+INLINE void writeWordN(arm7tdmi_t* cpu, u32 addr, u32 val){
+    cpu->cycles += N_CYCLES;
+    cpu->writeWord(cpu, addr, val);
+}
 
 INLINE bool cond_EQ(arm7tdmi_t* cpu){ return cpu->Z_FLAG; }
 INLINE bool cond_NE(arm7tdmi_t* cpu){ return !cpu->Z_FLAG; }
@@ -222,12 +278,12 @@ INLINE void alu_SWP(arm7tdmi_t* cpu, u32 opcode){
     u32 rm = cpu->r[opcode & 0xF];
 
     if(b){
-        u8 byte = cpu->readByte(cpu, rn);
-        cpu->writeByte(cpu, rn, rm);
+        u8 byte = readByteN(cpu, rn);
+        writeByteN(cpu, rn, rm);
         *rd = byte;
     } else {
-        u32 word = cpu->readWord(cpu, rn & ~(0b11));
-        cpu->writeWord(cpu, rn & ~(0b11), rm);
+        u32 word = readWordN(cpu, rn & ~(0b11));
+        writeWordN(cpu, rn & ~(0b11), rm);
         *rd = word;
         *rd = alu_ROR(cpu, *rd, (rn & 0b11) << 3, false);
     }
@@ -239,66 +295,6 @@ static const condFunc condFuncs[16] = {
     &cond_HI, &cond_LS, &cond_GE, &cond_LT,
     &cond_GT, &cond_LE, &cond_AL, &cond_Undefined
 };
-
-INLINE u8 readByteS(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += S_CYCLES;
-    return cpu->readByte(cpu, addr);
-}
-
-INLINE u16 readHalfWordS(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += S_CYCLES;
-    return cpu->readHalfWord(cpu, addr);
-}
-
-INLINE u32 readWordS(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += S_CYCLES;
-    return cpu->readWord(cpu, addr);
-}
-
-INLINE u8 readByteN(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += N_CYCLES;
-    return cpu->readByte(cpu, addr);
-}
-
-INLINE u16 readHalfWordN(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += N_CYCLES;
-    return cpu->readHalfWord(cpu, addr);
-}
-
-INLINE u32 readWordN(arm7tdmi_t* cpu, u32 addr){
-    cpu->cycles += N_CYCLES;
-    return cpu->readWord(cpu, addr);
-}
-
-INLINE void writeByteS(arm7tdmi_t* cpu, u32 addr, u8 val){
-    cpu->cycles += S_CYCLES;
-    cpu->writeByte(cpu, addr, val);
-}
-
-INLINE void writeHalfWordS(arm7tdmi_t* cpu, u32 addr, u16 val){
-    cpu->cycles += S_CYCLES;
-    cpu->writeHalfWord(cpu, addr, val);
-}
-
-INLINE void writeWordS(arm7tdmi_t* cpu, u32 addr, u32 val){
-    cpu->cycles += S_CYCLES;
-    cpu->writeWord(cpu, addr, val);
-}
-
-INLINE void writeByteN(arm7tdmi_t* cpu, u32 addr, u8 val){
-    cpu->cycles += N_CYCLES;
-    cpu->writeByte(cpu, addr, val);
-}
-
-INLINE void writeHalfWordN(arm7tdmi_t* cpu, u32 addr, u16 val){
-    cpu->cycles += N_CYCLES;
-    cpu->writeHalfWord(cpu, addr, val);
-}
-
-INLINE void writeWordN(arm7tdmi_t* cpu, u32 addr, u32 val){
-    cpu->cycles += N_CYCLES;
-    cpu->writeWord(cpu, addr, val);
-}
 
 INLINE void arm_pipeline_refill(arm7tdmi_t* cpu){
     cpu->pipeline_opcode[0] = readWordN(cpu, cpu->r[15]);

@@ -6,22 +6,24 @@
 
 #define STR(x) #x "\n" 
 #define GEN(x) printf(#x "\n")
-#define RET printf("return; }\n"); return
+#define RET printf("return; }\n");
+
+#define LOOP(x, limit) for(int x = 0; x < (limit); x++)
 
 typedef uint32_t u32;
 typedef uint16_t u16;
 typedef uint8_t u8;
 
-void arm_mrs(u32 opcode);
-void arm_msr(u32 opcode);
-void arm_bx(u32 opcode);
-void arm_b_bl(u32 opcode);
-void arm_data_processing(u32 opcode);
-void arm_halfword_data_transfer(u32 opcode);
-void arm_single_data_transfer(u32 opcode);
-void arm_block_data_transfer(u32 opcode);
-void arm_multiply(u32 opcode);
-void arm_multiply_long(u32 opcode);
+void arm_mrs(bool p_bit);
+void arm_msr(bool p, bool i_bit);
+void arm_bx();
+void arm_b_bl(bool link_bit, bool sign);
+void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456);
+void arm_halfword_data_transfer(bool load_bit, bool up_bit, bool pre_bit, bool write_bit, int op2, bool opcodeBit22);
+void arm_single_data_transfer(bool i_bit, bool p_bit, bool u_bit, bool b_bit, bool w_bit, bool l_bit, int bit456);
+void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, bool l_bit, bool bit15);
+void arm_multiply(bool a, bool s);
+void arm_multiply_long(bool u, bool a, bool s);
 
 #define ROLLER_IMM(operand, opcode, s) \
 { \
@@ -33,14 +35,15 @@ void arm_multiply_long(u32 opcode);
     GEN(}); \
 } \
 
-#define SHIFTER_REG(operand, opcode, s) \
+#define SHIFTER_REG(operand, bit456, s) \
 { \
     GEN({); \
     GEN(u8 shift_amnt;); \
     GEN(u32 val = cpu->r[opcode & 0xF];); \
-    bool use_reg = (opcode >> 4) & 1; \
+    bool use_reg = (bit456) & 1; \
     if(use_reg){ \
         GEN(shift_amnt = cpu->r[(opcode >> 8) & 0xF] & 0xFF;); \
+        GEN(cpu->cycles += I_CYCLES;); \
     } else { \
         GEN(shift_amnt = (opcode >> 7) & 0x1F; ); \
     } \
@@ -48,7 +51,7 @@ void arm_multiply_long(u32 opcode);
         GEN(if((opcode & 0xF) == 15)); \
         GEN(    val += 4;); \
     } \
-    switch((opcode >> 5) & 0b11){ \
+    switch((bit456 >> 1) & 0b11){ \
         case 0: \
         printf("%s = alu_LSL(cpu, val, shift_amnt, %d);\n", #operand, s); \
         break; \
@@ -107,7 +110,7 @@ const char dataProcessingFuncs[][64] = {
 };
 
 void generateLUT_gotoTable();
-void generateLUT_data(u32 opcode);
+void generateLUT_data();
 
 int main(int argv, char** argc){
     if(argv != 2){
@@ -123,13 +126,9 @@ int main(int argv, char** argc){
 
     generateLUT_gotoTable();
     printf("\ngoto *thumb_table[(((opcode >> 20) & 0xFF) << 4) | ((opcode >> 4) & 0xF)];\n");
-
-    for(int high = 0; high < 256; high++)
-        for(int low = 0; low < 16; low++){
-            u32 opcode = (high << 20) | (low << 4);
-            generateLUT_data(opcode);
-        }
-
+    GEN();
+    generateLUT_data();
+    
     printf("%s\n", end_src); 
 }
 
@@ -137,147 +136,236 @@ void generateLUT_gotoTable(){
     printf("static void* thumb_table[1 << 12] = {");
     for(int high = 0; high < 256; high++){
         for(int low = 0; low < 16; low++){
-            printf("&&arm_op_%08X", (high << 20) | (low << 4));
-            if(!(high == 256 && low == 16))
-                printf(", ");
+            int opcode = (high << 20) | (low << 4);
+        
+            printf("&&");
+
+            if(((opcode >> 24) & 0XF) == 0b1111){
+                printf("swi, ");
+                continue;
+            }
+
+            if(
+                !((opcode >> 22) & 0b111111) &&
+                (((opcode >> 4) & 0xF) == 0b1001)        
+            ){
+                printf("arm_multiply_%X_%X, ", (opcode >> 21) & 1, (opcode >> 20) & 1);
+                continue;
+            }
+
+            if(
+                (((opcode >> 23) & 0b11111) == 0b00001) &&
+                (((opcode >> 4) & 0xF) == 0b1001)
+            ){
+                printf("arm_multiply_long_%X_%X_%X, ", (opcode >> 22) & 1, (opcode >> 21) & 1, (opcode >> 20) & 1);
+                continue;
+            }
+
+
+            if(
+                !(opcode & 0xFFF) &&
+                (((opcode >> 20) & 0b11) == 0b00) &&
+                (((opcode >> 23) & 0b11111) == 0b00010)
+            ){
+                printf("arm_mrs_%X, ", (opcode >> 22) & 1);
+                continue;
+            }
+
+            if(
+                (((opcode >> 23) & 0b11111) == 0b00110) && 
+                (((opcode >> 20) & 0b11) == 0b10)
+            ){
+                printf("arm_msr_%X_%X, ", (opcode >> 22) & 1, (opcode >> 25) & 1);
+                continue;
+            }
+
+            if(
+                (((opcode >> 23) & 0b11111) == 0b00010) && 
+                (((opcode >> 20) & 0b11) == 0b10) && 
+                !(((opcode >> 4) & 0xF))
+            ){
+                printf("arm_msr_%X_%X, ", (opcode >> 22) & 1, (opcode >> 25) & 1);
+                continue;
+            }
+            
+
+            if(
+                (((opcode >> 20) & 0xFF) == 0b00010010) &&
+                (((opcode >> 4) & 0xF) == 0b0001)
+            ){
+                printf("arm_bx, ");
+                continue;
+            }
+
+            if(((opcode >> 25) & 0b111) == 0b101){
+                printf("arm_b_bl_%X_%X, ", (opcode >> 24) & 1, (opcode >> 23) & 1);
+                continue;
+            }
+
+            if(
+                ((opcode >> 26) & 0b11) == 0b01
+            ){
+                printf("arm_single_data_transfer_%X_%X_%X_%X_%X_%X_%X, ",
+                    (opcode >> 25) & 1,
+                    (opcode >> 24) & 1,
+                    (opcode >> 23) & 1,
+                    (opcode >> 22) & 1,
+                    (opcode >> 21) & 1,
+                    (opcode >> 20) & 1,
+                    (opcode >> 4) & 0b111
+                );
+                continue;
+            }
+
+            if(
+                !((opcode >> 25) & 0b111)  &&
+                ((opcode >> 7) & 1) &&
+                ((opcode >> 4) & 1)
+            ){
+                printf("arm_halfword_data_transfer_%X_%X_%X_%X_%X_%X, ",
+                    (opcode >> 20) & 1,
+                    (opcode >> 23) & 1,
+                    (opcode >> 24) & 1,
+                    (opcode >> 21) & 1,
+                    (opcode >> 5) & 0b11,
+                    (opcode >> 22) & 0b1
+                );
+                continue;
+            }
+
+            if(((opcode >> 26) & 0b11) == 0b00){
+                printf("arm_data_processing_%X_%X_%X_%X, ",
+                    (opcode >> 20) & 1,
+                    (opcode >> 25) & 1,
+                    (opcode >> 21) & 0xF,
+                    (opcode >> 4) & 0b111
+                );
+                continue;
+            }
+
+            if(((opcode >> 25) & 0b111) == 0b100){
+                printf("arm_block_data_transfer_%X_%X_%X_%X_%X_%X, ",
+                    (opcode >> 24) & 1,
+                    (opcode >> 23) & 1,
+                    (opcode >> 22) & 1,
+                    (opcode >> 21) & 1,
+                    (opcode >> 20) & 1,  
+                    (opcode >> 15) & 1
+                );
+                continue;
+            }
+
+            printf("arm_not_decoded, ");
         }
     }
     printf("};\n");
 }
 
-void generateLUT_data(u32 opcode){
-    printf("arm_op_%08X: {\n", opcode);
-
-    if(((opcode >> 24) & 0XF) == 0b1111){
-        GEN(arm7tdmi_trigger_exception(cpu, 0x8, 0x13););
-        RET;
-    }
-
-    if(
-        !((opcode >> 22) & 0b111111) &&
-        (((opcode >> 4) & 0xF) == 0b1001)        
-    ){
-        arm_multiply(opcode);
-        RET;
-    }
-
-    if(
-        (((opcode >> 23) & 0b11111) == 0b00001) &&
-        (((opcode >> 4) & 0xF) == 0b1001)
-    ){
-        arm_multiply_long(opcode);
-        RET;
-    }
-
-
-    if(
-        !(opcode & 0xFFF) &&
-        (((opcode >> 20) & 0b11) == 0b00) &&
-        (((opcode >> 23) & 0b11111) == 0b00010)
-    ){
-        arm_mrs(opcode);
-        RET;
-    }
-
-    if(
-        (((opcode >> 23) & 0b11111) == 0b00110) && 
-        (((opcode >> 20) & 0b11) == 0b10)
-    ){
-        arm_msr(opcode);
-        RET;
-    }
-
-    if(
-        (((opcode >> 23) & 0b11111) == 0b00010) && 
-        (((opcode >> 20) & 0b11) == 0b10) && 
-        !(((opcode >> 4) & 0xF))
-    ){
-        arm_msr(opcode);
-        RET;
-    }
-    
-
-    if(
-        (((opcode >> 20) & 0xFF) == 0b00010010) &&
-        (((opcode >> 4) & 0xF) == 0b0001)
-    ){
-        arm_bx(opcode);
-        RET;
-    }
-
-    if(((opcode >> 25) & 0b111) == 0b101){
-        arm_b_bl(opcode);
-        RET;
-    }
-
-    if(
-        ((opcode >> 26) & 0b11) == 0b01
-    ){
-        arm_single_data_transfer(opcode);
-        RET;
-    }
-
-    if(
-        !((opcode >> 25) & 0b111)  &&
-        ((opcode >> 7) & 1) &&
-        ((opcode >> 4) & 1)
-    ){
-        arm_halfword_data_transfer(opcode);
-        RET;
-    }
-
-    if(((opcode >> 26) & 0b11) == 0b00){
-        arm_data_processing(opcode);
-        RET;
-    }
-
-    if(((opcode >> 25) & 0b111) == 0b100){
-        arm_block_data_transfer(opcode);
-        RET;
-    }
-
+void generateLUT_data(){
+    GEN(swi:{);
+    GEN(arm7tdmi_trigger_exception(cpu, 0x8, 0x13););
     RET;
+
+    LOOP(p_bit, 2)
+        arm_mrs(p_bit);
+    
+    LOOP(p, 2)
+    LOOP(i_bit, 2)
+        arm_msr(p, i_bit);
+    
+    arm_bx();
+    
+    LOOP(link_bit, 2)
+    LOOP(sign, 2)
+        arm_b_bl(link_bit, sign);
+    
+    LOOP(s_bit, 2)
+    LOOP(i_bit, 2)
+    LOOP(op4, 1 << 4)
+    LOOP(bit456, 1 << 3)
+        arm_data_processing(s_bit, i_bit, op4, bit456);
+    
+    LOOP(load_bit, 2)
+    LOOP(up_bit, 2)
+    LOOP(pre_bit, 2)
+    LOOP(write_bit, 2)
+    LOOP(op2, 1 << 2)
+    LOOP(opcodeBit22, 2)
+        arm_halfword_data_transfer(load_bit, up_bit, pre_bit, write_bit, op2, opcodeBit22);
+    
+    LOOP(i_bit, 2)
+    LOOP(p_bit, 2)
+    LOOP(u_bit, 2)
+    LOOP(b_bit, 2)
+    LOOP(w_bit, 2)
+    LOOP(l_bit, 2)
+    LOOP(bit456, 1 << 3)
+        arm_single_data_transfer(i_bit, p_bit, u_bit, b_bit, w_bit, l_bit, bit456);
+    
+    LOOP(p_bit, 2)
+    LOOP(u_bit, 2)
+    LOOP(s_bit, 2)
+    LOOP(w_bit, 2)
+    LOOP(l_bit, 2)
+    LOOP(bit15, 2)
+        arm_block_data_transfer(p_bit, u_bit, s_bit, w_bit, l_bit, bit15);
+    
+    LOOP(a, 2)
+    LOOP(s, 2)
+        arm_multiply(a, s);
+    
+    LOOP(u, 2)
+    LOOP(a, 2)
+    LOOP(s, 2)
+        arm_multiply_long(u, a, s);
+
+    GEN(arm_not_decoded:{);
+    GEN(printf("ARM OPCODE NOT DECODED!\n"););
+    GEN(});
 }
 
 
-void arm_bx(u32 opcode){
+void arm_bx(){
+    printf("arm_bx:{\n");
     GEN(cpu->r[15] = cpu->r[opcode & 0xF];);
     GEN(cpu->thumb_mode = (cpu->r[15] & 0b1););
     GEN(cpu->r[15] &= 0xFFFFFFFE;);
     GEN(arm7tdmi_pipeline_refill(cpu););
+    RET;
 }
 
-void arm_b_bl(u32 opcode){
-    bool link_bit = (opcode >> 24) & 1;
+void arm_b_bl(bool link_bit, bool sign){
+    printf("arm_b_bl_%X_%X:{\n", link_bit, sign);
 
     if(link_bit){
         GEN(cpu->r[14] = cpu->r[15] - 4;);
     }
 
     GEN(u32 offset = opcode & 0xFFFFFF;);
-    if(opcode & 0x800000)
+    if(sign)
         GEN(offset |= 0xFF000000;);
     GEN(offset <<= 2;);
 
     GEN(cpu->r[15] += offset;);
     GEN(arm7tdmi_pipeline_refill(cpu););
+    RET;
 }
 
-void arm_mrs(u32 opcode){
-    bool p_bit = (opcode >> 22) & 1;
+void arm_mrs(bool p_bit){
+    printf("arm_mrs_%X:{\n", p_bit);
 
     if(p_bit)
         GEN(cpu->r[(opcode >> 12) & 0xF] = *getSPSR(cpu););
     else
         GEN(cpu->r[(opcode >> 12) & 0xF] = cpu->CPSR;);
+    RET;
 }
 
 
-void arm_msr(u32 opcode){
+void arm_msr(bool p, bool i_bit){
+    printf("arm_msr_%X_%X:{\n", p, i_bit);
     GEN(u32 operand;);
     GEN(u8 field_mask = (opcode >> 16) & 0xF;);
-    bool p = (opcode >> 22) & 1;
-    bool i_bit = (opcode >> 25) & 1;
     GEN(u32 mask = 0;);
     GEN(if(field_mask & 0b1000));
     GEN(    mask |= 0xFF000000;);
@@ -297,25 +385,27 @@ void arm_msr(u32 opcode){
         GEN(cpu->CPSR = (cpu->CPSR & ~mask) | (operand & mask););
         GEN(loadBankedReg(cpu););
     }
+    RET;
 }
 
-void arm_data_processing(u32 opcode){
-    bool s_bit = (opcode >> 20) & 1;
-    bool i_bit = (opcode >> 25) & 1;
+void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456){
+    printf("arm_data_processing_%X_%X_%X_%X:{\n", s_bit, i_bit, op4, bit456);
 
     GEN(u8 rd_idx = (opcode >> 12) & 0xF;);
     GEN(u8 rn_idx = (opcode >> 16) & 0xF;);
     GEN(u32 rn = cpu->r[rn_idx];);
     GEN(u32* rd = &cpu->r[rd_idx];);
     GEN(u32 op2;);
-    const char* alu_op = dataProcessingFuncs[(opcode >> 21) & 0xF];
+    const char* alu_op = dataProcessingFuncs[op4];
     
-    GEN(bool old_carry = cpu->C_FLAG;);
+    if(!strcmp(alu_op, "alu_ADC") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_RSB"))
+        GEN(bool old_carry = cpu->C_FLAG;);
+    
     if(i_bit){
         ROLLER_IMM(op2, opcode, s_bit);
     } else {
-        SHIFTER_REG(op2, opcode, s_bit);
-        if((opcode >> 4) & 1){
+        SHIFTER_REG(op2, bit456, s_bit);
+        if(bit456 & 1){
             GEN(if(rn_idx == 15));
             GEN(    rn += 4;);
         }
@@ -336,19 +426,18 @@ void arm_data_processing(u32 opcode){
 
     GEN(if(rd_idx == 15 && rn_idx != 15));
         GEN(arm7tdmi_pipeline_refill(cpu););
+    
+    RET;
 }
 
-void arm_halfword_data_transfer(u32 opcode){
-    bool load_bit = (opcode >> 20) & 1;
-    bool up_bit = (opcode >> 23) & 1;
-    bool pre_bit = (opcode >> 24) & 1;
-    bool write_bit = (opcode >> 21) & 1;
-    u8 operation = (opcode >> 5) & 0b11;
+void arm_halfword_data_transfer(bool load_bit, bool up_bit, bool pre_bit, bool write_bit, int op2, bool opcodeBit22){
+    printf("arm_halfword_data_transfer_%X_%X_%X_%X_%X_%X:{\n", load_bit, up_bit, pre_bit, write_bit, op2, opcodeBit22);
+
     GEN(u32 offset;);
     GEN(u32* rd = &cpu->r[(opcode >> 12) & 0xF];);
     GEN(u32* rn = &cpu->r[(opcode >> 16) & 0xF];);
 
-    if((opcode >> 22) & 1)
+    if(opcodeBit22)
         GEN(offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4););
     else {
         GEN(offset = cpu->r[opcode & 0xF];);
@@ -359,13 +448,15 @@ void arm_halfword_data_transfer(u32 opcode){
     if(pre_bit)
         printf("addr += %s;\n", up_bit ? "offset" : "-offset");
 
-    switch (operation){
+    switch (op2){
         case 0x00:
         GEN(alu_SWP(cpu, opcode););
+        RET;
         return;
 
         case 0x01:
         if(load_bit) {
+            GEN(cpu->cycles += I_CYCLES;);
             GEN(*rd = readHalfWordN(cpu, addr););
             GEN(if(addr & 1));
                 GEN(*rd = (*rd >> 8) | (*rd << 24););
@@ -398,20 +489,18 @@ void arm_halfword_data_transfer(u32 opcode){
         printf("addr += %s;\n", up_bit ? "offset" : "-offset");
 
     if(write_bit || !pre_bit){
-        GEN(if(!((opcode >> 20) & 1) || rn != rd));
+        if(!load_bit)
             GEN(*rn = addr;);
+        else {
+            GEN(if(rn != rd));
+                GEN(*rn = addr;);
+        }
     }
-
+    RET;
 }
 
-void arm_single_data_transfer(u32 opcode){
-    bool i_bit = (opcode >> 25) & 1;
-    bool p_bit = (opcode >> 24) & 1;
-    bool u_bit = (opcode >> 23) & 1;
-    bool b_bit = (opcode >> 22) & 1;
-    bool w_bit = (opcode >> 21) & 1;
-    bool l_bit = (opcode >> 20) & 1;
-
+void arm_single_data_transfer(bool i_bit, bool p_bit, bool u_bit, bool b_bit, bool w_bit, bool l_bit, int bit456){
+    printf("arm_single_data_transfer_%X_%X_%X_%X_%X_%X_%X:{\n", i_bit, p_bit, u_bit, b_bit, w_bit, l_bit, bit456);
     GEN(u32 rn_idx = (opcode >> 16) & 0xF;);
     GEN(u32 rd_idx = (opcode >> 12) & 0xF;);
     GEN(u32* rn = &cpu->r[rn_idx];);
@@ -420,7 +509,7 @@ void arm_single_data_transfer(u32 opcode){
     GEN(u32 offset;);
 
     if(i_bit) {
-        SHIFTER_REG(offset, opcode, false);
+        SHIFTER_REG(offset, bit456, false);
     } else
         GEN(offset = opcode & 0xFFF;);
 
@@ -434,7 +523,7 @@ void arm_single_data_transfer(u32 opcode){
         else{
             GEN(*rd = readWordN(cpu, addr););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
-            GEN(if(((opcode >> 12) & 0xF) == 15));
+            GEN(if(rd_idx == 15));
             GEN(    arm7tdmi_pipeline_refill(cpu););
         }
     } else {
@@ -451,24 +540,25 @@ void arm_single_data_transfer(u32 opcode){
         printf("addr += %s;\n", u_bit ? "offset" : "-offset");
 
     if(w_bit || !p_bit){
-        GEN(if(!((opcode >> 20) & 1) || rn != rd));
-        GEN(    *rn = addr;);
+        if(!l_bit)
+            GEN(*rn = addr;);
+        else {
+            GEN(if(rn != rd));
+            GEN(    *rn = addr;);
+        }
     }
+    RET;
 }
 
-void arm_block_data_transfer(u32 opcode){
-    bool p_bit = (opcode >> 24) & 1;
-    bool u_bit = (opcode >> 23) & 1;
-    bool s_bit = (opcode >> 22) & 1;
-    bool w_bit = (opcode >> 21) & 1;
-    bool l_bit = (opcode >> 20) & 1;
+void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, bool l_bit, bool bit15){
+    printf("arm_block_data_transfer_%X_%X_%X_%X_%X_%X:{\n", p_bit, u_bit, s_bit, w_bit, l_bit, bit15);
     GEN(u8 base_idx = (opcode >> 16) & 0xF;);
     GEN(u32* rn = &cpu->r[base_idx];);
     GEN(u16 reg_list = opcode & 0xFFFF;);
     GEN(u32* regs = cpu->r;);
     GEN(u32 addr = *rn;);
 
-    if(!(opcode & (1 << 15)) && s_bit){
+    if(!bit15 && s_bit){
         GEN(saveBankedReg(cpu););
         GEN(regs = cpu->usr_r;);
     }
@@ -478,6 +568,9 @@ void arm_block_data_transfer(u32 opcode){
         GEN(addr -= reg_count*4;);
         p_bit ^= 1;
     }
+
+    if(l_bit)
+        GEN(cpu->cycles += I_CYCLES;);
 
     GEN(if(!reg_count){);
         if(l_bit){
@@ -533,12 +626,12 @@ void arm_block_data_transfer(u32 opcode){
 
         
         GEN(reg_list = opcode & 0xFFFF;);
-        if(!(opcode & (1 << 15)) && s_bit)
+        if(!(bit15) && s_bit)
             GEN(loadBankedReg(cpu););
 
         
         if(w_bit){
-            if(!((opcode >> 20) & 1))
+            if(!l_bit)
                 GEN(*rn = addr;);
             else{
                 GEN(if(!(reg_list & (1 << base_idx))));
@@ -546,11 +639,11 @@ void arm_block_data_transfer(u32 opcode){
             }
         }
     GEN(});
+    RET;
 }
 
-void arm_multiply(u32 opcode){
-    bool a = (opcode >> 21) & 1;
-    bool s = (opcode >> 20) & 1;
+void arm_multiply(bool a, bool s){
+    printf("arm_multiply_%X_%X:{\n", a, s);
 
     GEN(u32 rm = cpu->r[opcode & 0xF];);
     GEN(u32 rs = cpu->r[(opcode >> 8) & 0xF];);
@@ -559,19 +652,28 @@ void arm_multiply(u32 opcode){
     
     GEN(*rd = ((i32)rm) * ((i32)rs););
     
-    if(a)
+    if(a){
         GEN(*rd += rn;);
+    }
+
+    GEN(if(!(rs & 0xFFFFFF00) || !((~rs) & 0xFFFFFF00)));
+        printf("cpu->cycles += %d;\n", a ? 2 : 1);
+    GEN(else if(!(rs & 0xFFFF0000) || !((~rs) & 0xFFFF0000)));
+    	printf("cpu->cycles += %d;\n", a ? 3: 2);
+    GEN(else if(!(rs & 0xFF000000) || !((~rs) & 0xFF000000)));
+        printf("cpu->cycles += %d;\n", a ? 4: 3);
+    GEN(else);
+        printf("cpu->cycles += %d;\n", a ? 5: 4);
 
     if(s){
         GEN(cpu->Z_FLAG = !(*rd););
         GEN(cpu->N_FLAG = *rd >> 31;);
     }
+    RET;
 }
 
-void arm_multiply_long(u32 opcode){
-    bool u = (opcode >> 22) & 1;
-    bool a = (opcode >> 21) & 1;
-    bool s = (opcode >> 20) & 1;
+void arm_multiply_long(bool u, bool a, bool s){
+    printf("arm_multiply_long_%X_%X_%X:{\n", u, a, s);    
 
     GEN(u32 rm = cpu->r[opcode & 0xF];);
     GEN(u32 rs = cpu->r[(opcode >> 8) & 0xF];);
@@ -593,41 +695,26 @@ void arm_multiply_long(u32 opcode){
     if(s){
         GEN(cpu->Z_FLAG = !result;);
         GEN(cpu->N_FLAG = result >> 63;);
-    }
-}
 
-/*
-u32 arm_shifter_reg(arm7tdmi_t* cpu, u32 opcode, bool s){
-    u8 shift_amnt;
-    u32 val = cpu->r[opcode & 0xF];  
-    bool use_reg = (opcode >> 4) & 1;
-
-    if(use_reg){
-        shift_amnt = cpu->r[(opcode >> 8) & 0xF] & 0xFF;
+        GEN(if(!(rs & 0xFFFFFF00) || !((~rs) & 0xFFFFFF00)));
+            printf("cpu->cycles += %d;\n", a ? 3: 2);
+        GEN(else if(!(rs & 0xFFFF0000) || !((~rs) & 0xFFFF0000)));
+            printf("cpu->cycles += %d;\n", a ? 4: 3);
+        GEN(else if(!(rs & 0xFF000000) || !((~rs) & 0xFF000000)));
+            printf("cpu->cycles += %d;\n", a ? 5: 4);
+        GEN(else);
+            printf("cpu->cycles += %d;\n", a ? 6: 5);   
     } else {
-        shift_amnt = (opcode >> 7) & 0x1F;
+        GEN(if(!(rs & 0xFFFFFF00)));
+            printf("cpu->cycles += %d;\n", a ? 3: 2);
+        GEN(else if(!(rs & 0xFFFF0000)));
+            printf("cpu->cycles += %d;\n", a ? 4: 3);
+        GEN(else if(!(rs & 0xFF000000)));
+            printf("cpu->cycles += %d;\n", a ? 5: 4);
+        GEN(else);
+            printf("cpu->cycles += %d;\n", a ? 6: 5);  
     }
 
-    if((opcode & 0xF) == 15 && use_reg){
-        // pipeline edge case
-        val += 4;
-    }
 
-    switch((opcode >> 5) & 0b11){
-        case 0:
-        return alu_LSL(cpu, val, shift_amnt, s);
-
-        case 1:
-        shift_amnt = !shift_amnt && !use_reg ? 32 : shift_amnt;
-        return alu_LSR(cpu, val ,shift_amnt, s);
-
-        case 2:
-        shift_amnt = !shift_amnt && !use_reg ? 32 : shift_amnt;
-        return alu_ASR(cpu, val, shift_amnt, s);
-
-        case 3:
-        return !shift_amnt && !use_reg ? alu_RRX(cpu, val, shift_amnt, s) : alu_ROR(cpu, val, shift_amnt, s);
-        break;
-    }
+    RET;
 }
-*/

@@ -1,5 +1,6 @@
 #include "integer.h"
 
+#define unlikely(x) __builtin_expect(!!(x), 0)
 #define INLINE static inline __attribute__ ((always_inline))
 
 INLINE u8 readIo8(arm7tdmi_t* cpu, u16 addr);
@@ -61,7 +62,7 @@ switch((addr >> 24) & 0xF){ \
     case 0xC: \
     case 0xD: \
     addr -= 0x08000000; \
-    if(addr >= gba->ROM_SIZE) \
+    if(unlikely(addr >= gba->ROM_SIZE)) \
             return 0x00; \
     return *GET_ARRAY_PTR(type, gba->ROM[addr]); \
 \
