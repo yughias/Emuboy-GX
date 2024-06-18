@@ -9,22 +9,32 @@ void gamePakEmptySaveWrite(gamepak_t* gamepak, u32 addr, u8 byte){ return; }
 
 u8 gamePakSramRead(gamepak_t* gamepak, u32 addr){
     if(addr >= 0xE000000 && addr < 0xE010000)
-        return gamepak->SRAM[addr - 0xE000000];
+        return gamepak->savMemory[addr - 0xE000000];
     return 0x00;
 }
 
 void gamePakSramWrite(gamepak_t* gamepak, u32 addr, u8 byte){
     if(addr >= 0xE000000 && addr < 0xE010000)
-        gamepak->SRAM[addr - 0xE000000] = byte;
+        gamepak->savMemory[addr - 0xE000000] = byte;
 }
 
-void loadGamePak(gamepak_t* gamepak, const char* filename){
-    FILE* fptr = fopen(filename, "rb");
+void getSavFilename(char* savFilename, const char* romFilename){
+    strcpy(savFilename, romFilename);
+    char *dot = strrchr(savFilename, '.');
+
+    if(dot != NULL)
+        strcpy(dot, ".sav");
+    else
+        strcat(savFilename, ".sav");
+}
+
+void loadGamePak(gamepak_t* gamepak, const char* romFilename){
+    FILE* fptr = fopen(romFilename, "rb");
     if(!fptr){
         printf("can't open rom\n");
         gamepak->ROM_SIZE = 0;
         gamepak->ROM = NULL;
-        gamepak->SRAM = NULL;
+        gamepak->savMemory = NULL;
         gamepak->type = NO_GAMEPAK;
         return;
     }
@@ -36,10 +46,20 @@ void loadGamePak(gamepak_t* gamepak, const char* filename){
     gamepak->ROM = (u8*)malloc(gamepak->ROM_SIZE);
 
     fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
-
     fclose(fptr);
 
     setupGamePakType(gamepak);
+
+    if(gamepak->type != GAMEPAK_ROM_ONLY){
+        char savFilename[FILENAME_MAX];
+        getSavFilename(savFilename, romFilename);
+
+        fptr = fopen(savFilename, "rb");
+        if(fptr){
+            fread(gamepak->savMemory, 1, SRAM_SIZE, fptr);
+            fclose(fptr);
+        }
+    }
 }
 
 void setupGamePakType(gamepak_t* gamepak){
@@ -47,7 +67,7 @@ void setupGamePakType(gamepak_t* gamepak){
     
     if(romContains(gamepak->ROM, sram_tag, gamepak->ROM_SIZE)){
         gamepak->type = GAMEPAK_SRAM;
-        gamepak->SRAM = (u8*)malloc(SRAM_SIZE);
+        gamepak->savMemory = (u8*)malloc(SRAM_SIZE);
         gamepak->readByte = gamePakSramRead;
         gamepak->writeByte = gamePakSramWrite;
         printf("SRAM DETECTED!\n");

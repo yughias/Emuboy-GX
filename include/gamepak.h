@@ -15,12 +15,14 @@ typedef struct gamepak_t {
     GAMEPAK_TYPE type;
     size_t ROM_SIZE;
     u8* ROM;
-    u8* SRAM;
+    u8* savMemory;
     readSramFunc readByte;
     writeSramFunc writeByte;
 } gamepak_t;
 
-void loadGamePak(gamepak_t* gamepak, const char* filename);
+
+void getSavFilename(char* savFilename, const char* romFilename);
+void loadGamePak(gamepak_t* gamepak, const char* romFilename);
 void setupGamePakType(gamepak_t* gampak);
 bool romContains(u8* rom, const char* string, size_t rom_size);
 

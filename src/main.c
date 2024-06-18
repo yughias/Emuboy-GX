@@ -13,8 +13,16 @@ gba_t gba;
 void freeAll(){
     free(gba.BIOS);
     free(gba.gamepak.ROM);
-    if(gba.gamepak.type != GAMEPAK_ROM_ONLY)
-        free(gba.gamepak.SRAM);
+    if(gba.gamepak.type != GAMEPAK_ROM_ONLY){
+        char savFilename[FILENAME_MAX];
+        getSavFilename(savFilename, getArgv(1));
+        FILE* fptr = fopen(savFilename, "wb");
+        if(fptr){
+            fwrite(gba.gamepak.savMemory, 1, SRAM_SIZE, fptr);
+            fclose(fptr);
+            free(gba.gamepak.savMemory);
+        }
+    }
 }
 
 void setup(){
@@ -28,6 +36,7 @@ void setup(){
     #else
     initGba(&gba, "data/vba_bios.bin", getArgv(1));
     #endif
+
     init_keypad();
 
     noRender();
@@ -41,7 +50,7 @@ void setup(){
     onExit = freeAll;
 }
 
-void loop(){    
+void loop(){
     emulateGba(&gba);
 
     #ifndef EMSCRIPTEN
