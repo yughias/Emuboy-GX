@@ -5,17 +5,20 @@
 
 #define SRAM_SIZE (1 << 16)
 
-typedef enum {NO_GAMEPAK, GAMEPAK_ROM_ONLY, GAMEPAK_SRAM} GAMEPAK_TYPE;
+typedef enum {NO_GAMEPAK, GAMEPAK_ROM_ONLY, GAMEPAK_SRAM, GAMEPAK_FLASH_64K, GAMEPAK_FLASH_128K} GAMEPAK_TYPE;
 
 typedef struct gamepak_t gamepak_t;
 typedef u8 (*readSramFunc)(gamepak_t*, u32);
 typedef void (*writeSramFunc)(gamepak_t*, u32, u8);
+
+
 
 typedef struct gamepak_t {
     GAMEPAK_TYPE type;
     size_t ROM_SIZE;
     u8* ROM;
     u8* savMemory;
+    void* state;
     readSramFunc readByte;
     writeSramFunc writeByte;
 } gamepak_t;

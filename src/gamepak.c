@@ -34,6 +34,7 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
         printf("can't open rom\n");
         gamepak->ROM_SIZE = 0;
         gamepak->ROM = NULL;
+        gamepak->state = NULL;
         gamepak->savMemory = NULL;
         gamepak->type = NO_GAMEPAK;
         return;
@@ -63,8 +64,22 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
 }
 
 void setupGamePakType(gamepak_t* gamepak){
-    static const char sram_tag[32] = "SRAM";
+    const char sram_tag[32] = "SRAM";
+    const char flash64k_tag[32] = "FLASH";
+    const char flash128k_tag[32] = "FLASH1M";
     
+    if(romContains(gamepak->ROM, flash128k_tag, gamepak->ROM_SIZE)){
+        
+        printf("FLASH 128K DETECTED!\n");
+        return;
+    }
+
+    if(romContains(gamepak->ROM, flash64k_tag, gamepak->ROM_SIZE)){
+
+        printf("FLASH 64K DETECTED!\n");
+        return;
+    }
+
     if(romContains(gamepak->ROM, sram_tag, gamepak->ROM_SIZE)){
         gamepak->type = GAMEPAK_SRAM;
         gamepak->savMemory = (u8*)malloc(SRAM_SIZE);
@@ -74,6 +89,7 @@ void setupGamePakType(gamepak_t* gamepak){
         return;
     }
 
+    gamepak->type = GAMEPAK_ROM_ONLY;
     gamepak->readByte = gamePakEmptySaveRead;
     gamepak->writeByte = gamePakEmptySaveWrite;
     printf("ROM ONLY DETECTED!\n");
@@ -85,7 +101,7 @@ bool romContains(u8* rom, const char* string, size_t rom_size){
     while(offset + str_len < rom_size){
         if(!memcmp(rom + offset, string, str_len))
             return true;
-        offset += str_len;
+        offset += 1;
     }
 
     return false;
