@@ -14,14 +14,14 @@ void freeAll(){
     free(gba.BIOS);
     free(gba.gamepak.ROM);
     if(gba.gamepak.type != GAMEPAK_ROM_ONLY){
-        if(gba.gamepak.state != NULL)
-            free(gba.gamepak.state);
+        if(gba.gamepak.internalData != NULL)
+            free(gba.gamepak.internalData);
 
         char savFilename[FILENAME_MAX];
         getSavFilename(savFilename, getArgv(1));
         FILE* fptr = fopen(savFilename, "wb");
         if(fptr){
-            fwrite(gba.gamepak.savMemory, 1, SRAM_SIZE, fptr);
+            fwrite(gba.gamepak.savMemory, 1, gba.gamepak.savMemorySize, fptr);
             fclose(fptr);
             free(gba.gamepak.savMemory);
         }

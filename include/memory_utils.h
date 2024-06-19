@@ -36,14 +36,14 @@ ppu->VRAM[(addr & ~0b1) + 1] = val \
 #define MEMORY_READ_SAVE_DATA_8 \
 case 0xE: \
 case 0xF: \
-return (*gamepak->readByte)(gamepak, addr);
+return (*gamepak->readByte)(gamepak, addr & 0xFFFF);
 
 #define MEMORY_WRITE_SAVE_DATA_32
 #define MEMORY_WRITE_SAVE_DATA_16
 #define MEMORY_WRITE_SAVE_DATA_8 \
 case 0xE: \
 case 0xF: \
-(*gamepak->writeByte)(gamepak, addr, val); \
+(*gamepak->writeByte)(gamepak, addr & 0xFFFF, val); \
 return; \
 
 #define MEMORY_TABLE_READ(type) \
