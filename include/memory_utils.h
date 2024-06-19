@@ -897,9 +897,11 @@ case 0x205:
 return;
 case 0x208:
 ((u8*)&gba->IME)[0] = val;
+checkInterrupts(gba);
 return;
 case 0x209:
 ((u8*)&gba->IME)[1] = val;
+checkInterrupts(gba);
 return;
 case 0x300:
 gba->POSTFLG = val;

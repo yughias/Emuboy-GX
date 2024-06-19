@@ -260,6 +260,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000208;
         GEN_CASE;
         printf("((u8*)&gba->IME)[%d] = val;\n", addr);
+        GEN(checkInterrupts(gba););
         RET;
         return;
     }
