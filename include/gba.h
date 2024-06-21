@@ -50,5 +50,6 @@ typedef struct gba_t {
 void checkInterrupts(gba_t* gba);
 void emulateGba(gba_t* gba);
 void initGba(gba_t* gba, const char* biosFilename, const char* romFilename);
+void freeGba(gba_t* gba);
 
 #endif

@@ -125,7 +125,7 @@ int main(int argv, char** argc){
     printf("%s\n", step_src);
 
     generateLUT_gotoTable();
-    printf("\ngoto *thumb_table[(((opcode >> 20) & 0xFF) << 4) | ((opcode >> 4) & 0xF)];\n");
+    printf("\ngoto *arm_table[(((opcode >> 20) & 0xFF) << 4) | ((opcode >> 4) & 0xF)];\n");
     GEN();
     generateLUT_data();
     
@@ -133,7 +133,7 @@ int main(int argv, char** argc){
 }
 
 void generateLUT_gotoTable(){
-    printf("static void* thumb_table[1 << 12] = {");
+    printf("static void* arm_table[1 << 12] = {");
     for(int high = 0; high < 256; high++){
         for(int low = 0; low < 16; low++){
             int opcode = (high << 20) | (low << 4);

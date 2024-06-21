@@ -29,14 +29,11 @@ u8 gamePakReadFlash(gamepak_t* gamepak, u16 addr){
         return flash->id_byte[addr];
 
     int banked_addr = (addr + flash->bank * (1 << 16));
-    //printf("READ! %X %X %X\n", banked_addr, addr, gamepak->savMemory[banked_addr & gamepak->sizeMask]);
     return gamepak->savMemory[banked_addr & gamepak->sizeMask]; 
 }
 
 void gamePakWriteFlash(gamepak_t* gamepak, u16 addr, u8 byte){
     flash_t* flash = gamepak->internalData;
-
-    //printf("WRITE! %X %X %X %X\n", (addr + flash->bank * (1 << 16)), addr, byte);
 
     if(flash->state == FLASH_WRITE_MODE){
         int banked_addr = (addr + flash->bank * (1 << 16));
@@ -212,4 +209,13 @@ void setupFlashMemory(gamepak_t* gamepak, size_t size){
     gamepak->readByte = gamePakReadFlash;
     gamepak->writeByte = gamePakWriteFlash;
     gamepak->sizeMask = size - 1;
+}
+
+void freeGamePak(gamepak_t* gamepak){
+    if(gamepak->ROM)
+        free(gamepak->ROM);
+    if(gamepak->savMemory)
+        free(gamepak->savMemory);
+    if(gamepak->internalData)
+        free(gamepak->internalData);
 }

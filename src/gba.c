@@ -63,3 +63,10 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
 
     arm7tdmi_pipeline_refill(&gba->cpu);
 }
+
+void freeGba(gba_t* gba){
+    if(gba->BIOS)
+        free(gba->BIOS);
+
+    freeGamePak(&gba->gamepak);
+}

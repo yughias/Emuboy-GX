@@ -32,7 +32,7 @@ void getSavFilename(char* savFilename, const char* romFilename);
 void loadGamePak(gamepak_t* gamepak, const char* romFilename);
 void setupGamePakType(gamepak_t* gamepak);
 void setupFlashMemory(gamepak_t* gamepak, size_t size);
-void freeGamePak(gamepak_t* gamepak);
 bool romContains(u8* rom, const char* string, size_t rom_size);
+void freeGamePak(gamepak_t* gamepak);
 
 #endif
