@@ -2,6 +2,7 @@
 #include "gamepak.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 void checkInterrupts(gba_t* gba){
     if(!(gba->IME & 1) || gba->cpu.irq_disable)
