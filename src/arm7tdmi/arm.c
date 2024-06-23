@@ -135,7 +135,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_1:{
@@ -156,7 +156,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_2:{
@@ -173,7 +173,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_3:{
@@ -194,7 +194,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_4:{
@@ -211,7 +211,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_5:{
@@ -232,7 +232,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_6:{
@@ -248,7 +248,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_0_7:{
@@ -269,7 +269,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_0:{
@@ -285,7 +285,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_1:{
@@ -306,7 +306,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_2:{
@@ -323,7 +323,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_3:{
@@ -344,7 +344,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_4:{
@@ -361,7 +361,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_5:{
@@ -382,7 +382,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_6:{
@@ -398,7 +398,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_1_7:{
@@ -419,7 +419,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_0:{
@@ -435,7 +435,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_1:{
@@ -456,7 +456,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_2:{
@@ -473,7 +473,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_3:{
@@ -494,7 +494,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_4:{
@@ -511,7 +511,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_5:{
@@ -532,7 +532,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_6:{
@@ -548,7 +548,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_2_7:{
@@ -569,7 +569,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_0:{
@@ -587,7 +587,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_1:{
@@ -610,7 +610,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_2:{
@@ -629,7 +629,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_3:{
@@ -652,7 +652,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_4:{
@@ -671,7 +671,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_5:{
@@ -694,7 +694,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_6:{
@@ -712,7 +712,7 @@ op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_a
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_3_7:{
@@ -735,7 +735,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_0:{
@@ -751,7 +751,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_1:{
@@ -772,7 +772,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_2:{
@@ -789,7 +789,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_3:{
@@ -810,7 +810,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_4:{
@@ -827,7 +827,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_5:{
@@ -848,7 +848,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_6:{
@@ -864,7 +864,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_4_7:{
@@ -885,7 +885,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_0:{
@@ -903,7 +903,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_1:{
@@ -926,7 +926,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_2:{
@@ -945,7 +945,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_3:{
@@ -968,7 +968,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_4:{
@@ -987,7 +987,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_5:{
@@ -1010,7 +1010,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_6:{
@@ -1028,7 +1028,7 @@ op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_a
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_5_7:{
@@ -1051,7 +1051,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_0:{
@@ -1069,7 +1069,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_1:{
@@ -1092,7 +1092,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_2:{
@@ -1111,7 +1111,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_3:{
@@ -1134,7 +1134,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_4:{
@@ -1153,7 +1153,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_5:{
@@ -1176,7 +1176,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_6:{
@@ -1194,7 +1194,7 @@ op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_a
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_6_7:{
@@ -1217,7 +1217,7 @@ if(rn_idx == 15)
 rn += 4;
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_0:{
@@ -1233,7 +1233,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_1:{
@@ -1254,7 +1254,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_2:{
@@ -1271,7 +1271,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_3:{
@@ -1292,7 +1292,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_4:{
@@ -1309,7 +1309,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_5:{
@@ -1330,7 +1330,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_6:{
@@ -1346,7 +1346,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_7_7:{
@@ -1367,7 +1367,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_0:{
@@ -1383,7 +1383,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_1:{
@@ -1404,7 +1404,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_2:{
@@ -1421,7 +1421,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_3:{
@@ -1442,7 +1442,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_4:{
@@ -1459,7 +1459,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_5:{
@@ -1480,7 +1480,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_6:{
@@ -1496,7 +1496,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_8_7:{
@@ -1517,7 +1517,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_0:{
@@ -1533,7 +1533,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_1:{
@@ -1554,7 +1554,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_2:{
@@ -1571,7 +1571,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_3:{
@@ -1592,7 +1592,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_4:{
@@ -1609,7 +1609,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_5:{
@@ -1630,7 +1630,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_6:{
@@ -1646,7 +1646,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_9_7:{
@@ -1667,7 +1667,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_0:{
@@ -1683,7 +1683,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_1:{
@@ -1704,7 +1704,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_2:{
@@ -1721,7 +1721,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_3:{
@@ -1742,7 +1742,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_4:{
@@ -1759,7 +1759,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_5:{
@@ -1780,7 +1780,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_6:{
@@ -1796,7 +1796,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_A_7:{
@@ -1817,7 +1817,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_0:{
@@ -1833,7 +1833,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_1:{
@@ -1854,7 +1854,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_2:{
@@ -1871,7 +1871,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_3:{
@@ -1892,7 +1892,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_4:{
@@ -1909,7 +1909,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_5:{
@@ -1930,7 +1930,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_6:{
@@ -1946,7 +1946,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_B_7:{
@@ -1967,7 +1967,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_0:{
@@ -1983,7 +1983,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_1:{
@@ -2004,7 +2004,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_2:{
@@ -2021,7 +2021,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_3:{
@@ -2042,7 +2042,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_4:{
@@ -2059,7 +2059,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_5:{
@@ -2080,7 +2080,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_6:{
@@ -2096,7 +2096,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_C_7:{
@@ -2117,7 +2117,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_0:{
@@ -2133,7 +2133,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_1:{
@@ -2154,7 +2154,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_2:{
@@ -2171,7 +2171,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_3:{
@@ -2192,7 +2192,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_4:{
@@ -2209,7 +2209,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_5:{
@@ -2230,7 +2230,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_6:{
@@ -2246,7 +2246,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_D_7:{
@@ -2267,7 +2267,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_0:{
@@ -2283,7 +2283,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_1:{
@@ -2304,7 +2304,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_2:{
@@ -2321,7 +2321,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_3:{
@@ -2342,7 +2342,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_4:{
@@ -2359,7 +2359,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_5:{
@@ -2380,7 +2380,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_6:{
@@ -2396,7 +2396,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_E_7:{
@@ -2417,7 +2417,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_0:{
@@ -2433,7 +2433,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = alu_LSL(cpu, val, shift_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_1:{
@@ -2454,7 +2454,7 @@ op2 = alu_LSL(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_2:{
@@ -2471,7 +2471,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_3:{
@@ -2492,7 +2492,7 @@ op2 = alu_LSR(cpu, val ,shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_4:{
@@ -2509,7 +2509,7 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 op2 = alu_ASR(cpu, val, shift_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_5:{
@@ -2530,7 +2530,7 @@ op2 = alu_ASR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_6:{
@@ -2546,7 +2546,7 @@ shift_amnt = (opcode >> 7) & 0x1F;
 op2 = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_0_F_7:{
@@ -2567,7 +2567,7 @@ op2 = alu_ROR(cpu, val, shift_amnt, 0);
 if(rn_idx == 15)
 rn += 4;
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_0:{
@@ -2583,7 +2583,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_1:{
@@ -2599,7 +2599,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_2:{
@@ -2615,7 +2615,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_3:{
@@ -2631,7 +2631,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_4:{
@@ -2647,7 +2647,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_5:{
@@ -2663,7 +2663,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_6:{
@@ -2679,7 +2679,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_0_7:{
@@ -2695,7 +2695,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_AND(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_0:{
@@ -2711,7 +2711,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_1:{
@@ -2727,7 +2727,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_2:{
@@ -2743,7 +2743,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_3:{
@@ -2759,7 +2759,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_4:{
@@ -2775,7 +2775,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_5:{
@@ -2791,7 +2791,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_6:{
@@ -2807,7 +2807,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_1_7:{
@@ -2823,7 +2823,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_EOR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_0:{
@@ -2839,7 +2839,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_1:{
@@ -2855,7 +2855,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_2:{
@@ -2871,7 +2871,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_3:{
@@ -2887,7 +2887,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_4:{
@@ -2903,7 +2903,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_5:{
@@ -2919,7 +2919,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_6:{
@@ -2935,7 +2935,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_2_7:{
@@ -2951,7 +2951,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_SUB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_0:{
@@ -2969,7 +2969,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_1:{
@@ -2987,7 +2987,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_2:{
@@ -3005,7 +3005,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_3:{
@@ -3023,7 +3023,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_4:{
@@ -3041,7 +3041,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_5:{
@@ -3059,7 +3059,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_6:{
@@ -3077,7 +3077,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_3_7:{
@@ -3095,7 +3095,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_RSB(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_0:{
@@ -3111,7 +3111,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_1:{
@@ -3127,7 +3127,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_2:{
@@ -3143,7 +3143,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_3:{
@@ -3159,7 +3159,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_4:{
@@ -3175,7 +3175,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_5:{
@@ -3191,7 +3191,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_6:{
@@ -3207,7 +3207,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_4_7:{
@@ -3223,7 +3223,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ADD(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_0:{
@@ -3241,7 +3241,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_1:{
@@ -3259,7 +3259,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_2:{
@@ -3277,7 +3277,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_3:{
@@ -3295,7 +3295,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_4:{
@@ -3313,7 +3313,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_5:{
@@ -3331,7 +3331,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_6:{
@@ -3349,7 +3349,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_5_7:{
@@ -3367,7 +3367,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_ADC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_0:{
@@ -3385,7 +3385,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_1:{
@@ -3403,7 +3403,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_2:{
@@ -3421,7 +3421,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_3:{
@@ -3439,7 +3439,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_4:{
@@ -3457,7 +3457,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_5:{
@@ -3475,7 +3475,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_6:{
@@ -3493,7 +3493,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_6_7:{
@@ -3511,7 +3511,7 @@ op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 cpu->C_FLAG = old_carry;
 alu_SBC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_0:{
@@ -3527,7 +3527,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_1:{
@@ -3543,7 +3543,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_2:{
@@ -3559,7 +3559,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_3:{
@@ -3575,7 +3575,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_4:{
@@ -3591,7 +3591,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_5:{
@@ -3607,7 +3607,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_6:{
@@ -3623,7 +3623,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_7_7:{
@@ -3639,7 +3639,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_RSC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_0:{
@@ -3655,7 +3655,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_1:{
@@ -3671,7 +3671,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_2:{
@@ -3687,7 +3687,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_3:{
@@ -3703,7 +3703,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_4:{
@@ -3719,7 +3719,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_5:{
@@ -3735,7 +3735,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_6:{
@@ -3751,7 +3751,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_8_7:{
@@ -3767,7 +3767,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TST(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_0:{
@@ -3783,7 +3783,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_1:{
@@ -3799,7 +3799,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_2:{
@@ -3815,7 +3815,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_3:{
@@ -3831,7 +3831,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_4:{
@@ -3847,7 +3847,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_5:{
@@ -3863,7 +3863,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_6:{
@@ -3879,7 +3879,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_9_7:{
@@ -3895,7 +3895,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_TEQ(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_0:{
@@ -3911,7 +3911,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_1:{
@@ -3927,7 +3927,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_2:{
@@ -3943,7 +3943,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_3:{
@@ -3959,7 +3959,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_4:{
@@ -3975,7 +3975,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_5:{
@@ -3991,7 +3991,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_6:{
@@ -4007,7 +4007,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_A_7:{
@@ -4023,7 +4023,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMP(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_0:{
@@ -4039,7 +4039,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_1:{
@@ -4055,7 +4055,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_2:{
@@ -4071,7 +4071,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_3:{
@@ -4087,7 +4087,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_4:{
@@ -4103,7 +4103,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_5:{
@@ -4119,7 +4119,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_6:{
@@ -4135,7 +4135,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_B_7:{
@@ -4151,7 +4151,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_CMN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_0:{
@@ -4167,7 +4167,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_1:{
@@ -4183,7 +4183,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_2:{
@@ -4199,7 +4199,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_3:{
@@ -4215,7 +4215,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_4:{
@@ -4231,7 +4231,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_5:{
@@ -4247,7 +4247,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_6:{
@@ -4263,7 +4263,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_C_7:{
@@ -4279,7 +4279,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_ORR(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_0:{
@@ -4295,7 +4295,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_1:{
@@ -4311,7 +4311,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_2:{
@@ -4327,7 +4327,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_3:{
@@ -4343,7 +4343,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_4:{
@@ -4359,7 +4359,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_5:{
@@ -4375,7 +4375,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_6:{
@@ -4391,7 +4391,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_D_7:{
@@ -4407,7 +4407,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MOV(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_0:{
@@ -4423,7 +4423,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_1:{
@@ -4439,7 +4439,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_2:{
@@ -4455,7 +4455,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_3:{
@@ -4471,7 +4471,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_4:{
@@ -4487,7 +4487,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_5:{
@@ -4503,7 +4503,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_6:{
@@ -4519,7 +4519,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_E_7:{
@@ -4535,7 +4535,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_BIC(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_0:{
@@ -4551,7 +4551,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_1:{
@@ -4567,7 +4567,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_2:{
@@ -4583,7 +4583,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_3:{
@@ -4599,7 +4599,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_4:{
@@ -4615,7 +4615,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_5:{
@@ -4631,7 +4631,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_6:{
@@ -4647,7 +4647,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_0_1_F_7:{
@@ -4663,7 +4663,7 @@ rot_amnt <<= 1;
 op2 = alu_ROR(cpu, val, rot_amnt, 0);
 }
 alu_MVN(cpu, rd, rn, op2, 0);
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_0:{
@@ -4684,7 +4684,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_1:{
@@ -4710,7 +4710,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_2:{
@@ -4732,7 +4732,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_3:{
@@ -4758,7 +4758,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_4:{
@@ -4780,7 +4780,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_5:{
@@ -4806,7 +4806,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_6:{
@@ -4827,7 +4827,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_0_7:{
@@ -4853,7 +4853,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_0:{
@@ -4874,7 +4874,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_1:{
@@ -4900,7 +4900,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_2:{
@@ -4922,7 +4922,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_3:{
@@ -4948,7 +4948,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_4:{
@@ -4970,7 +4970,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_5:{
@@ -4996,7 +4996,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_6:{
@@ -5017,7 +5017,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_1_7:{
@@ -5043,7 +5043,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_0:{
@@ -5064,7 +5064,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_1:{
@@ -5090,7 +5090,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_2:{
@@ -5112,7 +5112,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_3:{
@@ -5138,7 +5138,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_4:{
@@ -5160,7 +5160,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_5:{
@@ -5186,7 +5186,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_6:{
@@ -5207,7 +5207,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_2_7:{
@@ -5233,7 +5233,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_0:{
@@ -5256,7 +5256,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_1:{
@@ -5284,7 +5284,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_2:{
@@ -5308,7 +5308,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_3:{
@@ -5336,7 +5336,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_4:{
@@ -5360,7 +5360,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_5:{
@@ -5388,7 +5388,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_6:{
@@ -5411,7 +5411,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_3_7:{
@@ -5439,7 +5439,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_0:{
@@ -5460,7 +5460,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_1:{
@@ -5486,7 +5486,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_2:{
@@ -5508,7 +5508,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_3:{
@@ -5534,7 +5534,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_4:{
@@ -5556,7 +5556,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_5:{
@@ -5582,7 +5582,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_6:{
@@ -5603,7 +5603,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_4_7:{
@@ -5629,7 +5629,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_0:{
@@ -5652,7 +5652,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_1:{
@@ -5680,7 +5680,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_2:{
@@ -5704,7 +5704,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_3:{
@@ -5732,7 +5732,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_4:{
@@ -5756,7 +5756,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_5:{
@@ -5784,7 +5784,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_6:{
@@ -5807,7 +5807,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_5_7:{
@@ -5835,7 +5835,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_0:{
@@ -5858,7 +5858,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_1:{
@@ -5886,7 +5886,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_2:{
@@ -5910,7 +5910,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_3:{
@@ -5938,7 +5938,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_4:{
@@ -5962,7 +5962,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_5:{
@@ -5990,7 +5990,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_6:{
@@ -6013,7 +6013,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_6_7:{
@@ -6041,7 +6041,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_0:{
@@ -6062,7 +6062,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_1:{
@@ -6088,7 +6088,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_2:{
@@ -6110,7 +6110,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_3:{
@@ -6136,7 +6136,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_4:{
@@ -6158,7 +6158,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_5:{
@@ -6184,7 +6184,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_6:{
@@ -6205,7 +6205,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_7_7:{
@@ -6231,7 +6231,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_0:{
@@ -6252,7 +6252,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_1:{
@@ -6278,7 +6278,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_2:{
@@ -6300,7 +6300,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_3:{
@@ -6326,7 +6326,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_4:{
@@ -6348,7 +6348,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_5:{
@@ -6374,7 +6374,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_6:{
@@ -6395,7 +6395,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_8_7:{
@@ -6421,7 +6421,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_0:{
@@ -6442,7 +6442,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_1:{
@@ -6468,7 +6468,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_2:{
@@ -6490,7 +6490,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_3:{
@@ -6516,7 +6516,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_4:{
@@ -6538,7 +6538,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_5:{
@@ -6564,7 +6564,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_6:{
@@ -6585,7 +6585,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_9_7:{
@@ -6611,7 +6611,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_0:{
@@ -6632,7 +6632,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_1:{
@@ -6658,7 +6658,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_2:{
@@ -6680,7 +6680,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_3:{
@@ -6706,7 +6706,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_4:{
@@ -6728,7 +6728,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_5:{
@@ -6754,7 +6754,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_6:{
@@ -6775,7 +6775,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_A_7:{
@@ -6801,7 +6801,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_0:{
@@ -6822,7 +6822,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_1:{
@@ -6848,7 +6848,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_2:{
@@ -6870,7 +6870,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_3:{
@@ -6896,7 +6896,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_4:{
@@ -6918,7 +6918,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_5:{
@@ -6944,7 +6944,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_6:{
@@ -6965,7 +6965,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_B_7:{
@@ -6991,7 +6991,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_0:{
@@ -7012,7 +7012,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_1:{
@@ -7038,7 +7038,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_2:{
@@ -7060,7 +7060,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_3:{
@@ -7086,7 +7086,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_4:{
@@ -7108,7 +7108,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_5:{
@@ -7134,7 +7134,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_6:{
@@ -7155,7 +7155,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_C_7:{
@@ -7181,7 +7181,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_0:{
@@ -7202,7 +7202,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_1:{
@@ -7228,7 +7228,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_2:{
@@ -7250,7 +7250,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_3:{
@@ -7276,7 +7276,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_4:{
@@ -7298,7 +7298,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_5:{
@@ -7324,7 +7324,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_6:{
@@ -7345,7 +7345,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_D_7:{
@@ -7371,7 +7371,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_0:{
@@ -7392,7 +7392,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_1:{
@@ -7418,7 +7418,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_2:{
@@ -7440,7 +7440,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_3:{
@@ -7466,7 +7466,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_4:{
@@ -7488,7 +7488,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_5:{
@@ -7514,7 +7514,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_6:{
@@ -7535,7 +7535,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_E_7:{
@@ -7561,7 +7561,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_0:{
@@ -7582,7 +7582,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_1:{
@@ -7608,7 +7608,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_2:{
@@ -7630,7 +7630,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_3:{
@@ -7656,7 +7656,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_4:{
@@ -7678,7 +7678,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_5:{
@@ -7704,7 +7704,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_6:{
@@ -7725,7 +7725,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_0_F_7:{
@@ -7751,7 +7751,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_0:{
@@ -7772,7 +7772,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_1:{
@@ -7793,7 +7793,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_2:{
@@ -7814,7 +7814,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_3:{
@@ -7835,7 +7835,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_4:{
@@ -7856,7 +7856,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_5:{
@@ -7877,7 +7877,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_6:{
@@ -7898,7 +7898,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_0_7:{
@@ -7919,7 +7919,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_0:{
@@ -7940,7 +7940,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_1:{
@@ -7961,7 +7961,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_2:{
@@ -7982,7 +7982,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_3:{
@@ -8003,7 +8003,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_4:{
@@ -8024,7 +8024,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_5:{
@@ -8045,7 +8045,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_6:{
@@ -8066,7 +8066,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_1_7:{
@@ -8087,7 +8087,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_0:{
@@ -8108,7 +8108,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_1:{
@@ -8129,7 +8129,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_2:{
@@ -8150,7 +8150,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_3:{
@@ -8171,7 +8171,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_4:{
@@ -8192,7 +8192,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_5:{
@@ -8213,7 +8213,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_6:{
@@ -8234,7 +8234,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_2_7:{
@@ -8255,7 +8255,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_0:{
@@ -8278,7 +8278,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_1:{
@@ -8301,7 +8301,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_2:{
@@ -8324,7 +8324,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_3:{
@@ -8347,7 +8347,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_4:{
@@ -8370,7 +8370,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_5:{
@@ -8393,7 +8393,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_6:{
@@ -8416,7 +8416,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_3_7:{
@@ -8439,7 +8439,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_0:{
@@ -8460,7 +8460,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_1:{
@@ -8481,7 +8481,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_2:{
@@ -8502,7 +8502,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_3:{
@@ -8523,7 +8523,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_4:{
@@ -8544,7 +8544,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_5:{
@@ -8565,7 +8565,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_6:{
@@ -8586,7 +8586,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_4_7:{
@@ -8607,7 +8607,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_0:{
@@ -8630,7 +8630,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_1:{
@@ -8653,7 +8653,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_2:{
@@ -8676,7 +8676,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_3:{
@@ -8699,7 +8699,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_4:{
@@ -8722,7 +8722,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_5:{
@@ -8745,7 +8745,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_6:{
@@ -8768,7 +8768,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_5_7:{
@@ -8791,7 +8791,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_0:{
@@ -8814,7 +8814,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_1:{
@@ -8837,7 +8837,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_2:{
@@ -8860,7 +8860,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_3:{
@@ -8883,7 +8883,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_4:{
@@ -8906,7 +8906,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_5:{
@@ -8929,7 +8929,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_6:{
@@ -8952,7 +8952,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_6_7:{
@@ -8975,7 +8975,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_0:{
@@ -8996,7 +8996,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_1:{
@@ -9017,7 +9017,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_2:{
@@ -9038,7 +9038,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_3:{
@@ -9059,7 +9059,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_4:{
@@ -9080,7 +9080,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_5:{
@@ -9101,7 +9101,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_6:{
@@ -9122,7 +9122,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_7_7:{
@@ -9143,7 +9143,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_0:{
@@ -9164,7 +9164,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_1:{
@@ -9185,7 +9185,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_2:{
@@ -9206,7 +9206,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_3:{
@@ -9227,7 +9227,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_4:{
@@ -9248,7 +9248,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_5:{
@@ -9269,7 +9269,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_6:{
@@ -9290,7 +9290,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_8_7:{
@@ -9311,7 +9311,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_0:{
@@ -9332,7 +9332,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_1:{
@@ -9353,7 +9353,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_2:{
@@ -9374,7 +9374,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_3:{
@@ -9395,7 +9395,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_4:{
@@ -9416,7 +9416,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_5:{
@@ -9437,7 +9437,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_6:{
@@ -9458,7 +9458,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_9_7:{
@@ -9479,7 +9479,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_0:{
@@ -9500,7 +9500,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_1:{
@@ -9521,7 +9521,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_2:{
@@ -9542,7 +9542,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_3:{
@@ -9563,7 +9563,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_4:{
@@ -9584,7 +9584,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_5:{
@@ -9605,7 +9605,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_6:{
@@ -9626,7 +9626,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_A_7:{
@@ -9647,7 +9647,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_0:{
@@ -9668,7 +9668,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_1:{
@@ -9689,7 +9689,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_2:{
@@ -9710,7 +9710,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_3:{
@@ -9731,7 +9731,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_4:{
@@ -9752,7 +9752,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_5:{
@@ -9773,7 +9773,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_6:{
@@ -9794,7 +9794,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_B_7:{
@@ -9815,7 +9815,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_0:{
@@ -9836,7 +9836,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_1:{
@@ -9857,7 +9857,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_2:{
@@ -9878,7 +9878,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_3:{
@@ -9899,7 +9899,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_4:{
@@ -9920,7 +9920,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_5:{
@@ -9941,7 +9941,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_6:{
@@ -9962,7 +9962,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_C_7:{
@@ -9983,7 +9983,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_0:{
@@ -10004,7 +10004,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_1:{
@@ -10025,7 +10025,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_2:{
@@ -10046,7 +10046,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_3:{
@@ -10067,7 +10067,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_4:{
@@ -10088,7 +10088,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_5:{
@@ -10109,7 +10109,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_6:{
@@ -10130,7 +10130,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_D_7:{
@@ -10151,7 +10151,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_0:{
@@ -10172,7 +10172,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_1:{
@@ -10193,7 +10193,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_2:{
@@ -10214,7 +10214,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_3:{
@@ -10235,7 +10235,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_4:{
@@ -10256,7 +10256,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_5:{
@@ -10277,7 +10277,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_6:{
@@ -10298,7 +10298,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_E_7:{
@@ -10319,7 +10319,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_0:{
@@ -10340,7 +10340,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_1:{
@@ -10361,7 +10361,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_2:{
@@ -10382,7 +10382,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_3:{
@@ -10403,7 +10403,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_4:{
@@ -10424,7 +10424,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_5:{
@@ -10445,7 +10445,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_6:{
@@ -10466,7 +10466,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_data_processing_1_1_F_7:{
@@ -10487,7 +10487,7 @@ saveBankedReg(cpu);
 cpu->CPSR = *getSPSR(cpu);
 loadBankedReg(cpu);
 }
-if(rd_idx == 15 && rn_idx != 15)
+if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
 arm_halfword_data_transfer_0_0_0_0_0_0:{

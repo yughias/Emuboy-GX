@@ -424,7 +424,7 @@ void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456){
         GEN(});
     }
 
-    GEN(if(rd_idx == 15 && rn_idx != 15));
+    GEN(if(rd_idx == 15));
         GEN(arm7tdmi_pipeline_refill(cpu););
     
     RET;
