@@ -15,8 +15,7 @@ gamepak_t* gamepak = &gba->gamepak \
 ((u ## type*)&name)
 
 #define WRITE_VRAM_8 \
-ppu->VRAM[addr] = val; \
-ppu->VRAM[(addr & ~0b1) + 1] = val \
+*GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 8) \
 
 #define WRITE_VRAM_16 WRITE_VRAM_DEFAULT(16)
 #define WRITE_VRAM_32 WRITE_VRAM_DEFAULT(32)

@@ -80,7 +80,6 @@ ScaleMode scale_mode = ANISOTROPIC;
 
 typedef struct shader_list_t {
     GLuint id;
-    char* filename;
     struct shader_list_t* next;
 } shader_list_t;
 shader_list_t* shader_list = NULL;
@@ -216,35 +215,6 @@ int main(int argc, char* argv[]){
     setup();
 
     updateWindowIcon();
-
-    #ifdef MAINLOOP_GL
-	setScaleMode(scale_mode);
-    SDL_SetEventFilter(filterResize, NULL);
-
-    glCreateShader = (PFNGLCREATESHADERPROC)SDL_GL_GetProcAddress("glCreateShader");
-	glShaderSource = (PFNGLSHADERSOURCEPROC)SDL_GL_GetProcAddress("glShaderSource");
-	glCompileShader = (PFNGLCOMPILESHADERPROC)SDL_GL_GetProcAddress("glCompileShader");
-	glGetShaderiv = (PFNGLGETSHADERIVPROC)SDL_GL_GetProcAddress("glGetShaderiv");
-	glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)SDL_GL_GetProcAddress("glGetShaderInfoLog");
-	glDeleteShader = (PFNGLDELETESHADERPROC)SDL_GL_GetProcAddress("glDeleteShader");
-	glAttachShader = (PFNGLATTACHSHADERPROC)SDL_GL_GetProcAddress("glAttachShader");
-	glCreateProgram = (PFNGLCREATEPROGRAMPROC)SDL_GL_GetProcAddress("glCreateProgram");
-	glLinkProgram = (PFNGLLINKPROGRAMPROC)SDL_GL_GetProcAddress("glLinkProgram");
-	glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)SDL_GL_GetProcAddress("glValidateProgram");
-	glGetProgramiv = (PFNGLGETPROGRAMIVPROC)SDL_GL_GetProcAddress("glGetProgramiv");
-	glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)SDL_GL_GetProcAddress("glGetProgramInfoLog");
-	glUseProgram = (PFNGLUSEPROGRAMPROC)SDL_GL_GetProcAddress("glUseProgram");
-	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)SDL_GL_GetProcAddress("glGetUniformLocation");
-	glUniform1f = (PFNGLUNIFORM1FPROC)SDL_GL_GetProcAddress("glUniform1f");
-    glUniform2f = (PFNGLUNIFORM2FPROC)SDL_GL_GetProcAddress("glUniform2f");
-
-    shader_list_t* p = shader_list;
-    while(p){
-        p->id = compileProgram(p->filename);
-        free(p->filename);
-        p = p->next;
-    } 
-    #endif
 
     #ifdef MAINLOOP_WINDOWS
     hwnd = getWindowHandler();
@@ -428,6 +398,27 @@ void size(int w, int h){
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
         drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
         SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
+
+        setScaleMode(scale_mode);
+        SDL_SetEventFilter(filterResize, NULL);
+
+        glCreateShader = (PFNGLCREATESHADERPROC)SDL_GL_GetProcAddress("glCreateShader");
+        glShaderSource = (PFNGLSHADERSOURCEPROC)SDL_GL_GetProcAddress("glShaderSource");
+        glCompileShader = (PFNGLCOMPILESHADERPROC)SDL_GL_GetProcAddress("glCompileShader");
+        glGetShaderiv = (PFNGLGETSHADERIVPROC)SDL_GL_GetProcAddress("glGetShaderiv");
+        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)SDL_GL_GetProcAddress("glGetShaderInfoLog");
+        glDeleteShader = (PFNGLDELETESHADERPROC)SDL_GL_GetProcAddress("glDeleteShader");
+        glAttachShader = (PFNGLATTACHSHADERPROC)SDL_GL_GetProcAddress("glAttachShader");
+        glCreateProgram = (PFNGLCREATEPROGRAMPROC)SDL_GL_GetProcAddress("glCreateProgram");
+        glLinkProgram = (PFNGLLINKPROGRAMPROC)SDL_GL_GetProcAddress("glLinkProgram");
+        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)SDL_GL_GetProcAddress("glValidateProgram");
+        glGetProgramiv = (PFNGLGETPROGRAMIVPROC)SDL_GL_GetProcAddress("glGetProgramiv");
+        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)SDL_GL_GetProcAddress("glGetProgramInfoLog");
+        glUseProgram = (PFNGLUSEPROGRAMPROC)SDL_GL_GetProcAddress("glUseProgram");
+        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)SDL_GL_GetProcAddress("glGetUniformLocation");
+        glUniform1f = (PFNGLUNIFORM1FPROC)SDL_GL_GetProcAddress("glUniform1f");
+        glUniform2f = (PFNGLUNIFORM2FPROC)SDL_GL_GetProcAddress("glUniform2f");
+
         pixels = (int*)surface->pixels;
         #else
         surface = SDL_GetWindowSurface(window);
@@ -604,6 +595,8 @@ GLuint compileProgram(const char* fragFile) {
 		glLinkProgram(programId);
 		glValidateProgram(programId);
 
+        glDeleteShader(fragShaderId);
+
 		GLint logLen;
 		glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &logLen);
 		if(logLen > 0) {
@@ -614,23 +607,19 @@ GLuint compileProgram(const char* fragFile) {
 			free(log);
 		}
 	}
-	if(fragShaderId) {
-		glDeleteShader(fragShaderId);
-	}
 	return programId;
 }
 
 Shader loadShader(const char* filename){
     shader_list_t* block = (shader_list_t*)malloc(sizeof(shader_list_t));
     block->next = NULL;
-    block->filename = (char*)malloc(129);
-    strncpy(block->filename, filename, 128);
     if(!shader_list){
         shader_list = block;
     } else {
         block->next = shader_list;
         shader_list = block;
     }
+    block->id = compileProgram(filename);
     return &block->id;
 }
 

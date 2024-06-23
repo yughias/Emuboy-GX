@@ -70,6 +70,13 @@ void updatePPU(gba_t* gba, u32 cycles){
   
 void renderLine(ppu_t* ppu){
     int y = ppu->VCOUNT;
+
+    if(ppu->DISPCNT & (1 << 7)){
+        for(int x = 0; x < SCREEN_WIDTH; x++)
+            pixels[x + y * SCREEN_WIDTH] = 0xFFFFFFFF;
+        return;
+    }
+
     bgType bg_type[4];
     switch(ppu->DISPCNT & 0b111){
         case 0:
