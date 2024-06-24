@@ -398,7 +398,7 @@ void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456){
     GEN(u32 op2;);
     const char* alu_op = dataProcessingFuncs[op4];
     
-    if(!strcmp(alu_op, "alu_ADC") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_RSB"))
+    if(!strcmp(alu_op, "alu_ADD") || !strcmp(alu_op, "alu_SUB") || !strcmp(alu_op, "alu_ADC") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_RSB") || !strcmp(alu_op, "alu_RSC"))
         GEN(bool old_carry = cpu->C_FLAG;);
     
     if(i_bit){
@@ -411,7 +411,7 @@ void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456){
         }
     }
 
-    if(!strcmp(alu_op, "alu_ADC") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_RSB"))
+    if(!strcmp(alu_op, "alu_ADD") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_ADC") || !strcmp(alu_op, "alu_SBC") || !strcmp(alu_op, "alu_RSB") || !strcmp(alu_op, "alu_RSC"))
         GEN(cpu->C_FLAG = old_carry;);
 
     printf("%s(cpu, rd, rn, op2, %d);\n", alu_op, s_bit);
@@ -423,9 +423,11 @@ void arm_data_processing(bool s_bit, bool i_bit, int op4, int bit456){
         GEN(    loadBankedReg(cpu););
         GEN(});
     }
-
-    GEN(if(rd_idx == 15));
-        GEN(arm7tdmi_pipeline_refill(cpu););
+    
+    if(strcmp(alu_op, "alu_CMP") && strcmp(alu_op, "alu_CMN") && strcmp(alu_op, "alu_TST") && strcmp(alu_op, "alu_TEQ")){
+        GEN(if(rd_idx == 15));
+            GEN(arm7tdmi_pipeline_refill(cpu););
+    }
     
     RET;
 }
