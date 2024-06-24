@@ -45,6 +45,11 @@ case 0xF: \
 (*gamepak->writeByte)(gamepak, addr & 0xFFFF, val); \
 return; \
 
+#define WRAM_BOARD_TIMING_32 cpu->cycles += 5;
+#define WRAM_BOARD_TIMING_16 WRAM_BOARD_TIMING_DEFAULT
+#define WRAM_BOARD_TIMING_8 WRAM_BOARD_TIMING_DEFAULT
+#define WRAM_BOARD_TIMING_DEFAULT cpu->cycles += 2;
+
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
 switch((addr >> 24) & 0xF){ \
@@ -53,6 +58,7 @@ switch((addr >> 24) & 0xF){ \
     return *GET_ARRAY_PTR(type, gba->BIOS[addr & (BIOS_SIZE - 1)]); \
 \
     case 0x2: \
+    WRAM_BOARD_TIMING_ ## type \
     return *GET_ARRAY_PTR(type, gba->WRAM_BOARD[addr & 0x3FFFF]); \
 \
     case 0x3: \
