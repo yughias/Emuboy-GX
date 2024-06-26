@@ -17,20 +17,25 @@ void checkInterrupts(gba_t* gba){
 void emulateGba(gba_t* gba){
     gba->KEYINPUT = update_keypad();
 
-    u32 cycles = gba->cpu.cycles;
+    u32 prev_cycles = gba->cpu.cycles;
     while(gba->cpu.cycles < CYCLES_PER_FRAME){
-        if(gba->HALTCNT){
-            gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
-            gba->cpu.cycles += 1;
-        } else
-            arm7tdmi_step(&gba->cpu);
+        u32 elapsed = 0;
 
-        updatePPU(gba, gba->cpu.cycles);        
-        updateTimers(gba, gba->cpu.cycles - cycles);
-        cycles = gba->cpu.cycles;
+        while(elapsed < gba->scheduler_head->remaining){
+            if(gba->HALTCNT){
+                gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
+                gba->cpu.cycles += gba->scheduler_head->remaining;
+            } else
+                arm7tdmi_step(&gba->cpu);
+            elapsed = gba->cpu.cycles - prev_cycles;
+        }
+ 
+        stepScheduler(gba, &gba->scheduler_head, elapsed);
+        prev_cycles = gba->cpu.cycles;
     }
 
     gba->cpu.cycles -= CYCLES_PER_FRAME;
+    gba->frame_clock += CYCLES_PER_FRAME;
 }
 
 void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
@@ -63,6 +68,11 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     loadGamePak(&gba->gamepak, romFilename);
 
     arm7tdmi_pipeline_refill(&gba->cpu);
+
+    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
+    block->remaining = DRAW_CYCLES;
+    block->event = event_startHBlank;
+    addEventToScheduler(&gba->scheduler_head, block);
 }
 
 void freeGba(gba_t* gba){

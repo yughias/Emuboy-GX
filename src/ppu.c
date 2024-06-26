@@ -4,6 +4,7 @@
 #include "gba.h"
 #include "memory.h"
 #include "dma.h"
+#include "scheduler.h"
 
 #include "ppu_utils.h"
 
@@ -17,13 +18,75 @@ void renderLineBitmap3(ppu_t* ppu, u8* blend_info);
 void renderLineBitmap4(ppu_t* ppu, u8* blend_info);
 void renderLineBitmap5(ppu_t* ppu, u8* blend_info);
 
-void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask);
-void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask);
-void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, bool* obj_win_mask);
-void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, bool* obj_win_mask);
+void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask);
+void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask);
+void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, winType* win_mask);
+void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, winType* win_mask);
 
-bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, bool obj_win_mask, winType* winType_out);
+void getWinMaskArray(ppu_t* ppu, winType* win_mask);
+winType getWindowType(ppu_t*, u8 x, u8 y, bool* win_active);
+bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, winType win_type);
 u16 applyColorEffect(ppu_t* ppu, u16 inCol, u8 topType, u8 botType, u16 backCol, winType winType);
+
+void checkVCount(gba_t* gba){
+    ppu_t* ppu = &gba->ppu;
+    bool new_isVCount = (ppu->VCOUNT == ((ppu->DISPSTAT >> 8) % 228));
+
+    if((ppu->DISPSTAT & (1 << 5)) && new_isVCount && !ppu->isVCount){
+        gba->IF |= 0b100;
+        checkInterrupts(gba);
+    }
+
+    ppu->isVCount = new_isVCount;
+}
+
+void event_startScanline(gba_t* gba, u32 vcount, u32 dummy){
+    ppu_t* ppu = &gba->ppu;
+    ppu->isHBlank = false;
+    ppu->isVBlank = vcount >= 160;
+    ppu->VCOUNT = vcount;
+
+    checkVCount(gba);
+
+    if(vcount == SCREEN_HEIGHT){
+        if(ppu->DISPSTAT & (1 << 3)){
+            gba->IF |= 0b1;
+            checkInterrupts(gba);
+        }
+        renderPixels();
+        updateVblankDma(gba);
+        for(int i = 0; i < 2; i++){
+            ppu->INTERNAL_BGX[i] = (i32)ppu->BGX[i];
+            ppu->INTERNAL_BGY[i] = (i32)ppu->BGY[i];
+        }
+    }
+
+    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
+    block->remaining = DRAW_CYCLES;
+    block->event = event_startHBlank;
+    addEventToScheduler(&gba->scheduler_head, block);
+}
+
+void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2){
+    ppu_t* ppu = &gba->ppu;
+    ppu->isHBlank = true;
+
+    if(ppu->DISPSTAT & (1 << 4)){
+            gba->IF |= 0b10;
+            checkInterrupts(gba);
+    }
+
+    if(ppu->VCOUNT < SCREEN_HEIGHT){
+        renderLine(ppu);
+        updateHblankDma(gba);
+    }
+
+    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
+    block->arg1 = (ppu->VCOUNT + 1) % N_SCANLINES;
+    block->remaining = HBLANK_CYCLES;
+    block->event = event_startScanline;
+    addEventToScheduler(&gba->scheduler_head, block);
+}
 
 void updatePPU(gba_t* gba, u32 cycles){
     cycles %= CYCLES_PER_FRAME;
@@ -32,7 +95,7 @@ void updatePPU(gba_t* gba, u32 cycles){
     bool new_isHBlank = inter_cycles >= DRAW_CYCLES;
     bool new_isVBlank = cycles >= VBLANK;
     bool new_isVCount = (ppu->VCOUNT == ((ppu->DISPSTAT >> 8) % 228));
-    ppu->VCOUNT = cycles / SCANLINE_CYCLES;
+    ppu->VCOUNT = (cycles / SCANLINE_CYCLES) % 228;
 
     if(!ppu->isHBlank && new_isHBlank){
         if(ppu->DISPSTAT & (1 << 4)){
@@ -133,7 +196,7 @@ void renderLine(ppu_t* ppu){
     }
 }
 
-void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask){
+void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask){
     int y = ppu->VCOUNT;
     u8* VRAM = ppu->VRAM;
     u16 bgcnt = ppu->BGCNT[bg_idx];
@@ -144,10 +207,9 @@ void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
     u8 bg_size = (bgcnt >> 0xE);
     int bg_width = 256 * (1 + ((bg_size & 1)));
     int bg_height = 256 * (1 + ((bg_size >> 1)));
-    winType win_type;
 
     for(int x = 0; x < SCREEN_WIDTH; x++){
-        if(!windowShouldDraw(ppu, x, y, bg_idx, obj_win_mask[x], &win_type))
+        if(!windowShouldDraw(ppu, x, y, bg_idx, win_mask[x]))
             continue;
         int offX = (x + (ppu->BGHOFS[bg_idx] & 0x1FF)) % bg_width;
         int offY = (y + (ppu->BGVOFS[bg_idx] & 0x1FF)) % bg_height;
@@ -171,14 +233,14 @@ void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
         bool transparent = false;
         int bg_col = getTilePixel(tilePtr, h_flip ? 7 - px : px, v_flip ? 7 - py : py, ppu->PALETTE_RAM, paletteIdx*32, color_bpp, &transparent);
         if(!transparent){
-            int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_type);
+            int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_mask[x]);
             pixels[x + y * SCREEN_WIDTH] = out_col;
             blend_info[x] = bg_idx;
         }
     }
 }
 
-void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask){
+void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask){
     int y = ppu->VCOUNT;
     int aff_idx = bg_idx-2;
     u8* VRAM = ppu->VRAM;
@@ -195,7 +257,6 @@ void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
     i16 dy = bgp[aff_idx*4 + 2];
     i16 dmx = bgp[aff_idx*4 + 1];
     i16 dmy = bgp[aff_idx*4 + 3];
-    winType win_type;
 
     i32 startX = geti28(ppu->INTERNAL_BGX[aff_idx]);
     i32 startY = geti28(ppu->INTERNAL_BGY[aff_idx]);
@@ -205,7 +266,7 @@ void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
         i32 offY = startY;
         startX = geti28(startX + dx);
         startY = geti28(startY + dy);
-        if(!windowShouldDraw(ppu, x, y, bg_idx, obj_win_mask[x], &win_type))
+        if(!windowShouldDraw(ppu, x, y, bg_idx, win_mask[x]))
             continue;
         offX >>= 8;
         offY >>= 8;
@@ -226,7 +287,7 @@ void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
         bool transparent = false;
         int bg_col = getTilePixel(tilePtr, px, py, ppu->PALETTE_RAM, 0, true, &transparent);
         if(!transparent){
-            int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_type);
+            int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_mask[x]);
             pixels[x + y * SCREEN_WIDTH] = out_col;
             blend_info[x] = bg_idx;
         }
@@ -239,18 +300,14 @@ void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, bool* obj_win_mask)
 void renderLineMode(ppu_t* ppu, bgType* bg_type){
     int y = ppu->VCOUNT;
     int backdrop_col = getRgb555FromMemory(ppu->PALETTE_RAM, 0);
-    for(int x = 0; x < SCREEN_WIDTH; x++)
-        pixels[x + y * SCREEN_WIDTH] = backdrop_col;
 
     u8 blend_info[SCREEN_WIDTH] = { [0 ... 239] = 5 };
-    bool obj_win_mask[SCREEN_WIDTH] = {[0 ... 239] = false};
+    winType win_mask[SCREEN_WIDTH] = {[0 ... 239] = WIN_DISABLED};
 
-    if(ppu->DISPCNT & 0x8000){
-        for(int i = 0; i < 128; i++){
-            u16* obj_attr_ptr = (u16*)(&ppu->OAM[i*8]);
-            getObjMask(ppu, obj_attr_ptr, obj_win_mask);
-        }
-    }
+    getWinMaskArray(ppu, win_mask);
+    
+    for(int x = 0; x < SCREEN_WIDTH; x++)
+        pixels[x + y * SCREEN_WIDTH] = applyColorEffect(ppu, backdrop_col, 5, 5, backdrop_col, win_mask[x]);
 
     for(int prio = 3; prio >= 0; prio--){
         for(int i = 3; i >= 0; i--){
@@ -262,11 +319,11 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
                     break;
 
                     case TILED:
-                    renderLineRegBg(ppu, i, blend_info, obj_win_mask);
+                    renderLineRegBg(ppu, i, blend_info, win_mask);
                     break;
 
                     case AFFINE:
-                    renderLineAffBg(ppu, i, blend_info, obj_win_mask);
+                    renderLineAffBg(ppu, i, blend_info, win_mask);
                     break;
 
                     case BITMAP_3:
@@ -293,7 +350,7 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
             if(tid < 512 && bg_type[2] >= BITMAP_3)
                 continue;
             if(obj_prio == prio)
-                renderLineSprite(ppu, obj_attr_ptr, blend_info, obj_win_mask);
+                renderLineSprite(ppu, obj_attr_ptr, blend_info, win_mask);
         }
     }
 }
@@ -337,31 +394,18 @@ void renderLineBitmap5(ppu_t* ppu, u8* blend_info){
     }
 }
 
-bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, bool obj_win_mask, winType* winType_out){
-    bool win_active[2];
-    bool obj_win_active = (ppu->DISPCNT >> 15) & 1;
-    win_active[0] = (ppu->DISPCNT >> 13) & 1;
-    win_active[1] = (ppu->DISPCNT >> 14) & 1;
-
-    if(!win_active[0] && !win_active[1] && !obj_win_active){
-        *winType_out = WIN_DISABLED;
+bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, winType win_type){
+    if(win_type == WIN_DISABLED)
         return true;
-    }
 
     for(int i = 0; i < 2; i++){
-        if(win_active[i] && isInsideWindow(x, y, ppu->WINH[i], ppu->WINV[i])){
-            *winType_out = i; 
+        if(win_type == IN_WIN0 + i)
             return ppu->WININ & (1 << (renderType + 0x8 * i));
-        }
     }
 
-    if(obj_win_active && obj_win_mask){
-        *winType_out = IN_OBJWIN;
+    if(win_type == IN_OBJWIN)
         return ppu->WINOUT & (1 << (renderType + 0x8));
-    }
 
-    // outside case
-    *winType_out = IN_WINOUT;
     return ppu->WINOUT & (1 << renderType);
 }
 
@@ -406,7 +450,7 @@ u16 applyColorEffect(ppu_t* ppu, u16 inCol, u8 topType, u8 botType, u16 backCol,
     }
 }
 
-void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, bool* obj_win_mask){
+void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, winType* win_mask){
     int y = ppu->VCOUNT;
     bool mapping_1d = ppu->DISPCNT & (1 << 6);
     u8* VRAM = ppu->VRAM;
@@ -435,7 +479,6 @@ void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, bool* obj_w
     u8 stride = is_8bpp ? 64 : 32;
     bool alpha_blending = ((obj_attr_ptr[0] >> 0xA) & 0b11) == 0b01;
     i16 aff_mat[4];
-    winType win_type;
     getSpriteDim(obj_attr_ptr, &sprite_width, &sprite_height);
     getSpritePos(obj_attr_ptr, &sprite_x, &sprite_y);
     signed_sprite_x = sprite_x & 0x100 ? 0xFFFFFE00 | sprite_x : sprite_x;
@@ -473,7 +516,7 @@ void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, bool* obj_w
         u8* blend_info_ptr = &blend_info[actual_sprite_x];
         if(actual_sprite_x < 0 || actual_sprite_x >= SCREEN_WIDTH)
             continue;
-        if(!windowShouldDraw(ppu, actual_sprite_x, y, 4, obj_win_mask[actual_sprite_x], &win_type))
+        if(!windowShouldDraw(ppu, actual_sprite_x, y, 4, win_mask[actual_sprite_x]))
             continue;
         bool transparent;
         u8 px;
@@ -519,14 +562,14 @@ void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, bool* obj_w
             if(gfx_mode == 0b01 && isBldBot(ppu->BLDCNT, blend_info[actual_sprite_x]))
                 out_col = colorBlend(ppu->BLDALPHA, sprite_col, pixels[actual_sprite_x + y * SCREEN_WIDTH]);
             else 
-                out_col = applyColorEffect(ppu, sprite_col, 4, blend_info[actual_sprite_x], pixels[actual_sprite_x + y * SCREEN_WIDTH], win_type);
+                out_col = applyColorEffect(ppu, sprite_col, 4, blend_info[actual_sprite_x], pixels[actual_sprite_x + y * SCREEN_WIDTH], win_mask[actual_sprite_x]);
             pixels[actual_sprite_x + y * SCREEN_WIDTH] = out_col;
             blend_info[actual_sprite_x] = 4;
         }
     }
 }
 
-void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, bool* obj_win_mask){
+void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, winType* win_mask){
     int y = ppu->VCOUNT;
     bool mapping_1d = ppu->DISPCNT & (1 << 6);
     u8* VRAM = ppu->VRAM;
@@ -589,6 +632,8 @@ void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, bool* obj_win_mask){
 
     for(int x = 0; x < render_limit_width; x++){
         int actual_sprite_x = signed_sprite_x + x;
+        if(win_mask[actual_sprite_x] != IN_WINOUT)
+            continue;
         if(actual_sprite_x < 0 || actual_sprite_x >= SCREEN_WIDTH)
             continue;
         bool transparent;
@@ -631,7 +676,7 @@ void getObjMask(ppu_t* ppu, u16* obj_attr_ptr, bool* obj_win_mask){
             tilePtr += (offX * stride + offY * 32 * 32);
         getTilePixel(tilePtr, px, py, &PALETTE_RAM[512], palBank*32, is_8bpp, &transparent);
         if(!transparent)
-            obj_win_mask[actual_sprite_x] = true;
+            win_mask[actual_sprite_x] = IN_OBJWIN;
     }
 }
 
@@ -667,4 +712,35 @@ void drawTileMap(SDL_Window* win, ppu_t* ppu){
             }
         }
     }
+}
+
+void getWinMaskArray(ppu_t* ppu, winType* win_mask){
+    bool win_active[2];
+    bool obj_win_active = (ppu->DISPCNT >> 15) & 1;
+    win_active[0] = (ppu->DISPCNT >> 13) & 1;
+    win_active[1] = (ppu->DISPCNT >> 14) & 1;
+
+    if(!win_active[0] && !win_active[1] && !obj_win_active)
+        return;
+
+    for(int x = 0;  x < SCREEN_WIDTH; x++){
+        win_mask[x] = getWindowType(ppu, x, ppu->VCOUNT, win_active);        
+    }
+
+    if(obj_win_active){
+        for(int i = 0; i < 128; i++){
+            u16* obj_attr_ptr = (u16*)(&ppu->OAM[i*8]);
+            getObjMask(ppu, obj_attr_ptr, win_mask);
+        }
+    }
+}
+
+winType getWindowType(ppu_t* ppu, u8 x, u8 y, bool* win_active){
+     for(int i = 0; i < 2; i++){
+        if(win_active[i] && isInsideWindow(x, y, ppu->WINH[i], ppu->WINV[i])){
+            return IN_WIN0 + i; 
+        }
+    }
+
+    return IN_WINOUT;
 }

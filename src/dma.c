@@ -27,8 +27,9 @@ void transferDma(gba_t* gba, int i){
     if(!n)
         n = 0xFFFF;
 
-    cpu->cycles += 2*I_CYCLES;
-    cpu->cycles += 2*n*S_CYCLES;
+    // this cause bobbing on some games
+    //cpu->cycles += 2*I_CYCLES;
+    //cpu->cycles += 2*n*S_CYCLES;
 
     while(n){
         int step;

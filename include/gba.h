@@ -8,6 +8,9 @@
 #include "dma.h"
 #include "timer.h"
 #include "gamepak.h"
+#include "scheduler.h"
+
+#define GBA_SCHEDULER_POOL_SIZE 5
 
 typedef struct gba_t {
     arm7tdmi_t cpu;
@@ -45,6 +48,13 @@ typedef struct gba_t {
     u8 POSTFLG;
     u16 SOUNDBIAS;
     u16 WAITCNT;
+
+    // SCHEDULER
+    scheduler_t scheduler_pool[GBA_SCHEDULER_POOL_SIZE];
+    scheduler_t* scheduler_head;
+
+    // global counter
+    u64 frame_clock;
 } gba_t;
 
 void checkInterrupts(gba_t* gba);

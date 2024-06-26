@@ -48,6 +48,8 @@ void generateSwitchCase(int addr){
         addr -= 0x4000004;
         GEN_CASE;
         printf("((u8*)&ppu->DISPSTAT)[%d] = val;\n", addr);
+        if(addr == 1)
+            printf("checkVCount(gba);\n");
         RET;
         return;
     }
@@ -214,8 +216,12 @@ void generateSwitchCase(int addr){
             GEN(timer_t* timers = gba->timers;);
             printf("u32 old_TMCNT = timers[%d].TMCNT;\n", i);
             printf("((u8*)&timers[%d].TMCNT)[%d] = val;\n", i, addr);
-            printf("if(!((old_TMCNT >> 16) & 0x80) && ((timers[%d].TMCNT >> 16) & 0x80))\n", i);
-            printf("triggerTimer(&timers[%d]);\n", i);
+            GEN(bool old_enabled = (old_TMCNT >> 16) & 0x80;);
+            GEN(bool old_cascade = (old_TMCNT >> 16) & 0b100;);
+            printf("bool new_enabled = (timers[%d].TMCNT >> 16) & 0x80;\n", i);
+            printf("bool new_cascade = ((timers[%d].TMCNT >> 16) & 0b100);\n", i);
+            printf("if(!old_enabled && new_enabled) triggerTimer(gba, %d);\n", i);
+            printf("if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, %d);\n", i);
             GEN(});
             RET;
             return;

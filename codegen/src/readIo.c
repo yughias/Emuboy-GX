@@ -68,11 +68,12 @@ void generateSwitchCase(int addr){
         if(addr >= 0x4000100 + i*4 && addr < 0x4000100 + (i+1)*4){
             addr -=  0x4000100 + i*4;
             GEN_CASE;
-            if(addr < 2)
+            if(addr < 2){
+                printf("updateTimerCounter(gba, %d);\n", i);
                 printf("return ((u8*)&gba->timers[%d].counter)[%d];\n", i, addr);
-            else
+            } else {
                 printf("return ((u8*)&gba->timers[%d].TMCNT)[%d];\n", i, addr);
-            return;
+            } return;
         }
     }
 

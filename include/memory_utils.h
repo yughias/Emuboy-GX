@@ -196,32 +196,40 @@ return ((u8*)&gba->DMACNT[3])[0];
 case 0xDF:
 return ((u8*)&gba->DMACNT[3])[1];
 case 0x100:
+updateTimerCounter(gba, 0);
 return ((u8*)&gba->timers[0].counter)[0];
 case 0x101:
+updateTimerCounter(gba, 0);
 return ((u8*)&gba->timers[0].counter)[1];
 case 0x102:
 return ((u8*)&gba->timers[0].TMCNT)[2];
 case 0x103:
 return ((u8*)&gba->timers[0].TMCNT)[3];
 case 0x104:
+updateTimerCounter(gba, 1);
 return ((u8*)&gba->timers[1].counter)[0];
 case 0x105:
+updateTimerCounter(gba, 1);
 return ((u8*)&gba->timers[1].counter)[1];
 case 0x106:
 return ((u8*)&gba->timers[1].TMCNT)[2];
 case 0x107:
 return ((u8*)&gba->timers[1].TMCNT)[3];
 case 0x108:
+updateTimerCounter(gba, 2);
 return ((u8*)&gba->timers[2].counter)[0];
 case 0x109:
+updateTimerCounter(gba, 2);
 return ((u8*)&gba->timers[2].counter)[1];
 case 0x10A:
 return ((u8*)&gba->timers[2].TMCNT)[2];
 case 0x10B:
 return ((u8*)&gba->timers[2].TMCNT)[3];
 case 0x10C:
+updateTimerCounter(gba, 3);
 return ((u8*)&gba->timers[3].counter)[0];
 case 0x10D:
+updateTimerCounter(gba, 3);
 return ((u8*)&gba->timers[3].counter)[1];
 case 0x10E:
 return ((u8*)&gba->timers[3].TMCNT)[2];
@@ -277,6 +285,7 @@ case 0x4:
 return;
 case 0x5:
 ((u8*)&ppu->DISPSTAT)[1] = val;
+checkVCount(gba);
 return;
 case 0x8:
 ((u8*)&ppu->BGCNT[0])[0] = val;
@@ -735,8 +744,12 @@ case 0x100:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[0] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[0].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[0]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 0);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
 }
 return;
 case 0x101:
@@ -744,8 +757,12 @@ case 0x101:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[1] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[0].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[0]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 0);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
 }
 return;
 case 0x102:
@@ -753,8 +770,12 @@ case 0x102:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[2] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[0].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[0]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 0);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
 }
 return;
 case 0x103:
@@ -762,8 +783,12 @@ case 0x103:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[3] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[0].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[0]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 0);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
 }
 return;
 case 0x104:
@@ -771,8 +796,12 @@ case 0x104:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[0] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[1].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[1]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 1);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
 }
 return;
 case 0x105:
@@ -780,8 +809,12 @@ case 0x105:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[1] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[1].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[1]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 1);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
 }
 return;
 case 0x106:
@@ -789,8 +822,12 @@ case 0x106:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[2] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[1].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[1]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 1);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
 }
 return;
 case 0x107:
@@ -798,8 +835,12 @@ case 0x107:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[3] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[1].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[1]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 1);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
 }
 return;
 case 0x108:
@@ -807,8 +848,12 @@ case 0x108:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[0] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[2].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[2]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 2);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
 }
 return;
 case 0x109:
@@ -816,8 +861,12 @@ case 0x109:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[1] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[2].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[2]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 2);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
 }
 return;
 case 0x10A:
@@ -825,8 +874,12 @@ case 0x10A:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[2] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[2].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[2]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 2);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
 }
 return;
 case 0x10B:
@@ -834,8 +887,12 @@ case 0x10B:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[3] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[2].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[2]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 2);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
 }
 return;
 case 0x10C:
@@ -843,8 +900,12 @@ case 0x10C:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[0] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[3].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[3]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 3);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
 }
 return;
 case 0x10D:
@@ -852,8 +913,12 @@ case 0x10D:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[1] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[3].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[3]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 3);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
 }
 return;
 case 0x10E:
@@ -861,8 +926,12 @@ case 0x10E:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[2] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[3].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[3]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 3);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
 }
 return;
 case 0x10F:
@@ -870,8 +939,12 @@ case 0x10F:
 timer_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[3] = val;
-if(!((old_TMCNT >> 16) & 0x80) && ((timers[3].TMCNT >> 16) & 0x80))
-triggerTimer(&timers[3]);
+bool old_enabled = (old_TMCNT >> 16) & 0x80;
+bool old_cascade = (old_TMCNT >> 16) & 0b100;
+bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
+bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
+if(!old_enabled && new_enabled) triggerTimer(gba, 3);
+if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
 }
 return;
 case 0x134:
