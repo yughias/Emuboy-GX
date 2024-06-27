@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "timer.h"
 
 #include <stdio.h>
 
@@ -21,16 +22,18 @@ void addEventToScheduler(scheduler_t** list, scheduler_t* event){
         return;
     }
 
-    if((*list)->remaining > event->remaining){
+    if(event->remaining < (*list)->remaining){
         (*list)->remaining -= event->remaining;
         event->next = *list;
         (*list) = event;
         return;
     }
+    
+    event->remaining -= (*list)->remaining;
 
     scheduler_t* p = (*list)->next;
     scheduler_t* q = *list;
-    while(p && p->remaining < event->remaining){
+    while(p && event->remaining > p->remaining){
         event->remaining -= p->remaining;
         q = p;
         p = p->next;
@@ -63,7 +66,6 @@ void removeEventToScheduler(scheduler_t** list, scheduler_t* event){
 void stepScheduler(gba_t* gba, scheduler_t** scheduler, u32 cycles_step){
     if(*scheduler == NULL)
         printf("SCHEDULER HEAD CANNOT BE EMPTY!\n");
-
     
     scheduler_t* closest_event = (*scheduler);
     while(cycles_step || !closest_event->remaining){

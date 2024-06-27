@@ -63,7 +63,7 @@ void triggerTimer(gba_t* gba, int i){
     timer->scheduled_event = block;
     timer->started_clock = gba->frame_clock + gba->cpu.cycles;
     timer->started_value = GET_RELOAD(timer);
-    
+
     block->remaining = duration;
     block->arg1 = i;
     block->event = event_timerOverflow;
