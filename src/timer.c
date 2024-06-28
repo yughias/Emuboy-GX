@@ -4,10 +4,11 @@
 #define IS_IRQ(x) ((timer->TMCNT >> 16) & (1 << 6))
 #define IS_CASCADE(x) ((x->TMCNT >> 16) & 0b100)
 #define GET_RELOAD(x) (x->TMCNT & 0xFFFF)
+#define GET_SPEED_SHIFT(x) (timerSpeedShift[(x->TMCNT >> 16) & 0b11])
 
 #define TIMER_TRIGGER_DELAY 3
 
-const u32 timerSpeedSfhit[4] = {0, 6, 8, 10};
+const u32 timerSpeedShift[4] = {0, 6, 8, 10};
 
 /*
 void updateTimers(gba_t* gba, int ticks){
@@ -57,16 +58,19 @@ void triggerTimer(gba_t* gba, int i){
         return;
     }
 
-    timer->speed_shift = timerSpeedSfhit[(timer->TMCNT >> 16) & 0b11]; 
+    timer->speed_shift = GET_SPEED_SHIFT(timer); 
     u32 duration = 0x10000 - GET_RELOAD(timer);
     duration <<= timer->speed_shift;
 
+    // delay occurs only if timer was disabled 
+    u8 delay = timer->scheduled_event ? 0 : TIMER_TRIGGER_DELAY;
+
     scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
     timer->scheduled_event = block;
-    timer->started_clock = gba->frame_clock + gba->cpu.cycles + TIMER_TRIGGER_DELAY;
+    timer->started_clock = gba->frame_clock + gba->cpu.cycles + delay;
     timer->started_value = GET_RELOAD(timer);
 
-    block->remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling) + TIMER_TRIGGER_DELAY;
+    block->remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling) + delay;
     block->arg1 = i;
     block->event = event_timerOverflow;
     addEventToScheduler(&gba->scheduler_head, block);
