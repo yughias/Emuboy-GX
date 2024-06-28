@@ -36,6 +36,8 @@ void setup(){
     initGba(&gba, "data/vba_bios.bin", getArgv(1));
     #endif
 
+    noRender();
+
     init_keypad();
 
     #ifndef EMSCRIPTEN
