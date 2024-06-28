@@ -38,8 +38,6 @@ void setup(){
 
     init_keypad();
 
-    noRender();
-
     #ifndef EMSCRIPTEN
     /*
     bgPaletteWin = SDL_CreateWindow("bg palette", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 16*20, 16*20, 0);

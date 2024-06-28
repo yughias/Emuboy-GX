@@ -53,7 +53,6 @@ void event_startScanline(gba_t* gba, u32 vcount, u32 dummy){
             gba->IF |= 0b1;
             checkInterrupts(gba);
         }
-        renderPixels();
         updateVblankDma(gba);
         for(int i = 0; i < 2; i++){
             ppu->INTERNAL_BGX[i] = (i32)ppu->BGX[i];

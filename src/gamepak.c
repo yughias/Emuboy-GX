@@ -151,19 +151,20 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
 }
 
 void setupGamePakType(gamepak_t* gamepak){
-    const char sram_tag[32] = "SRAM";
-    const char flash64k_tag[32] = "FLASH";
-    const char flash128k_tag[32] = "FLASH1M";
+    const char sram_tag[32] = "SRAM_V";
+    const char flash64k_tag[2][32] = { "FLASH_V", "FLASH512_V"};
+    const char flash128k_tag[32] = "FLASH1M_V";
     
+    for(int i = 0; i < 2; i++)
+        if(romContains(gamepak->ROM, flash64k_tag[i], gamepak->ROM_SIZE)){
+            setupFlashMemory(gamepak, FLASH_64K_SIZE);
+            printf("FLASH 64K DETECTED!\n");
+            return;
+        }
+
     if(romContains(gamepak->ROM, flash128k_tag, gamepak->ROM_SIZE)){
         setupFlashMemory(gamepak, FLASH_128K_SIZE);
         printf("FLASH 128K DETECTED!\n");
-        return;
-    }
-
-    if(romContains(gamepak->ROM, flash64k_tag, gamepak->ROM_SIZE)){
-        setupFlashMemory(gamepak, FLASH_64K_SIZE);
-        printf("FLASH 64K DETECTED!\n");
         return;
     }
 
