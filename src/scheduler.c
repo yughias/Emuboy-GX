@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "gba.h"
 #include "timer.h"
 
 #include <stdio.h>
@@ -67,6 +68,8 @@ void stepScheduler(gba_t* gba, scheduler_t** scheduler, u32 cycles_step){
     if(*scheduler == NULL)
         printf("SCHEDULER HEAD CANNOT BE EMPTY!\n");
     
+    gba->clock_before_scheduling = gba->cpu.cycles;
+
     scheduler_t* closest_event = (*scheduler);
     while(cycles_step || !closest_event->remaining){
         u32 to_subtract = cycles_step < closest_event->remaining ? cycles_step : closest_event->remaining;

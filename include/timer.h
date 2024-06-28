@@ -11,6 +11,7 @@ typedef struct
     u64 started_clock;
     u32 started_value;
     u32 counter;
+    u8 speed_shift;
     u32 TMCNT;
 
     scheduler_t* scheduled_event;

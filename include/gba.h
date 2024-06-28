@@ -53,8 +53,9 @@ typedef struct gba_t {
     scheduler_t scheduler_pool[GBA_SCHEDULER_POOL_SIZE];
     scheduler_t* scheduler_head;
 
-    // global counter
+    // counters
     u64 frame_clock;
+    u32 clock_before_scheduling;
 } gba_t;
 
 void checkInterrupts(gba_t* gba);
