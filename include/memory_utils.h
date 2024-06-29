@@ -749,7 +749,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 0);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 0);
 }
 return;
 case 0x101:
@@ -762,7 +763,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 0);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 0);
 }
 return;
 case 0x102:
@@ -775,7 +777,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 0);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 0);
 }
 return;
 case 0x103:
@@ -788,7 +791,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[0].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[0].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 0);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 0);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 0);
 }
 return;
 case 0x104:
@@ -801,7 +805,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 1);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 1);
 }
 return;
 case 0x105:
@@ -814,7 +819,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 1);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 1);
 }
 return;
 case 0x106:
@@ -827,7 +833,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 1);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 1);
 }
 return;
 case 0x107:
@@ -840,7 +847,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[1].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[1].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 1);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 1);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 1);
 }
 return;
 case 0x108:
@@ -853,7 +861,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 2);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 2);
 }
 return;
 case 0x109:
@@ -866,7 +875,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 2);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 2);
 }
 return;
 case 0x10A:
@@ -879,7 +889,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 2);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 2);
 }
 return;
 case 0x10B:
@@ -892,7 +903,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[2].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[2].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 2);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 2);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 2);
 }
 return;
 case 0x10C:
@@ -905,7 +917,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 3);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 3);
 }
 return;
 case 0x10D:
@@ -918,7 +931,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 3);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 3);
 }
 return;
 case 0x10E:
@@ -931,7 +945,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 3);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 3);
 }
 return;
 case 0x10F:
@@ -944,7 +959,8 @@ bool old_cascade = (old_TMCNT >> 16) & 0b100;
 bool new_enabled = (timers[3].TMCNT >> 16) & 0x80;
 bool new_cascade = ((timers[3].TMCNT >> 16) & 0b100);
 if(!old_enabled && new_enabled) triggerTimer(gba, 3);
-if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, 3);
+else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, 3);
 }
 return;
 case 0x134:

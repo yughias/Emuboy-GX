@@ -221,7 +221,8 @@ void generateSwitchCase(int addr){
             printf("bool new_enabled = (timers[%d].TMCNT >> 16) & 0x80;\n", i);
             printf("bool new_cascade = ((timers[%d].TMCNT >> 16) & 0b100);\n", i);
             printf("if(!old_enabled && new_enabled) triggerTimer(gba, %d);\n", i);
-            printf("if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, %d);\n", i);
+            printf("else if((old_enabled && !new_enabled) || (new_enabled && !old_cascade && new_cascade)) descheduleTimer(gba, %d);\n", i);
+            printf("else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba, %d);\n", i);
             GEN(});
             RET;
             return;
