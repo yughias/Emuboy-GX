@@ -9,6 +9,7 @@ int main(){
     GEN(u8 readIo8(arm7tdmi_t* cpu, u16 addr){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
+    GEN(apu_t* apu = &gba->apu;);
 
     GEN(switch(addr){);
 
@@ -41,10 +42,24 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    if(addr >= 0x4000080 && addr < 0x4000082){
+        addr -= 0x4000080;
+        GEN_CASE;
+        printf("return ((u8*)&apu->SOUNDCNT_L)[%d];\n", addr);
+        return;
+    }
+    
+    if(addr >= 0x4000082 && addr < 0x4000084){
+        addr -= 0x4000082;
+        GEN_CASE;
+        printf("return ((u8*)&apu->SOUNDCNT_H)[%d];\n", addr);
+        return;
+    }
+
     if(addr >= 0x4000088 && addr < 0x400008A){
         addr -= 0x4000088;
         GEN_CASE;
-        printf("return ((u8*)&gba->SOUNDBIAS)[%d];\n", addr);
+        printf("return ((u8*)&apu->SOUNDBIAS)[%d];\n", addr);
         return;
     }
 

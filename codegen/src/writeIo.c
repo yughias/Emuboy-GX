@@ -10,6 +10,7 @@ int main(){
     GEN(void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
+    GEN(apu_t* apu = &gba->apu;);
 
     GEN(switch(addr){);
 
@@ -170,10 +171,40 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    if(addr >= 0x4000080 && addr < 0x4000082){
+        addr -= 0x4000080;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUNDCNT_L)[%d] = val;\n", addr);
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000082 && addr < 0x4000084){
+        addr -= 0x4000082;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUNDCNT_H)[%d] = val;\n", addr);
+        RET;
+        return;
+    }
+
     if(addr >= 0x4000088 && addr < 0x400008A){
         addr -= 0x4000088;
         GEN_CASE;
-        printf("((u8*)&gba->SOUNDBIAS)[%d] = val;\n", addr);
+        printf("((u8*)&apu->SOUNDBIAS)[%d] = val;\n", addr);
+        RET;
+        return;
+    }
+
+    if(addr >= 0x40000A0 && addr < 0x40000A4){
+        GEN_CASE;
+        printf("pushIntoFifo(&apu->fifo[0], val);\n");
+        RET;
+        return;
+    }
+
+    if(addr >= 0x40000A4 && addr < 0x40000A8){
+        GEN_CASE;
+        printf("pushIntoFifo(&apu->fifo[1], val);\n");
         RET;
         return;
     }

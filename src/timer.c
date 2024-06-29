@@ -87,6 +87,7 @@ void updateTimerCounter(gba_t* gba, int i){
 void event_timerOverflow(gba_t* gba, u32 i, u32 dummy){
     timer_t* timer = &gba->timers[i];
 
+    apuCheckTimer(gba, i);
     bool irq_enabled = IS_IRQ(timer);
     if(irq_enabled){
         gba->IF |= 1 << (3+i);
@@ -106,6 +107,7 @@ void event_timerOverflow(gba_t* gba, u32 i, u32 dummy){
         else
             break;
 
+        apuCheckTimer(gba, j);
         bool irq_enabled = IS_IRQ(timer);
         if(irq_enabled){
             gba->IF |= 1 << (3+j);

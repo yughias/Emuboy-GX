@@ -8,13 +8,18 @@
 #include "dma.h"
 #include "timer.h"
 #include "gamepak.h"
+#include "apu.h"
 #include "scheduler.h"
 
-#define GBA_SCHEDULER_POOL_SIZE 5
+// 1 PPU
+// 4 AUDIO
+// 1 push sample to audio device 
+#define GBA_SCHEDULER_POOL_SIZE 6
 
 typedef struct gba_t {
     arm7tdmi_t cpu;
     ppu_t ppu;
+    apu_t apu;
 
     // GBA RAM
     u8 WRAM_BOARD[WRAM_BOARD_SIZE];
@@ -29,6 +34,7 @@ typedef struct gba_t {
 
     // DMA DATA
     bool dma_enabled[4];
+    u32 internal_dma_source[4];
     u32 DMASAD[4];
     u32 DMADAD[4];
     u32 DMACNT[4];
@@ -46,7 +52,6 @@ typedef struct gba_t {
     // MISC REGS
     u16 RCNT;
     u8 POSTFLG;
-    u16 SOUNDBIAS;
     u16 WAITCNT;
 
     // SCHEDULER

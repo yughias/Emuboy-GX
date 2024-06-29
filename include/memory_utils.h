@@ -128,6 +128,7 @@ switch((addr >> 24) & 0xF){ \
 u8 readIo8(arm7tdmi_t* cpu, u16 addr){
 gba_t* gba = (gba_t*)cpu->master;
 ppu_t* ppu = &gba->ppu;
+apu_t* apu = &gba->apu;
 switch(addr){
 case 0x0:
 return ((u8*)&ppu->DISPCNT)[0];
@@ -175,10 +176,18 @@ case 0x52:
 return ((u8*)&ppu->BLDALPHA)[0];
 case 0x53:
 return ((u8*)&ppu->BLDALPHA)[1];
+case 0x80:
+return ((u8*)&apu->SOUNDCNT_L)[0];
+case 0x81:
+return ((u8*)&apu->SOUNDCNT_L)[1];
+case 0x82:
+return ((u8*)&apu->SOUNDCNT_H)[0];
+case 0x83:
+return ((u8*)&apu->SOUNDCNT_H)[1];
 case 0x88:
-return ((u8*)&gba->SOUNDBIAS)[0];
+return ((u8*)&apu->SOUNDBIAS)[0];
 case 0x89:
-return ((u8*)&gba->SOUNDBIAS)[1];
+return ((u8*)&apu->SOUNDBIAS)[1];
 case 0xBA:
 return ((u8*)&gba->DMACNT[0])[0];
 case 0xBB:
@@ -273,6 +282,7 @@ return 0x00;
 void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val){
 gba_t* gba = (gba_t*)cpu->master;
 ppu_t* ppu = &gba->ppu;
+apu_t* apu = &gba->apu;
 switch(addr){
 case 0x0:
 ((u8*)&ppu->DISPCNT)[0] = val;
@@ -525,11 +535,47 @@ return;
 case 0x55:
 ((u8*)&ppu->BLDY)[1] = val;
 return;
+case 0x80:
+((u8*)&apu->SOUNDCNT_L)[0] = val;
+return;
+case 0x81:
+((u8*)&apu->SOUNDCNT_L)[1] = val;
+return;
+case 0x82:
+((u8*)&apu->SOUNDCNT_H)[0] = val;
+return;
+case 0x83:
+((u8*)&apu->SOUNDCNT_H)[1] = val;
+return;
 case 0x88:
-((u8*)&gba->SOUNDBIAS)[0] = val;
+((u8*)&apu->SOUNDBIAS)[0] = val;
 return;
 case 0x89:
-((u8*)&gba->SOUNDBIAS)[1] = val;
+((u8*)&apu->SOUNDBIAS)[1] = val;
+return;
+case 0xA0:
+pushIntoFifo(&apu->fifo[0], val);
+return;
+case 0xA1:
+pushIntoFifo(&apu->fifo[0], val);
+return;
+case 0xA2:
+pushIntoFifo(&apu->fifo[0], val);
+return;
+case 0xA3:
+pushIntoFifo(&apu->fifo[0], val);
+return;
+case 0xA4:
+pushIntoFifo(&apu->fifo[1], val);
+return;
+case 0xA5:
+pushIntoFifo(&apu->fifo[1], val);
+return;
+case 0xA6:
+pushIntoFifo(&apu->fifo[1], val);
+return;
+case 0xA7:
+pushIntoFifo(&apu->fifo[1], val);
 return;
 case 0xB0:
 ((u8*)&gba->DMASAD[0])[0] = val;

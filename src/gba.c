@@ -1,8 +1,11 @@
 #include "gba.h"
 #include "gamepak.h"
 
+#include <SDL2/SDL.h>
+
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 void checkInterrupts(gba_t* gba){
     if(!(gba->IME & 1) || gba->cpu.irq_disable)
@@ -74,6 +77,22 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     block->remaining = DRAW_CYCLES;
     block->event = event_startHBlank;
     addEventToScheduler(&gba->scheduler_head, block);
+
+    apu_t* apu = &gba->apu;
+    apu->audioSpec.freq = 44100;
+    apu->audioSpec.channels = 1;
+    apu->audioSpec.format = AUDIO_S16;
+    apu->audioSpec.callback = NULL;
+    apu->audioSpec.userdata = NULL;
+    apu->audioDev = SDL_OpenAudioDevice(0, 0, &apu->audioSpec, &apu->audioSpec, 0);
+    apu->samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE / apu->audioSpec.freq;
+
+    block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
+    block->remaining = gba->apu.samplePushRate;
+    block->event = event_pushSampleToAudioDevice;
+    addEventToScheduler(&gba->scheduler_head, block);
+
+    SDL_PauseAudioDevice(gba->apu.audioDev, 0);
 }
 
 void freeGba(gba_t* gba){

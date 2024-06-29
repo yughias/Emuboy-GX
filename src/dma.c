@@ -5,6 +5,7 @@
 
 void triggerDma(gba_t* gba, int i){
     gba->dma_enabled[i] = true;
+    gba->internal_dma_source[i] = gba->DMASAD[i];
     u8 dma_mode = (gba->DMACNT[i] >> 0x1C) & 0b11; 
     if(!dma_mode)
         transferDma(gba, i);
