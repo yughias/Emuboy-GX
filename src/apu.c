@@ -75,8 +75,8 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
 
             for(int j = 0; j < 4; j++){
                 u32 word = cpu->readWord(cpu, gba->internal_dma_source[i]);
-                gba->internal_dma_source[i] += 4;
-                cpu->writeWord(cpu, fifo_addr, word );
+                gba->internal_dma_source[i] += step;
+                cpu->writeWord(cpu, fifo_addr, word);
             }
 
             if((gba->DMACNT[i] >> 0x1E) & 1){

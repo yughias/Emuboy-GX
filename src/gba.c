@@ -17,6 +17,9 @@ void checkInterrupts(gba_t* gba){
     arm7tdmi_trigger_exception(&gba->cpu, 0x18, 0x12);
 }
 
+// TO-DO
+// i should check for interrupt everytime I change SPSR because i could pass from interrupt disabled to interrupt enabled
+
 void emulateGba(gba_t* gba){
     gba->KEYINPUT = update_keypad();
 
