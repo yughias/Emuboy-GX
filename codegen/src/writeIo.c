@@ -183,6 +183,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000082;
         GEN_CASE;
         printf("((u8*)&apu->SOUNDCNT_H)[%d] = val;\n", addr);
+        GEN(updateChannelMixing(apu););
         RET;
         return;
     }

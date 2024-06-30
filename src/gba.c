@@ -30,7 +30,7 @@ void emulateGba(gba_t* gba){
         while(elapsed < gba->scheduler_head->remaining){
             if(gba->HALTCNT){
                 gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
-                gba->cpu.cycles += gba->scheduler_head->remaining;
+                gba->cpu.cycles += gba->scheduler_head->remaining - elapsed;
             } else {
                 arm7tdmi_step(&gba->cpu);
                 checkInterrupts(gba);

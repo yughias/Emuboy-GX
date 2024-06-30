@@ -543,9 +543,11 @@ case 0x81:
 return;
 case 0x82:
 ((u8*)&apu->SOUNDCNT_H)[0] = val;
+updateChannelMixing(apu);
 return;
 case 0x83:
 ((u8*)&apu->SOUNDCNT_H)[1] = val;
+updateChannelMixing(apu);
 return;
 case 0x88:
 ((u8*)&apu->SOUNDBIAS)[0] = val;

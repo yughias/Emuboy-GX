@@ -45,9 +45,8 @@ void resetFifo(fifo_t* fifo){
 }
 
 u8 popFifo(fifo_t* fifo){
-    if(!fifo->size){
+    if(!fifo->size)
         return 0;
-    }
     u8 out = fifo->data[fifo->r_idx];
     fifo->size -= 1;
     fifo->r_idx = (fifo->r_idx + 1) % APU_FIFO_LENGTH;
@@ -59,7 +58,7 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
     u32 old_cycles = cpu->cycles;
 
     for(int i = 1; i <= 2; i++){
-        if(IS_SOUND_DMA(gba->DMACNT[i]) && gba->DMADAD[i] == fifo_addr){
+        if(IS_SOUND_DMA(gba->DMACNT[i]) && gba->DMADAD[i] == fifo_addr && gba->dma_enabled[i]){
             int step = 0;
             switch((gba->DMACNT[i] >> 17) & 0b11){
                 case 0b00:
@@ -70,8 +69,6 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
                 step = -4;
                 break;
             }
-
-            printf("%X -> %X\n", gba->internal_dma_source[i], gba->DMADAD[i]);
 
             for(int j = 0; j < 4; j++){
                 u32 word = cpu->readWord(cpu, gba->internal_dma_source[i]);
@@ -86,7 +83,7 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
         }
     }
 
-    gba->cpu.cycles = old_cycles;   
+    gba->cpu.cycles = old_cycles;
 }
 
 void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
