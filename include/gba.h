@@ -35,6 +35,7 @@ typedef struct gba_t {
     // DMA DATA
     bool dma_enabled[4];
     u32 internal_dma_source[4];
+    u32 internal_dma_dest[4];
     u32 DMASAD[4];
     u32 DMADAD[4];
     u32 DMACNT[4];

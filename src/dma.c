@@ -6,6 +6,7 @@
 void triggerDma(gba_t* gba, int i){
     gba->dma_enabled[i] = true;
     gba->internal_dma_source[i] = gba->DMASAD[i];
+    gba->internal_dma_dest[i] = gba->DMADAD[i];
     u8 dma_mode = (gba->DMACNT[i] >> 0x1C) & 0b11; 
     if(!dma_mode)
         transferDma(gba, i);
@@ -22,9 +23,6 @@ void transferDma(gba_t* gba, int i){
     bool irq_enable = (DMACNT >> 0x1E) & 1;
     u8 timing_mode = (DMACNT >> 0x1C) & 0b11;
 
-    u32 source = gba->DMASAD[i];
-    u32 dest = gba->DMADAD[i];
-
     if(!n)
         n = 0xFFFF;
 
@@ -36,33 +34,33 @@ void transferDma(gba_t* gba, int i){
         int step;
         if(transfer_size){
             step = 4;
-            u32 word = cpu->readWord(cpu, source);
-            cpu->writeWord(cpu, dest, word);
+            u32 word = cpu->readWord(cpu, gba->internal_dma_source[i]);
+            cpu->writeWord(cpu, gba->internal_dma_dest[i], word);
         } else {
             step = 2;
-            u16 halfword = cpu->readHalfWord(cpu, source);
-            cpu->writeHalfWord(cpu, dest, halfword);
+            u16 halfword = cpu->readHalfWord(cpu, gba->internal_dma_source[i]);
+            cpu->writeHalfWord(cpu, gba->internal_dma_dest[i], halfword);
         }
 
         switch(sa){
             case 0b00:
             case 0b11:
-            source += step;
+            gba->internal_dma_source[i] += step;
             break;
 
             case 0b01:
-            source -= step;
+            gba->internal_dma_source[i] -= step;
             break;
         }
 
         switch(da){
             case 0b00:
             case 0b11:
-            dest += step;
+            gba->internal_dma_dest[i] += step;
             break;
 
             case 0b01:
-            dest -= step;
+            gba->internal_dma_dest[i] -= step;
             break;
         }
 
@@ -70,10 +68,10 @@ void transferDma(gba_t* gba, int i){
     }
 
     if(sa < 0b10)
-        gba->DMASAD[i] = source;
+        gba->internal_dma_source[i] = gba->DMASAD[i];
 
     if(da < 0b10)
-        gba->DMADAD[i] = dest;
+        gba->internal_dma_dest[i] = gba->DMADAD[i];
 
     if(repeat_mode && (timing_mode == 0b01 || timing_mode == 0b10))
         gba->dma_enabled[i] = true;

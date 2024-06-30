@@ -27,6 +27,10 @@ void emulateGba(gba_t* gba){
     while(gba->cpu.cycles < CYCLES_PER_FRAME){
         u32 elapsed = 0;
 
+        // handle this in a better way
+        if(gba->HALTCNT)
+            gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
+
         while(elapsed < gba->scheduler_head->remaining){
             if(gba->HALTCNT){
                 gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
@@ -37,7 +41,7 @@ void emulateGba(gba_t* gba){
             }
             elapsed = gba->cpu.cycles - prev_cycles;
         }
- 
+
         stepScheduler(gba, &gba->scheduler_head, elapsed);
         prev_cycles = gba->cpu.cycles;
     }
