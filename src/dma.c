@@ -67,10 +67,7 @@ void transferDma(gba_t* gba, int i){
         n--;
     }
 
-    if(sa < 0b10)
-        gba->internal_dma_source[i] = gba->DMASAD[i];
-
-    if(da < 0b10)
+    if(da == 0b11)
         gba->internal_dma_dest[i] = gba->DMADAD[i];
 
     if(repeat_mode && (timing_mode == 0b01 || timing_mode == 0b10))
