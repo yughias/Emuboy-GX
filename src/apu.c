@@ -88,12 +88,32 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
 
 void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
     apu_t* apu = &gba->apu;
-    u16 sample;
-    sample = ((i16)(i8)gba->apu.dma_sample[0] + (i16)(i8)gba->apu.dma_sample[1])*32;
-    sample += gba->apu.audioSpec.silence;
-    SDL_QueueAudio(apu->audioDev, &sample, 2);
+    atomic_fifo_t* buffer = &apu->sample_buffer;
+    
+    if(buffer->size != SAMPLE_BUFFER_SIZE){
+        sample_t* sample = &buffer->data[buffer->w_idx];
+        buffer->w_idx = (buffer->w_idx + 1) % SAMPLE_BUFFER_SIZE; 
+        buffer->size += 1;
+        sample->right = sample->left = ((i16)(i8)gba->apu.dma_sample[0] + (i16)(i8)gba->apu.dma_sample[1])*32 + gba->apu.audioSpec.silence;
+    }
 
     scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
     block->remaining = gba->apu.samplePushRate;
     addEventToScheduler(&gba->scheduler_head, block);
+}
+
+void audioCallback(void* userdata, Uint8* stream, int len){
+    atomic_fifo_t* fifo = userdata;
+    int sample_len = len / sizeof(sample_t);
+
+    if(fifo->size >= sample_len){
+        for(int i = 0; i < sample_len; i++){
+            ((sample_t*)stream)[i] = fifo->data[fifo->r_idx];
+            fifo->r_idx = (fifo->r_idx + 1) % SAMPLE_BUFFER_SIZE; 
+            fifo->size -= 1;
+        }
+    } else {
+       for(int i = 0; i < sample_len; i++)
+            ((sample_t*)stream)[i] = fifo->data[fifo->r_idx];
+    }
 }

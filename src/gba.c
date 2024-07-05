@@ -27,13 +27,8 @@ void emulateGba(gba_t* gba){
     while(gba->cpu.cycles < CYCLES_PER_FRAME){
         u32 elapsed = 0;
 
-        // handle this in a better way
-        if(gba->HALTCNT)
-            gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
-
         while(elapsed < gba->scheduler_head->remaining){
-            if(gba->HALTCNT){
-                gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF); 
+            if(gba->HALTCNT && (gba->HALTCNT = !(gba->IF & gba->IE & 0x3FFF))){
                 gba->cpu.cycles += gba->scheduler_head->remaining - elapsed;
             } else {
                 arm7tdmi_step(&gba->cpu);
@@ -89,11 +84,13 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
 
     apu_t* apu = &gba->apu;
     apu->audioSpec.freq = 44100;
-    apu->audioSpec.channels = 1;
+    apu->audioSpec.channels = 2;
     apu->audioSpec.format = AUDIO_S16;
-    apu->audioSpec.callback = NULL;
-    apu->audioSpec.userdata = NULL;
+    apu->audioSpec.samples = SAMPLE_PER_CALL;
+    apu->audioSpec.callback = audioCallback;
+    apu->audioSpec.userdata = &apu->sample_buffer;
     apu->audioDev = SDL_OpenAudioDevice(0, 0, &apu->audioSpec, &apu->audioSpec, 0);
+    
     apu->samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE / apu->audioSpec.freq;
 
     block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);

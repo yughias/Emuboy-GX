@@ -6,12 +6,12 @@
 #define GET_RELOAD(x) (x->TMCNT & 0xFFFF)
 #define GET_SPEED_SHIFT(x) (timerSpeedShift[(x->TMCNT >> 16) & 0b11])
 
-#define TIMER_TRIGGER_DELAY 3
+#define gba_tmr_tRIGGER_DELAY 3
 
 const u32 timerSpeedShift[4] = {0, 6, 8, 10};
 
 void triggerTimer(gba_t* gba, int i){
-    timer_t* timer = &gba->timers[i];
+    gba_tmr_t* timer = &gba->timers[i];
 
     bool cascade = IS_CASCADE(timer);
     if(cascade){
@@ -25,7 +25,7 @@ void triggerTimer(gba_t* gba, int i){
     duration <<= timer->speed_shift;
 
     // delay occurs only if timer was disabled 
-    u8 delay = timer->scheduled_event ? 0 : TIMER_TRIGGER_DELAY;
+    u8 delay = timer->scheduled_event ? 0 : gba_tmr_tRIGGER_DELAY;
 
     scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
     timer->scheduled_event = block;
@@ -39,7 +39,7 @@ void triggerTimer(gba_t* gba, int i){
 }
 
 void disableCascadeModeTimer(gba_t* gba, int i){
-    timer_t* timer = &gba->timers[i];
+    gba_tmr_t* timer = &gba->timers[i];
 
     timer->speed_shift = GET_SPEED_SHIFT(timer); 
     u32 duration = 0x10000 - timer->counter;
@@ -57,7 +57,7 @@ void disableCascadeModeTimer(gba_t* gba, int i){
 }
 
 void descheduleTimer(gba_t* gba, int i){
-    timer_t* timer = &gba->timers[i];
+    gba_tmr_t* timer = &gba->timers[i];
     bool cascade = IS_CASCADE(timer);
 
     if(!cascade)
@@ -71,7 +71,7 @@ void descheduleTimer(gba_t* gba, int i){
 }
 
 void updateTimerCounter(gba_t* gba, int i){
-    timer_t* timer = &gba->timers[i];
+    gba_tmr_t* timer = &gba->timers[i];
     bool enabled = IS_ENABLED(timer);
     bool cascade = IS_CASCADE(timer);
 
@@ -85,7 +85,7 @@ void updateTimerCounter(gba_t* gba, int i){
 }
 
 void event_timerOverflow(gba_t* gba, u32 i, u32 dummy){
-    timer_t* timer = &gba->timers[i];
+    gba_tmr_t* timer = &gba->timers[i];
 
     apuCheckTimer(gba, i);
     bool irq_enabled = IS_IRQ(timer);
@@ -95,7 +95,7 @@ void event_timerOverflow(gba_t* gba, u32 i, u32 dummy){
     }
 
     for(int j = i+1; j < 4; j++){
-        timer_t* timer = &gba->timers[j];
+        gba_tmr_t* timer = &gba->timers[j];
         bool enabled = IS_ENABLED(timer);
         bool cascade = IS_CASCADE(timer);
         if(!enabled || !cascade)

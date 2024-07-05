@@ -245,7 +245,7 @@ void generateSwitchCase(int addr){
             addr -=  0x4000100 + i*4;
             GEN_CASE;
             GEN({);
-            GEN(timer_t* timers = gba->timers;);
+            GEN(gba_tmr_t* timers = gba->timers;);
             printf("u32 old_TMCNT = timers[%d].TMCNT;\n", i);
             printf("((u8*)&timers[%d].TMCNT)[%d] = val;\n", i, addr);
             GEN(bool old_enabled = (old_TMCNT >> 16) & 0x80;);

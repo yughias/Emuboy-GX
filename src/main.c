@@ -11,7 +11,7 @@ SDL_Window* tileMapWin;
 gba_t gba;
 
 void freeAll(){
-    if(gba.gamepak.type != GAMEPAK_ROM_ONLY){
+    if(gba.gamepak.type != GAMEPAK_ROM_ONLY && gba.gamepak.type != NO_GAMEPAK){
         char savFilename[FILENAME_MAX];
         getSavFilename(savFilename, getArgv(1));
         FILE* fptr = fopen(savFilename, "wb");

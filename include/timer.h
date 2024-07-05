@@ -6,7 +6,7 @@
 typedef struct gba_t gba_t;
 typedef struct scheduler_t scheduler_t;
 
-typedef struct
+typedef struct gba_tmr_t
 {
     u64 started_clock;
     u32 started_value;
@@ -15,7 +15,7 @@ typedef struct
     u32 TMCNT;
 
     scheduler_t* scheduled_event;
-} timer_t;
+} gba_tmr_t;
 
 void triggerTimer(gba_t* gba, int i);
 void updateTimerCounter(gba_t* gba, int i);

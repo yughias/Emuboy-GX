@@ -50,11 +50,17 @@ return; \
 #define WRAM_BOARD_TIMING_8 WRAM_BOARD_TIMING_DEFAULT
 #define WRAM_BOARD_TIMING_DEFAULT cpu->cycles += 2;
 
+// add open bus for bios to fix fzero climax
+// it sufficient to return 0xFF
+// also konami collector relies on this!
+
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
 switch((addr >> 24) & 0xF){ \
     case 0x0: \
     case 0x1: \
+    if(((cpu->r[15] >> 24) & 0xF) >= 1) \
+        return 0xFF; \
     return *GET_ARRAY_PTR(type, gba->BIOS[addr & (BIOS_SIZE - 1)]); \
 \
     case 0x2: \
@@ -789,7 +795,7 @@ gba->dma_enabled[3] = false;
 return;
 case 0x100:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[0] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -803,7 +809,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x101:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[1] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -817,7 +823,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x102:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[2] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -831,7 +837,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x103:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[0].TMCNT;
 ((u8*)&timers[0].TMCNT)[3] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -845,7 +851,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x104:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[0] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -859,7 +865,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x105:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[1] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -873,7 +879,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x106:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[2] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -887,7 +893,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x107:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[1].TMCNT;
 ((u8*)&timers[1].TMCNT)[3] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -901,7 +907,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x108:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[0] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -915,7 +921,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x109:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[1] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -929,7 +935,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10A:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[2] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -943,7 +949,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10B:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[2].TMCNT;
 ((u8*)&timers[2].TMCNT)[3] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -957,7 +963,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10C:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[0] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -971,7 +977,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10D:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[1] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -985,7 +991,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10E:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[2] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;
@@ -999,7 +1005,7 @@ else if(new_enabled && old_cascade && !new_cascade) disableCascadeModeTimer(gba,
 return;
 case 0x10F:
 {
-timer_t* timers = gba->timers;
+gba_tmr_t* timers = gba->timers;
 u32 old_TMCNT = timers[3].TMCNT;
 ((u8*)&timers[3].TMCNT)[3] = val;
 bool old_enabled = (old_TMCNT >> 16) & 0x80;

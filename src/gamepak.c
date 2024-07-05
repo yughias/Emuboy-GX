@@ -151,12 +151,12 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
 }
 
 void setupGamePakType(gamepak_t* gamepak){
-    const char sram_tag[32] = "SRAM_V";
-    const char flash64k_tag[2][32] = { "FLASH_V", "FLASH512_V"};
+    const char sram_tags[2][32] = {"SRAM_V", "SRAM_F_V"};
+    const char flash64k_tags[2][32] = { "FLASH_V", "FLASH512_V"};
     const char flash128k_tag[32] = "FLASH1M_V";
     
     for(int i = 0; i < 2; i++)
-        if(romContains(gamepak->ROM, flash64k_tag[i], gamepak->ROM_SIZE)){
+        if(romContains(gamepak->ROM, flash64k_tags[i], gamepak->ROM_SIZE)){
             setupFlashMemory(gamepak, FLASH_64K_SIZE);
             printf("FLASH 64K DETECTED!\n");
             return;
@@ -168,16 +168,17 @@ void setupGamePakType(gamepak_t* gamepak){
         return;
     }
 
-    if(romContains(gamepak->ROM, sram_tag, gamepak->ROM_SIZE)){
-        gamepak->type = GAMEPAK_SRAM;
-        gamepak->savMemorySize = SRAM_SIZE;
-        gamepak->savMemory = (u8*)malloc(SRAM_SIZE);
-        gamepak->readByte = gamePakSramRead;
-        gamepak->writeByte = gamePakSramWrite;
-        gamepak->sizeMask = SRAM_SIZE - 1;
-        printf("SRAM DETECTED!\n");
-        return;
-    }
+    for(int i = 0; i < 2; i++)
+        if(romContains(gamepak->ROM, sram_tags[i], gamepak->ROM_SIZE)){
+            gamepak->type = GAMEPAK_SRAM;
+            gamepak->savMemorySize = SRAM_SIZE;
+            gamepak->savMemory = (u8*)malloc(SRAM_SIZE);
+            gamepak->readByte = gamePakSramRead;
+            gamepak->writeByte = gamePakSramWrite;
+            gamepak->sizeMask = SRAM_SIZE - 1;
+            printf("SRAM DETECTED!\n");
+            return;
+        }
 
     gamepak->type = GAMEPAK_ROM_ONLY;
     gamepak->readByte = gamePakEmptySaveRead;

@@ -462,7 +462,7 @@ void renderLineSprite(ppu_t* ppu, u16* obj_attr_ptr, u8* blend_info, winType* wi
         return;
 
     u8 gfx_mode = (obj_attr_ptr[0] >> 0xA) & 0b11;
-    if(gfx_mode == 0b10)
+    if(gfx_mode >= 0b10)
         return;
 
     bool is_8bpp = (obj_attr_ptr[0] >> 0xD) & 1;

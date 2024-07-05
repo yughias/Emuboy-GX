@@ -21,7 +21,7 @@ void arm7tdmi_print(arm7tdmi_t* cpu){
 
     printf("CPSR: %08X\n", cpu->CPSR);
     printf("SPSR: %08X\n", *getSPSR(cpu));
-    printf("PC: %08X\n", pc);
+    printf("PC: %08X %d\n", pc, cpu->thumb_mode);
     printf("\n");
 }
 

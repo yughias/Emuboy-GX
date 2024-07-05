@@ -30,7 +30,7 @@ typedef struct gba_t {
     
     gamepak_t gamepak;
 
-    timer_t timers[4];
+    gba_tmr_t timers[4];
 
     // DMA DATA
     bool dma_enabled[4];
