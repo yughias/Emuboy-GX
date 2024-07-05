@@ -23,7 +23,17 @@ codegen-arm:
 	codegen_arm.exe src/arm7tdmi/arm.c
 	del codegen_arm.exe
 
-codegen: codegen-arm codegen-thumb
+codegen-readio:
+	gcc codegen/src/readIo.c -o codegen_readIo.exe
+	codegen_readIo.exe include/readIo.h
+	del codegen_readIo.exe
+
+codegen-writeio:
+	gcc codegen/src/writeIo.c -o codegen_writeIo.exe
+	codegen_writeIo.exe include/writeIo.h
+	del codegen_writeIo.exe
+
+codegen: codegen-arm codegen-thumb codegen-readio codegen-writeio
 
 debug-compile:
 	gcc -pg -no-pie -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -DMAINLOOP_GL -o "emuboy gx.exe"
@@ -31,4 +41,4 @@ debug-compile:
 debug-graph:
 	gprof "emuboy gx.exe" | gprof2dot -n0 -e0 | dot -Tsvg -o graph.svg
 
-.PHONY: gcc emcc codegen codegen-thumb codegen-arm debug-compile debug-graph
+.PHONY: gcc emcc codegen codegen-thumb codegen-arm codegen-readio codegen-writeio debug-compile debug-graph

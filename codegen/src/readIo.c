@@ -1,11 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define GEN(x) printf(#x "\n")
 #define GEN_CASE printf("case 0x%X:\n", case_addr);
 
 void generateSwitchCase(int addr);
 
-int main(){
+int main(int argc, const char* argv[]){
+    if(argc != 2){
+        printf("<name.exe> <output_file>\n");
+        exit(1);
+    }
+
+    freopen(argv[1], "w", stdout);
+
     GEN(u8 readIo8(arm7tdmi_t* cpu, u16 addr){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
@@ -74,7 +82,7 @@ void generateSwitchCase(int addr){
         if(addr >= 0x40000BA + 0xC*i && addr < 0x40000BA + 0xC*i + 2){    
             addr -= 0x40000BA + 0xC*i;
             GEN_CASE;
-            printf("return ((u8*)&gba->DMACNT[%d])[%d];\n", i, addr);
+            printf("return ((u8*)&gba->dmas[%d].DMACNT)[%d];\n", i, addr);
             return;
         }
     }

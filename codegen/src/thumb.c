@@ -56,13 +56,13 @@ const char condFuncs[16][64] = {
 void generateLUT_gotoTable();
 void generateLUT_data();
 
-int main(int argv, char** argc){
-    if(argv != 2){
+int main(int argc, char** argv){
+    if(argc != 2){
         printf("<name.exe> <output_file>\n");
         exit(1);
     }
 
-    freopen(argc[1], "w", stdout);
+    freopen(argv[1], "w", stdout);
     
     printf("%s\n", start_src);  
 

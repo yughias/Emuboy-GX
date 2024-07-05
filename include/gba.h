@@ -33,12 +33,7 @@ typedef struct gba_t {
     gba_tmr_t timers[4];
 
     // DMA DATA
-    bool dma_enabled[4];
-    u32 internal_dma_source[4];
-    u32 internal_dma_dest[4];
-    u32 DMASAD[4];
-    u32 DMADAD[4];
-    u32 DMACNT[4];
+    dma_t dmas[4];
 
     // INTERRUPT REGS
     u16 IE;

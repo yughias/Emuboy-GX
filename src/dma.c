@@ -4,17 +4,19 @@
 #include "integer.h"
 
 void triggerDma(gba_t* gba, int i){
-    gba->dma_enabled[i] = true;
-    gba->internal_dma_source[i] = gba->DMASAD[i];
-    gba->internal_dma_dest[i] = gba->DMADAD[i];
-    u8 dma_mode = (gba->DMACNT[i] >> 0x1C) & 0b11; 
+    dma_t* dma = &gba->dmas[i];
+    dma->enabled = true;
+    dma->internal_source = dma->DMASAD;
+    dma->internal_dest = dma->DMADAD;
+    u8 dma_mode = (dma->DMACNT >> 0x1C) & 0b11; 
     if(!dma_mode)
         transferDma(gba, i);
 }
 
 void transferDma(gba_t* gba, int i){
     arm7tdmi_t* cpu = &gba->cpu;
-    u32 DMACNT = gba->DMACNT[i];
+    dma_t* dma = &gba->dmas[i];
+    u32 DMACNT = dma->DMACNT;
     u16 n = DMACNT & 0xFFFF;
     u8 da = (DMACNT >> 0x15) & 0b11;
     u8 sa = (DMACNT >> 0x17) & 0b11;
@@ -34,33 +36,33 @@ void transferDma(gba_t* gba, int i){
         int step;
         if(transfer_size){
             step = 4;
-            u32 word = cpu->readWord(cpu, gba->internal_dma_source[i]);
-            cpu->writeWord(cpu, gba->internal_dma_dest[i], word);
+            u32 word = cpu->readWord(cpu, dma->internal_source);
+            cpu->writeWord(cpu, dma->internal_dest, word);
         } else {
             step = 2;
-            u16 halfword = cpu->readHalfWord(cpu, gba->internal_dma_source[i]);
-            cpu->writeHalfWord(cpu, gba->internal_dma_dest[i], halfword);
+            u16 halfword = cpu->readHalfWord(cpu, dma->internal_source);
+            cpu->writeHalfWord(cpu, dma->internal_dest, halfword);
         }
 
         switch(sa){
             case 0b00:
             case 0b11:
-            gba->internal_dma_source[i] += step;
+            dma->internal_source += step;
             break;
 
             case 0b01:
-            gba->internal_dma_source[i] -= step;
+            dma->internal_source -= step;
             break;
         }
 
         switch(da){
             case 0b00:
             case 0b11:
-            gba->internal_dma_dest[i] += step;
+            dma->internal_dest += step;
             break;
 
             case 0b01:
-            gba->internal_dma_dest[i] -= step;
+            dma->internal_dest -= step;
             break;
         }
 
@@ -68,13 +70,13 @@ void transferDma(gba_t* gba, int i){
     }
 
     if(da == 0b11)
-        gba->internal_dma_dest[i] = gba->DMADAD[i];
+        dma->internal_dest = dma->DMADAD;
 
     if(repeat_mode && (timing_mode == 0b01 || timing_mode == 0b10))
-        gba->dma_enabled[i] = true;
+        dma->enabled = true;
     else {
-        gba->dma_enabled[i] = false;
-        gba->DMACNT[i] &= ~(1 << 31);
+        dma->enabled = false;
+        dma->DMACNT &= ~(1 << 31);
     }
 
     if(irq_enable){
@@ -86,7 +88,8 @@ void transferDma(gba_t* gba, int i){
 void updateHblankDma(gba_t* gba){
     if(gba->ppu.VCOUNT < SCREEN_HEIGHT)
         for(int i = 0; i < 4; i++){
-            if(gba->dma_enabled[i] && (((gba->DMACNT[i] >> 0x1C) & 0b11) == 0b10)){
+            dma_t* dma = &gba->dmas[i];
+            if(dma->enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b10)){
                 transferDma(gba, i);
             }
         }
@@ -95,7 +98,9 @@ void updateHblankDma(gba_t* gba){
 
 void updateVblankDma(gba_t* gba){
     if(gba->ppu.VCOUNT == SCREEN_HEIGHT)
-        for(int i = 0; i < 4; i++)
-            if(gba->dma_enabled[i] && (((gba->DMACNT[i] >> 0x1C) & 0b11) == 0b01))
+        for(int i = 0; i < 4; i++){
+            dma_t* dma = &gba->dmas[i];
+            if(dma->enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b01))
                 transferDma(gba, i);
+        }
 }

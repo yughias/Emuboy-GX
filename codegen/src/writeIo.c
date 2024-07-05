@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define GEN(x) printf(#x "\n")
 #define GEN_CASE printf("case 0x%X:\n", case_addr);
@@ -6,7 +7,14 @@
 
 void generateSwitchCase(int addr);
 
-int main(){
+int main(int argc, const char* argv[]){
+    if(argc != 2){
+        printf("<name.exe> <output_file>\n");
+        exit(1);
+    }
+
+    freopen(argv[1], "w", stdout);
+
     GEN(void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
@@ -215,25 +223,30 @@ void generateSwitchCase(int addr){
             addr -= 0x40000B0 + 0xC*i;
             if(addr < 0x4){
                 GEN_CASE;
-                printf("((u8*)&gba->DMASAD[%d])[%d] = val;\n", i, addr);
+                printf("((u8*)&gba->dmas[%d].DMASAD)[%d] = val;\n", i, addr);
                 RET;
                 return;
             }
 
             if(addr < 0x8){
                 GEN_CASE;
-                printf("((u8*)&gba->DMADAD[%d])[%d] = val;\n", i, addr - 0x4);
+                printf("((u8*)&gba->dmas[%d].DMADAD)[%d] = val;\n", i, addr - 0x4);
                 RET;
                 return;
             }
 
             if(addr < 0xC){
                 GEN_CASE;
-                printf("((u8*)&gba->DMACNT[%d])[%d] = val;\n", i, addr - 0x8);
-                printf("if(gba->DMACNT[%d] >> 31)\n", i);
+                printf("{");
+                printf("bool old_trigger = gba->dmas[%d].DMACNT >> 31;\n", i);
+                printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val;\n", i, addr - 0x8);
+                GEN(if(!old_trigger){);
+                printf("if((gba->dmas[%d].DMACNT >> 31))\n", i);
                 printf("triggerDma(gba, %d);\n", i);
                 GEN(else);
-                printf("gba->dma_enabled[%d] = false;\n", i);
+                printf("gba->dmas[%d].enabled = false;\n", i);
+                GEN(});
+                printf("}");
                 RET;
                 return;
             }          

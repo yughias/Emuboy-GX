@@ -12,11 +12,7 @@
 #define BASE_FIFO_ADDR 0x040000A0
 
 #define SAMPLE_PER_CALL 1024
-#ifndef __EMSCRIPTEN__
-#define SAMPLE_BUFFER_SIZE (SAMPLE_PER_CALL*2)
-#else
 #define SAMPLE_BUFFER_SIZE (SAMPLE_PER_CALL*4)
-#endif
 
 typedef struct sample_t {
     u16 left;

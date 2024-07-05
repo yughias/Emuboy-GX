@@ -58,9 +58,10 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
     u32 old_cycles = cpu->cycles;
 
     for(int i = 1; i <= 2; i++){
-        if(IS_SOUND_DMA(gba->DMACNT[i]) && gba->DMADAD[i] == fifo_addr && gba->dma_enabled[i]){
+        dma_t* dma = &gba->dmas[i];
+        if(IS_SOUND_DMA(dma->DMACNT) && dma->DMADAD == fifo_addr && dma->enabled){
             int step = 0;
-            switch((gba->DMACNT[i] >> 17) & 0b11){
+            switch((dma->DMACNT >> 17) & 0b11){
                 case 0b00:
                 step = 4;
                 break;
@@ -71,12 +72,12 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
             }
 
             for(int j = 0; j < 4; j++){
-                u32 word = cpu->readWord(cpu, gba->internal_dma_source[i]);
-                gba->internal_dma_source[i] += step;
+                u32 word = cpu->readWord(cpu, dma->internal_source);
+                dma->internal_source += step;
                 cpu->writeWord(cpu, fifo_addr, word);
             }
 
-            if((gba->DMACNT[i] >> 0x1E) & 1){
+            if((dma->DMACNT >> 0x1E) & 1){
                 gba->IF |= 1 << (0x8 + i);
                 checkInterrupts(gba);
             }
@@ -102,18 +103,17 @@ void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
     addEventToScheduler(&gba->scheduler_head, block);
 }
 
+#include <SDL_MAINLOOP.h>
+
 void audioCallback(void* userdata, Uint8* stream, int len){
     atomic_fifo_t* fifo = userdata;
     int sample_len = len / sizeof(sample_t);
 
-    if(fifo->size >= sample_len){
-        for(int i = 0; i < sample_len; i++){
-            ((sample_t*)stream)[i] = fifo->data[fifo->r_idx];
+    for(int i = 0; i < sample_len; i++){
+        ((sample_t*)stream)[i] = fifo->data[fifo->r_idx];
+        if(fifo->size >= sample_len){
             fifo->r_idx = (fifo->r_idx + 1) % SAMPLE_BUFFER_SIZE; 
             fifo->size -= 1;
         }
-    } else {
-       for(int i = 0; i < sample_len; i++)
-            ((sample_t*)stream)[i] = fifo->data[fifo->r_idx];
     }
 }
