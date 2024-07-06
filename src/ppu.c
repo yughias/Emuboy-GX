@@ -15,7 +15,7 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type);
 void renderLine(ppu_t* ppu);
 
 void renderLineBitmap3(ppu_t* ppu, u8* blend_info);
-void renderLineBitmap4(ppu_t* ppu, u8* blend_info);
+void renderLineBitmap4(ppu_t* ppu, u8* blend_info, winType* win_mask);
 void renderLineBitmap5(ppu_t* ppu, u8* blend_info);
 
 void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask);
@@ -86,49 +86,6 @@ void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2){
     block->remaining = HBLANK_CYCLES;
     block->event = event_startScanline;
     addEventToScheduler(&gba->scheduler_head, block);
-}
-
-void updatePPU(gba_t* gba, u32 cycles){
-    cycles %= CYCLES_PER_FRAME;
-    ppu_t* ppu = &gba->ppu;
-    int inter_cycles = cycles % SCANLINE_CYCLES;
-    bool new_isHBlank = inter_cycles >= DRAW_CYCLES;
-    bool new_isVBlank = cycles >= VBLANK;
-    bool new_isVCount = (ppu->VCOUNT == ((ppu->DISPSTAT >> 8) % 228));
-    ppu->VCOUNT = (cycles / SCANLINE_CYCLES) % 228;
-
-    if(!ppu->isHBlank && new_isHBlank){
-        if(ppu->DISPSTAT & (1 << 4)){
-            gba->IF |= 0b10;
-            checkInterrupts(gba);
-        }
-        if(ppu->VCOUNT < SCREEN_HEIGHT){
-            renderLine(ppu);
-            updateHblankDma(gba);
-        }
-    }
-
-    if((ppu->DISPSTAT & (1 << 5)) && new_isVCount && !ppu->isVCount){
-        gba->IF |= 0b100;
-        checkInterrupts(gba);
-    }
-
-    if(!ppu->isVBlank && new_isVBlank){
-        if(ppu->DISPSTAT & (1 << 3)){
-            gba->IF |= 0b1;
-            checkInterrupts(gba);
-        }
-        renderPixels();
-        updateVblankDma(gba);
-        for(int i = 0; i < 2; i++){
-            ppu->INTERNAL_BGX[i] = (i32)ppu->BGX[i];
-            ppu->INTERNAL_BGY[i] = (i32)ppu->BGY[i];
-        }
-    }
-
-    ppu->isHBlank = new_isHBlank;
-    ppu->isVBlank = new_isVBlank;     
-    ppu->isVCount = new_isVCount;
 }
   
 void renderLine(ppu_t* ppu){
@@ -331,7 +288,7 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
                     break;
 
                     case BITMAP_4:
-                    renderLineBitmap4(ppu, blend_info);
+                    renderLineBitmap4(ppu, blend_info, win_mask);
                     break;
 
                     case BITMAP_5:
@@ -365,15 +322,18 @@ void renderLineBitmap3(ppu_t* ppu, u8* blend_info){
     }
 }
 
-void renderLineBitmap4(ppu_t* ppu, u8* blend_info){
+void renderLineBitmap4(ppu_t* ppu, u8* blend_info, winType* win_mask){
     int y = ppu->VCOUNT;
     int bg_offset = ((bool)(ppu->DISPCNT & (1 << 4))) * 0xA000;
     for(int x = 0; x < SCREEN_WIDTH; x++){
+        if(!windowShouldDraw(ppu, x, y, 2, win_mask[x]))
+            continue;
         int idx = x + y * SCREEN_WIDTH;
         u8 palIdx = ppu->VRAM[bg_offset + idx];
         if(!palIdx)
             continue;
         u16 col555 = getRgb555FromMemory(ppu->PALETTE_RAM, palIdx);
+        col555 = applyColorEffect(ppu, col555, 2, blend_info[x], pixels[idx], win_mask[x]);
         pixels[idx] = col555;
         blend_info[x] = 2;
     }

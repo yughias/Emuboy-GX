@@ -55,7 +55,6 @@ typedef struct ppu_t {
 } ppu_t;
 
 void composeDispstat(ppu_t* ppu);
-void updatePPU(gba_t* gba, u32 cycle_count);
 void checkVCount(gba_t* gba);
 
 void drawPaletteRam(SDL_Window* win, u8* ptr);
