@@ -12,6 +12,9 @@ void updateChannelMixing(apu_t* apu){
         apu->timer_idx[i] = (apu->SOUNDCNT_H & (1 << (10 + i*4))) & 1 ;
         if(apu->SOUNDCNT_H & (1 << (11 + i*4)))
             resetFifo(&apu->fifo[i]);
+        apu->dma_sound_volume[i] = apu->SOUNDCNT_H & (1 << (2 + i));
+        apu->dma_sound_enabled_left[i] = apu->SOUNDCNT_H & (1 << (9 + i*4));
+        apu->dma_sound_enabled_right[i] = apu->SOUNDCNT_H & (1 << (8 + i*4));
     }
 
     apu->SOUNDCNT_H &= ~( (1 << 11) | (1 << 15) );
@@ -24,7 +27,7 @@ void apuCheckTimer(gba_t* gba, u8 tmr_idx){
             fifo_t* fifo = &apu->fifo[i];
             if(fifo->size <= APU_FIFO_REQUEST)
                 refillFifo(gba, BASE_FIFO_ADDR + i*4);
-            apu->dma_sample[i] = popFifo(fifo);
+            apu->dma_sound_sample[i] = popFifo(fifo);
         }
     }
 }
@@ -90,12 +93,15 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
 void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
     apu_t* apu = &gba->apu;
     atomic_fifo_t* buffer = &apu->sample_buffer;
-    
+
     if(buffer->size != SAMPLE_BUFFER_SIZE){
         sample_t* sample = &buffer->data[buffer->w_idx];
+        *sample = mixDmaSoundSample(apu);
+        sample->right += apu->audioSpec.silence;
+        sample->left += apu->audioSpec.silence;
+
         buffer->w_idx = (buffer->w_idx + 1) % SAMPLE_BUFFER_SIZE; 
         buffer->size += 1;
-        sample->right = sample->left = ((i16)(i8)gba->apu.dma_sample[0] + (i16)(i8)gba->apu.dma_sample[1])*32 + gba->apu.audioSpec.silence;
     }
 
     scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
@@ -116,4 +122,15 @@ void audioCallback(void* userdata, Uint8* stream, int len){
             fifo->size -= 1;
         }
     }
+}
+
+sample_t mixDmaSoundSample(apu_t* apu){
+    sample_t sample = {0, 0};
+    for(int i = 0; i < 2; i++){
+        if(apu->dma_sound_enabled_right[i])
+            sample.right += (((i16)(i8)apu->dma_sound_sample[i]) * 64) >> (1 - apu->dma_sound_volume[i]);
+        if(apu->dma_sound_enabled_left[i])
+            sample.left += (((i16)(i8)apu->dma_sound_sample[i]) * 64) >> (1 - apu->dma_sound_volume[i]);
+    }
+    return sample;
 }

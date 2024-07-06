@@ -12,7 +12,7 @@
 #include "scheduler.h"
 
 // 1 PPU
-// 4 AUDIO
+// 4 TIMERS
 // 1 push sample to audio device 
 #define GBA_SCHEDULER_POOL_SIZE 6
 

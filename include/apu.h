@@ -41,7 +41,10 @@ typedef struct apu_t {
 
     fifo_t fifo[2];
     u8 timer_idx[2];
-    u8 dma_sample[2];
+    u8 dma_sound_sample[2];
+    bool dma_sound_enabled_left[2];
+    bool dma_sound_enabled_right[2];
+    bool dma_sound_volume[2];
 
     SDL_AudioDeviceID audioDev;
     SDL_AudioSpec audioSpec;
@@ -57,5 +60,6 @@ void updateChannelMixing(apu_t* apu);
 
 void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2);
 void audioCallback(void* userdata, Uint8* stream, int len);
+sample_t mixDmaSoundSample(apu_t* apu);
 
 #endif
