@@ -46,7 +46,5 @@ u16 update_keypad(){
     CHECK_CONTROLLER(RIGHTSHOULDER, 8);
     CHECK_CONTROLLER(LEFTSHOULDER, 9);
 
-
-    
     return keyinput;
 }

@@ -34,14 +34,12 @@ gamepak_t* gamepak = &gba->gamepak \
 #define MEMORY_READ_SAVE_DATA_16
 #define MEMORY_READ_SAVE_DATA_8 \
 case 0xE: \
-case 0xF: \
 return (*gamepak->readByte)(gamepak, addr & 0xFFFF);
 
 #define MEMORY_WRITE_SAVE_DATA_32
 #define MEMORY_WRITE_SAVE_DATA_16
 #define MEMORY_WRITE_SAVE_DATA_8 \
 case 0xE: \
-case 0xF: \
 (*gamepak->writeByte)(gamepak, addr & 0xFFFF, val); \
 return; \
 
@@ -53,6 +51,8 @@ return; \
 // add open bus for bios to fix fzero climax
 // it sufficient to return 0xFF
 // also konami collector relies on this!
+// metal slug depends on openbus, returning 0xFF
+// make things even worse!
 
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
