@@ -29,7 +29,7 @@ void setup(){
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
     setWindowIcon("data/logo.bmp");
-    frameRate(REFRESH_RATE);
+    frameRate(REFRESH_RATE*10);
     #ifndef EMSCRIPTEN
     initGba(&gba, "data/gba_bios.bin", getArgv(1));
     #else

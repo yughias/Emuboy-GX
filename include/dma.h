@@ -6,7 +6,6 @@
 typedef struct gba_t gba_t;
 
 typedef struct dma_t {
-    bool enabled;
     u32 internal_source;
     u32 internal_dest;
     u32 DMASAD;

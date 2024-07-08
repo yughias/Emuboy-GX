@@ -240,12 +240,9 @@ void generateSwitchCase(int addr){
                 printf("{");
                 printf("bool old_trigger = gba->dmas[%d].DMACNT >> 31;\n", i);
                 printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val;\n", i, addr - 0x8);
-                GEN(if(!old_trigger){);
-                printf("if((gba->dmas[%d].DMACNT >> 31))\n", i);
+                printf("bool new_trigger = gba->dmas[%d].DMACNT >> 31;\n", i);
+                GEN(if(!old_trigger && new_trigger));
                 printf("triggerDma(gba, %d);\n", i);
-                GEN(else);
-                printf("gba->dmas[%d].enabled = false;\n", i);
-                GEN(});
                 printf("}");
                 RET;
                 return;

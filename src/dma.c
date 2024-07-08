@@ -5,7 +5,6 @@
 
 void triggerDma(gba_t* gba, int i){
     dma_t* dma = &gba->dmas[i];
-    dma->enabled = true;
     dma->internal_source = dma->DMASAD;
     dma->internal_dest = dma->DMADAD;
     u8 dma_mode = (dma->DMACNT >> 0x1C) & 0b11; 
@@ -72,12 +71,8 @@ void transferDma(gba_t* gba, int i){
     if(da == 0b11)
         dma->internal_dest = dma->DMADAD;
 
-    if(repeat_mode && (timing_mode == 0b01 || timing_mode == 0b10))
-        dma->enabled = true;
-    else {
-        dma->enabled = false;
+    if(!repeat_mode || !timing_mode)
         dma->DMACNT &= ~(1 << 31);
-    }
 
     if(irq_enable){
         gba->IF |= 1 << (0x8 + i);
@@ -89,7 +84,8 @@ void updateHblankDma(gba_t* gba){
     if(gba->ppu.VCOUNT < SCREEN_HEIGHT)
         for(int i = 0; i < 4; i++){
             dma_t* dma = &gba->dmas[i];
-            if(dma->enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b10)){
+            bool enabled = dma->DMACNT >> 31;
+            if(enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b10)){
                 transferDma(gba, i);
             }
         }
@@ -100,7 +96,8 @@ void updateVblankDma(gba_t* gba){
     if(gba->ppu.VCOUNT == SCREEN_HEIGHT)
         for(int i = 0; i < 4; i++){
             dma_t* dma = &gba->dmas[i];
-            if(dma->enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b01))
+            bool enabled = dma->DMACNT >> 31;
+            if(enabled && (((dma->DMACNT >> 0x1C) & 0b11) == 0b01))
                 transferDma(gba, i);
         }
 }

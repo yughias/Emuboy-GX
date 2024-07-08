@@ -325,42 +325,30 @@ return;
 case 0xB8:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
 ((u8*)&gba->dmas[0].DMACNT)[0] = val;
-if(!old_trigger){
-if((gba->dmas[0].DMACNT >> 31))
+bool new_trigger = gba->dmas[0].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
-else
-gba->dmas[0].enabled = false;
-}
 }return;
 case 0xB9:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
 ((u8*)&gba->dmas[0].DMACNT)[1] = val;
-if(!old_trigger){
-if((gba->dmas[0].DMACNT >> 31))
+bool new_trigger = gba->dmas[0].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
-else
-gba->dmas[0].enabled = false;
-}
 }return;
 case 0xBA:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
 ((u8*)&gba->dmas[0].DMACNT)[2] = val;
-if(!old_trigger){
-if((gba->dmas[0].DMACNT >> 31))
+bool new_trigger = gba->dmas[0].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
-else
-gba->dmas[0].enabled = false;
-}
 }return;
 case 0xBB:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
 ((u8*)&gba->dmas[0].DMACNT)[3] = val;
-if(!old_trigger){
-if((gba->dmas[0].DMACNT >> 31))
+bool new_trigger = gba->dmas[0].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
-else
-gba->dmas[0].enabled = false;
-}
 }return;
 case 0xBC:
 ((u8*)&gba->dmas[1].DMASAD)[0] = val;
@@ -389,42 +377,30 @@ return;
 case 0xC4:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
 ((u8*)&gba->dmas[1].DMACNT)[0] = val;
-if(!old_trigger){
-if((gba->dmas[1].DMACNT >> 31))
+bool new_trigger = gba->dmas[1].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
-else
-gba->dmas[1].enabled = false;
-}
 }return;
 case 0xC5:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
 ((u8*)&gba->dmas[1].DMACNT)[1] = val;
-if(!old_trigger){
-if((gba->dmas[1].DMACNT >> 31))
+bool new_trigger = gba->dmas[1].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
-else
-gba->dmas[1].enabled = false;
-}
 }return;
 case 0xC6:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
 ((u8*)&gba->dmas[1].DMACNT)[2] = val;
-if(!old_trigger){
-if((gba->dmas[1].DMACNT >> 31))
+bool new_trigger = gba->dmas[1].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
-else
-gba->dmas[1].enabled = false;
-}
 }return;
 case 0xC7:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
 ((u8*)&gba->dmas[1].DMACNT)[3] = val;
-if(!old_trigger){
-if((gba->dmas[1].DMACNT >> 31))
+bool new_trigger = gba->dmas[1].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
-else
-gba->dmas[1].enabled = false;
-}
 }return;
 case 0xC8:
 ((u8*)&gba->dmas[2].DMASAD)[0] = val;
@@ -453,42 +429,30 @@ return;
 case 0xD0:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
 ((u8*)&gba->dmas[2].DMACNT)[0] = val;
-if(!old_trigger){
-if((gba->dmas[2].DMACNT >> 31))
+bool new_trigger = gba->dmas[2].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
-else
-gba->dmas[2].enabled = false;
-}
 }return;
 case 0xD1:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
 ((u8*)&gba->dmas[2].DMACNT)[1] = val;
-if(!old_trigger){
-if((gba->dmas[2].DMACNT >> 31))
+bool new_trigger = gba->dmas[2].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
-else
-gba->dmas[2].enabled = false;
-}
 }return;
 case 0xD2:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
 ((u8*)&gba->dmas[2].DMACNT)[2] = val;
-if(!old_trigger){
-if((gba->dmas[2].DMACNT >> 31))
+bool new_trigger = gba->dmas[2].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
-else
-gba->dmas[2].enabled = false;
-}
 }return;
 case 0xD3:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
 ((u8*)&gba->dmas[2].DMACNT)[3] = val;
-if(!old_trigger){
-if((gba->dmas[2].DMACNT >> 31))
+bool new_trigger = gba->dmas[2].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
-else
-gba->dmas[2].enabled = false;
-}
 }return;
 case 0xD4:
 ((u8*)&gba->dmas[3].DMASAD)[0] = val;
@@ -517,42 +481,30 @@ return;
 case 0xDC:
 {bool old_trigger = gba->dmas[3].DMACNT >> 31;
 ((u8*)&gba->dmas[3].DMACNT)[0] = val;
-if(!old_trigger){
-if((gba->dmas[3].DMACNT >> 31))
+bool new_trigger = gba->dmas[3].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 3);
-else
-gba->dmas[3].enabled = false;
-}
 }return;
 case 0xDD:
 {bool old_trigger = gba->dmas[3].DMACNT >> 31;
 ((u8*)&gba->dmas[3].DMACNT)[1] = val;
-if(!old_trigger){
-if((gba->dmas[3].DMACNT >> 31))
+bool new_trigger = gba->dmas[3].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 3);
-else
-gba->dmas[3].enabled = false;
-}
 }return;
 case 0xDE:
 {bool old_trigger = gba->dmas[3].DMACNT >> 31;
 ((u8*)&gba->dmas[3].DMACNT)[2] = val;
-if(!old_trigger){
-if((gba->dmas[3].DMACNT >> 31))
+bool new_trigger = gba->dmas[3].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 3);
-else
-gba->dmas[3].enabled = false;
-}
 }return;
 case 0xDF:
 {bool old_trigger = gba->dmas[3].DMACNT >> 31;
 ((u8*)&gba->dmas[3].DMACNT)[3] = val;
-if(!old_trigger){
-if((gba->dmas[3].DMACNT >> 31))
+bool new_trigger = gba->dmas[3].DMACNT >> 31;
+if(!old_trigger && new_trigger)
 triggerDma(gba, 3);
-else
-gba->dmas[3].enabled = false;
-}
 }return;
 case 0x100:
 {

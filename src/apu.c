@@ -62,7 +62,8 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
 
     for(int i = 1; i <= 2; i++){
         dma_t* dma = &gba->dmas[i];
-        if(IS_SOUND_DMA(dma->DMACNT) && dma->DMADAD == fifo_addr && dma->enabled){
+        bool enabled = dma->DMACNT >> 31;
+        if(IS_SOUND_DMA(dma->DMACNT) && dma->DMADAD == fifo_addr && enabled){
             int step = 0;
             switch((dma->DMACNT >> 17) & 0b11){
                 case 0b00:
