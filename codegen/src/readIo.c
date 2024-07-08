@@ -79,8 +79,8 @@ void generateSwitchCase(int addr){
     }
 
     for(int i = 0; i < 4; i++){
-        if(addr >= 0x40000BA + 0xC*i && addr < 0x40000BA + 0xC*i + 2){    
-            addr -= 0x40000BA + 0xC*i;
+        if(addr >= 0x40000B8 + 0xC*i && addr < 0x40000B8 + 0xC*i + 4){    
+            addr -= 0x40000B8 + 0xC*i;
             GEN_CASE;
             printf("return ((u8*)&gba->dmas[%d].DMACNT)[%d];\n", i, addr);
             return;

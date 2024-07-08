@@ -8,6 +8,7 @@ SDL_Window* bgPaletteWin;
 SDL_Window* objPaletteWin;
 SDL_Window* tileMapWin;
 
+int speed = 1;
 gba_t gba;
 
 void freeAll(){
@@ -29,7 +30,7 @@ void setup(){
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
     setWindowIcon("data/logo.bmp");
-    frameRate(REFRESH_RATE*10);
+    frameRate(REFRESH_RATE);
     #ifndef EMSCRIPTEN
     initGba(&gba, "data/gba_bios.bin", getArgv(1));
     #else
@@ -52,7 +53,17 @@ void setup(){
 }
 
 void loop(){
-    emulateGba(&gba);
+    if(isKeyReleased){
+        if(keyReleased == '-')
+            speed = speed == 1 ? 1 : speed >> 1;
+        if(keyReleased == '=')
+            speed <<= 1;
+        gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
+        gba.ppu.frameSkip = speed >> 1;
+    }
+
+    for(int i = 0; i < speed; i++)
+        emulateGba(&gba);
 
     #ifndef EMSCRIPTEN
     /*

@@ -53,7 +53,14 @@ void event_startScanline(gba_t* gba, u32 vcount, u32 dummy){
             gba->IF |= 0b1;
             checkInterrupts(gba);
         }
-        renderPixels();
+        
+        if(!ppu->skipCounter){
+            renderPixels();
+            ppu->skipCounter = ppu->frameSkip;
+        } else {
+            ppu->skipCounter -= 1;
+        }
+        
         updateVblankDma(gba);
         for(int i = 0; i < 2; i++){
             ppu->INTERNAL_BGX[i] = (i32)ppu->BGX[i];
@@ -77,7 +84,8 @@ void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2){
     }
 
     if(ppu->VCOUNT < SCREEN_HEIGHT){
-        renderLine(ppu);
+        if(!ppu->skipCounter)
+            renderLine(ppu); 
         updateHblankDma(gba);
     }
 

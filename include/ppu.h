@@ -51,7 +51,10 @@ typedef struct ppu_t {
 
     bool isHBlank;
     bool isVBlank;
-    bool isVCount;    
+    bool isVCount; 
+
+    int frameSkip;
+    int skipCounter;   
 } ppu_t;
 
 void composeDispstat(ppu_t* ppu);

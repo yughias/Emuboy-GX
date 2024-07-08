@@ -211,6 +211,7 @@ void setupSramMemory(gamepak_t* gamepak, size_t size){
 }
 
 void setupFlashMemory(gamepak_t* gamepak, size_t size, u16 id_code){
+    gamepak->type = GAMEPAK_FLASH;
     gamepak->savMemorySize = size;
     gamepak->savMemory = malloc(size);
     gamepak->internalData = malloc(sizeof(flash_t));
