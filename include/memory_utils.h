@@ -9,7 +9,8 @@
 #define GET_POINTERS \
 gba_t* gba = (gba_t*)cpu->master; \
 ppu_t* ppu = &gba->ppu; \
-gamepak_t* gamepak = &gba->gamepak \
+gamepak_t* gamepak = &gba->gamepak; \
+bios_t* bios = &gba->bios;
 
 #define GET_ARRAY_PTR(type, name) \
 ((u ## type*)&name)
@@ -60,7 +61,6 @@ GET_POINTERS; \
 switch((addr >> 24) & 0xF){ \
     case 0x0: \
     case 0x1: \
-    bios_t* bios = &gba->bios; \
     if((cpu->r[15] >> 24) & 0xF) \
         return bios->last_fetched; \
     bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
