@@ -10,6 +10,11 @@ typedef struct arm7tdmi_t arm7tdmi_t;
 #define WRAM_BOARD_SIZE (1 << 18)
 #define WRAM_CHIP_SIZE (1 << 15)
 
+typedef struct bios_t {
+    u8* data;
+    u32 last_fetched;
+} bios_t;
+
 u8 readByte(arm7tdmi_t* cpu, u32 addr);
 u16 readHalfWord(arm7tdmi_t* cpu, u32 addr);
 u32 readWord(arm7tdmi_t* cpu, u32 addr);

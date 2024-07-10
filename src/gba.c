@@ -72,7 +72,7 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     gba->KEYINPUT = 0xFFFF;
     gba->RCNT = 0x8000;
 
-    loadBios(biosFilename, &gba->BIOS);
+    loadBios(biosFilename, &gba->bios.data);
     loadGamePak(&gba->gamepak, romFilename);
 
     arm7tdmi_pipeline_refill(&gba->cpu);
@@ -102,8 +102,8 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
 }
 
 void freeGba(gba_t* gba){
-    if(gba->BIOS)
-        free(gba->BIOS);
+    if(gba->bios.data)
+        free(gba->bios.data);
 
     freeGamePak(&gba->gamepak);
 }

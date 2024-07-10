@@ -60,10 +60,11 @@ GET_POINTERS; \
 switch((addr >> 24) & 0xF){ \
     case 0x0: \
     case 0x1: \
+    bios_t* bios = &gba->bios; \
     if((cpu->r[15] >> 24) & 0xF) \
-        return gba->last_bios; \
-    gba->last_bios = *GET_ARRAY_PTR(32, gba->BIOS[addr & (BIOS_SIZE - 1)]); \
-    return *GET_ARRAY_PTR(type, gba->last_bios); \
+        return bios->last_fetched; \
+    bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
+    return bios->last_fetched; \
 \
     case 0x2: \
     WRAM_BOARD_TIMING_ ## type \
