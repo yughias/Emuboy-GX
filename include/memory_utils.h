@@ -53,15 +53,17 @@ return; \
 // also konami collector relies on this!
 // metal slug depends on openbus, returning 0xFF
 // make things even worse!
+// kirby breaks on level intro with open bug fix!
 
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
 switch((addr >> 24) & 0xF){ \
     case 0x0: \
     case 0x1: \
-    if(((cpu->r[15] >> 24) & 0xF) >= 1) \
-        return 0xFF; \
-    return *GET_ARRAY_PTR(type, gba->BIOS[addr & (BIOS_SIZE - 1)]); \
+    if((cpu->r[15] >> 24) & 0xF) \
+        return gba->last_bios; \
+    gba->last_bios = *GET_ARRAY_PTR(32, gba->BIOS[addr & (BIOS_SIZE - 1)]); \
+    return *GET_ARRAY_PTR(type, gba->last_bios); \
 \
     case 0x2: \
     WRAM_BOARD_TIMING_ ## type \

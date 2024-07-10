@@ -21,6 +21,8 @@ typedef struct gba_t {
     ppu_t ppu;
     apu_t apu;
 
+    u32 last_bios;
+
     // GBA RAM
     u8 WRAM_BOARD[WRAM_BOARD_SIZE];
     u8 WRAM_CHIP[WRAM_CHIP_SIZE];
