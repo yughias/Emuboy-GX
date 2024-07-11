@@ -31,18 +31,25 @@ bios_t* bios = &gba->bios;
 #define WRITE_IO_16(cpu, addr, val) writeIo8(cpu, addr, val); writeIo8(cpu, (addr) + 1, (val) >> 8)
 #define WRITE_IO_32(cpu, addr, val) WRITE_IO_16(cpu, addr, val); WRITE_IO_16(cpu, (addr) + 2, (val) >> 16)
 
-#define MEMORY_READ_SAVE_DATA_32
-#define MEMORY_READ_SAVE_DATA_16
-#define MEMORY_READ_SAVE_DATA_8 \
-case 0xE: \
-return (*gamepak->readByte)(gamepak, addr & 0xFFFF);
+#define MEMORY_READ_SAVE_DATA_ZONE(zone) \
+case 0x ## zone: \
+return (*gamepak->readByte_ ## zone)(gamepak, addr)
 
-#define MEMORY_WRITE_SAVE_DATA_32
-#define MEMORY_WRITE_SAVE_DATA_16
+#define MEMORY_WRITE_SAVE_DATA_ZONE(zone) \
+case 0x ## zone: \
+(*gamepak->writeByte_ ## zone)(gamepak, addr, val); return
+
+#define MEMORY_READ_SAVE_DATA_32 MEMORY_READ_SAVE_DATA_ZONE(D)
+#define MEMORY_READ_SAVE_DATA_16 MEMORY_READ_SAVE_DATA_ZONE(D)
+#define MEMORY_READ_SAVE_DATA_8 \
+MEMORY_READ_SAVE_DATA_ZONE(D); \
+MEMORY_READ_SAVE_DATA_ZONE(E)
+
+#define MEMORY_WRITE_SAVE_DATA_32 MEMORY_WRITE_SAVE_DATA_ZONE(D)
+#define MEMORY_WRITE_SAVE_DATA_16 MEMORY_WRITE_SAVE_DATA_ZONE(D)
 #define MEMORY_WRITE_SAVE_DATA_8 \
-case 0xE: \
-(*gamepak->writeByte)(gamepak, addr & 0xFFFF, val); \
-return; \
+MEMORY_WRITE_SAVE_DATA_ZONE(D); \
+MEMORY_WRITE_SAVE_DATA_ZONE(E)
 
 #define WRAM_BOARD_TIMING_32 cpu->cycles += 5;
 #define WRAM_BOARD_TIMING_16 WRAM_BOARD_TIMING_DEFAULT
@@ -54,7 +61,7 @@ return; \
 // also konami collector relies on this!
 // metal slug depends on openbus, returning 0xFF
 // make things even worse!
-// kirby breaks on level intro with open bug fix!
+// kirby breaks on level intro with 0xFF open bug fix!
 
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
@@ -90,13 +97,12 @@ switch((addr >> 24) & 0xF){ \
     case 0xA: \
     case 0xB: \
     case 0xC: \
-    case 0xD: \
     addr -= 0x08000000; \
     if(unlikely(addr >= gamepak->ROM_SIZE)) \
             return 0x00; \
     return *GET_ARRAY_PTR(type, gba->gamepak.ROM[addr]); \
 \
-    MEMORY_READ_SAVE_DATA_ ## type \
+    MEMORY_READ_SAVE_DATA_ ## type ; \
 \
     default: \
     return 0x00; \
@@ -131,5 +137,5 @@ switch((addr >> 24) & 0xF){ \
     *GET_ARRAY_PTR(type, ppu->OAM[addr & 0x3FF]) = val; \
     return; \
 \
-    MEMORY_WRITE_SAVE_DATA_ ## type \
+    MEMORY_WRITE_SAVE_DATA_ ## type ; \
 }

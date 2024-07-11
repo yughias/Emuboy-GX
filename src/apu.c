@@ -110,8 +110,6 @@ void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
     addEventToScheduler(&gba->scheduler_head, block);
 }
 
-#include <SDL_MAINLOOP.h>
-
 void audioCallback(void* userdata, Uint8* stream, int len){
     atomic_fifo_t* fifo = userdata;
     int sample_len = len / sizeof(sample_t);

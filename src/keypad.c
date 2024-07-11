@@ -19,7 +19,7 @@ void init_keypad(){
 }
 
 u16 update_keypad(){
-    u16 keyinput = 0xFFFF;
+    u16 keyinput = 0x3FF;
     
     CHECK_KEY(SDL_SCANCODE_X, 0);
     CHECK_KEY(SDL_SCANCODE_Z, 1);

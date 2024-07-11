@@ -1,109 +1,15 @@
 #include "gamepak.h"
 
+#include "sram.h"
+#include "flash.h"
+#include "eeprom.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {FLASH_READY, FLASH_ID_MODE, FLASH_SET_BANK, FLASH_WRITE_MODE, FLASH_ERASE_MODE} FLASH_STATE;
-
-typedef struct flash_t {
-    FLASH_STATE state;    
-    bool bank;
-    u8 id_byte[2];
-} flash_t;
-
 u8 gamePakEmptySaveRead(gamepak_t* gamepak, u16 addr){ return 0x00; }
 void gamePakEmptySaveWrite(gamepak_t* gamepak, u16 addr, u8 byte){ return; }
-
-u8 gamePakSramRead(gamepak_t* gamepak, u16 addr){
-    return gamepak->savMemory[addr & gamepak->savSizeMask];
-}
-
-void gamePakSramWrite(gamepak_t* gamepak, u16 addr, u8 byte){
-    gamepak->savMemory[addr & gamepak->savSizeMask] = byte;
-}
-
-u8 gamePakReadFlash(gamepak_t* gamepak, u16 addr){
-    flash_t* flash = gamepak->internalData;
-    if(flash->state == FLASH_ID_MODE && addr <= 1)
-        return flash->id_byte[addr];
-
-    int banked_addr = (addr + flash->bank * (1 << 16));
-    return gamepak->savMemory[banked_addr & gamepak->savSizeMask]; 
-}
-
-void gamePakWriteFlash(gamepak_t* gamepak, u16 addr, u8 byte){
-    flash_t* flash = gamepak->internalData;
-
-    if(flash->state == FLASH_WRITE_MODE){
-        int banked_addr = (addr + flash->bank * (1 << 16));
-        gamepak->savMemory[banked_addr & gamepak->savSizeMask] = byte;
-        flash->state = FLASH_READY;
-        return;
-    }
-
-    if(flash->state == FLASH_ERASE_MODE){
-        if(addr == 0x5555 && byte == 0x10){
-            memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
-            flash->state = FLASH_READY;
-            return;
-        }
-
-        if(byte == 0x30){
-            int bank = addr & 0xF000;
-            int banked_addr = (bank + flash->bank * (1 << 16));
-            banked_addr &= gamepak->savSizeMask;
-            memset(&gamepak->savMemory[banked_addr], 0xFF, 0x1000);
-            flash->state = FLASH_READY;
-            return;
-        }
-    }
-
-    if(flash->state == FLASH_SET_BANK && addr == 0){
-        flash->bank = byte & 1;
-        flash->state = FLASH_READY;
-        return;
-    }
-
-    if(addr == 0x5555){
-        if(flash->state == FLASH_ID_MODE && byte == 0xF0){
-            flash->state = FLASH_READY;
-            return;
-        }
-
-        if(flash->state == FLASH_READY){
-            switch(byte){
-                case 0xAA:
-                return;
-
-                case 0xA0:
-                flash->state = FLASH_WRITE_MODE;
-                break;
-
-                case 0x90:
-                flash->state = FLASH_ID_MODE;
-                return;
-
-                case 0x80:
-                flash->state = FLASH_ERASE_MODE;
-                return;
-
-                case 0xF0:
-                flash->state = FLASH_READY;
-                return;
-
-                case 0xB0:
-                flash->state = FLASH_SET_BANK;
-                return;
-
-                default:
-                printf("UNKNOWN! %x\n", byte);
-                return;
-            }
-        }
-    }
-}
-
 
 void getSavFilename(char* savFilename, const char* romFilename){
     strcpy(savFilename, romFilename);
@@ -131,10 +37,23 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
     gamepak->ROM_SIZE = ftell(fptr);
     rewind(fptr);
 
-    gamepak->ROM = (u8*)malloc(gamepak->ROM_SIZE);
+    bool nes_mirror = gamepak->ROM_SIZE == 1 << 20;
 
-    fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
-    fclose(fptr);
+    if(nes_mirror){
+        // classic nes games that are 1Mb in size requires mirror!
+        const int n_mirror = 4;
+        gamepak->ROM = malloc(gamepak->ROM_SIZE*n_mirror);
+        fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
+        fclose(fptr);
+        for(int i = 1; i < n_mirror; i++){
+            memcpy(gamepak->ROM + gamepak->ROM_SIZE*i, gamepak->ROM, gamepak->ROM_SIZE);
+        }
+        gamepak->ROM_SIZE *= n_mirror;
+    } else {
+        gamepak->ROM = malloc(gamepak->ROM_SIZE);
+        fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
+        fclose(fptr);
+    }
 
     setupGamePakType(gamepak);
 
@@ -195,8 +114,10 @@ bool romContains(u8* rom, const char* string, size_t rom_size){
 
 void setupRomOnlyMemory(gamepak_t* gamepak){
     gamepak->type = GAMEPAK_ROM_ONLY;
-    gamepak->readByte = gamePakEmptySaveRead;
-    gamepak->writeByte = gamePakEmptySaveWrite;
+    gamepak->readByte_D = gamePakEmptySaveRead;
+    gamepak->writeByte_D = gamePakEmptySaveWrite;
+    gamepak->readByte_E = gamePakEmptySaveRead;
+    gamepak->writeByte_E = gamePakEmptySaveWrite;
     printf("ROM ONLY!\n");
 }
 
@@ -204,8 +125,10 @@ void setupSramMemory(gamepak_t* gamepak, size_t size){
     gamepak->type = GAMEPAK_SRAM;
     gamepak->savMemorySize = size;
     gamepak->savMemory = (u8*)malloc(size);
-    gamepak->readByte = gamePakSramRead;
-    gamepak->writeByte = gamePakSramWrite;
+    gamepak->readByte_D = gamePakEmptySaveRead;
+    gamepak->writeByte_D = gamePakEmptySaveWrite;
+    gamepak->readByte_E = readSram;
+    gamepak->writeByte_E = writeSram;
     gamepak->savSizeMask = size - 1;
     printf("SRAM DETECTED!\n");
 }
@@ -221,12 +144,29 @@ void setupFlashMemory(gamepak_t* gamepak, size_t size, u16 id_code){
     flash->id_byte[0] = id_code & 0xFF;
     flash->id_byte[1] = id_code >> 8;
     memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
-    gamepak->readByte = gamePakReadFlash;
-    gamepak->writeByte = gamePakWriteFlash;
+    gamepak->readByte_D = gamePakEmptySaveRead;
+    gamepak->writeByte_D = gamePakEmptySaveWrite;
+    gamepak->readByte_E = readFlash;
+    gamepak->writeByte_E = writeFlash;
     gamepak->savSizeMask = size - 1;
 
     if(size == FLASH_64K_SIZE) printf("FLASH 64K DETECTED!\n");
     if(size == FLASH_128K_SIZE) printf("FLASH 128K DETECTED!\n");
+}
+
+void setupEepromMemory(gamepak_t* gamepak, size_t size){
+    gamepak->type = GAMEPAK_EEPROM;
+    gamepak->savMemorySize = size;
+    gamepak->savMemory = malloc(size);
+    gamepak->internalData = malloc(sizeof(eeprom_t));
+    memset(gamepak->internalData, 0, sizeof(eeprom_t));
+    memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
+    ((eeprom_t*)gamepak->internalData)->n = (size == EEPROM_512B_SIZE) ? 6 : 14; 
+    gamepak->readByte_D = readEeprom;
+    gamepak->writeByte_D = writeEeprom;
+    gamepak->readByte_E = gamePakEmptySaveRead;
+    gamepak->writeByte_E = gamePakEmptySaveWrite;
+    gamepak->savSizeMask = size - 1;
 }
 
 void freeGamePak(gamepak_t* gamepak){
@@ -255,8 +195,8 @@ void setupSaveMemoryWithDb(gamepak_t* gamepak, db_hash hash){
         break;
     
         case 0x0: case 0x1: case 0x2: case 0x3:
-        printf("EEPROM NOT SUPPORTED YET!\n");
-        setupRomOnlyMemory(gamepak);
+        printf("EEPROM %d DETECTED!\n", db_get_size(hash));
+        setupEepromMemory(gamepak, db_get_size(hash));
         break;
 
         default:

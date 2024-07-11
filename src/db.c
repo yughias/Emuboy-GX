@@ -1755,7 +1755,7 @@ u16 db_get_id_code(db_hash hash){
 size_t db_get_size(db_hash hash){
     switch(hash){
         case 0x0: case 0x1:
-        return (1 << 10);
+        return (1 << 9);
 
         case 0x2: case 0x3:
         return (1 << 13);
