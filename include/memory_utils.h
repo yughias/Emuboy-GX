@@ -10,18 +10,37 @@
 gba_t* gba = (gba_t*)cpu->master; \
 ppu_t* ppu = &gba->ppu; \
 gamepak_t* gamepak = &gba->gamepak; \
-bios_t* bios = &gba->bios;
+bios_t* bios = &gba->bios
 
 #define GET_ARRAY_PTR(type, name) \
 ((u ## type*)&name)
 
-#define WRITE_VRAM_8 \
-*GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 8) \
+#define MASK_VRAM_ADDRESS(x) \
+x &= (1 << 17) - 1; \
+if(x >= (1 << 16)) x = (x & 0x7FFF) | (1 << 16)
+
+#define WRITE_VRAM_DEFAULT(type) \
+*GET_ARRAY_PTR(type, ppu->VRAM[addr]) = val
 
 #define WRITE_VRAM_16 WRITE_VRAM_DEFAULT(16)
 #define WRITE_VRAM_32 WRITE_VRAM_DEFAULT(32)
-#define WRITE_VRAM_DEFAULT(type) \
-*GET_ARRAY_PTR(type, ppu->VRAM[addr]) = val
+#define WRITE_VRAM_8 \
+if(addr < (1 << 16)) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 8) \
+
+#define WRITE_PALETTE_RAM_DEFAULT(type) \
+*GET_ARRAY_PTR(type, ppu->PALETTE_RAM[addr & 0x3FF]) = val
+
+#define WRITE_PALETTE_RAM_32 WRITE_PALETTE_RAM_DEFAULT(32)
+#define WRITE_PALETTE_RAM_16 WRITE_PALETTE_RAM_DEFAULT(16)
+#define WRITE_PALETTE_RAM_8 \
+*GET_ARRAY_PTR(16, ppu->PALETTE_RAM[addr & 0x3FE]) = val | (val << 8) \
+
+#define WRITE_OAM_DEFAULT(type) \
+*GET_ARRAY_PTR(type, ppu->OAM[addr & 0x3FF]) = val
+
+#define WRITE_OAM_32 WRITE_OAM_DEFAULT(32)
+#define WRITE_OAM_16 WRITE_OAM_DEFAULT(16)
+#define WRITE_OAM_8
 
 #define READ_IO_8(cpu, addr) readIo8(cpu, addr)
 #define READ_IO_16(cpu, addr) (readIo8(cpu, addr) | (readIo8(cpu, (addr) + 1) << 8))
@@ -56,6 +75,10 @@ MEMORY_WRITE_SAVE_DATA_ZONE(E)
 #define WRAM_BOARD_TIMING_8 WRAM_BOARD_TIMING_DEFAULT
 #define WRAM_BOARD_TIMING_DEFAULT cpu->cycles += 2;
 
+#define ROM_OOB_8(x) (((x) >> 1) & 0xFF)
+#define ROM_OOB_16(x) (((x) >> 1) & 0xFFFF)
+#define ROM_OOB_32(x) (ROM_OOB_16(addr + 2) << 16) | ROM_OOB_16(addr)
+
 // add open bus for bios to fix fzero climax
 // it sufficient to return 0xFF
 // also konami collector relies on this!
@@ -87,7 +110,8 @@ switch((addr >> 24) & 0xF){ \
     return *GET_ARRAY_PTR(type, ppu->PALETTE_RAM[addr & 0x3FF]); \
 \
     case 0x6: \
-    return *GET_ARRAY_PTR(type, ppu->VRAM[(addr - 0x6000000) % VRAM_SIZE]); \
+    MASK_VRAM_ADDRESS(addr); \
+    return *GET_ARRAY_PTR(type, ppu->VRAM[addr]); \
 \
     case 0x7: \
     return *GET_ARRAY_PTR(type, ppu->OAM[addr & 0x3FF]); \
@@ -99,7 +123,7 @@ switch((addr >> 24) & 0xF){ \
     case 0xC: \
     addr -= 0x08000000; \
     if(unlikely(addr >= gamepak->ROM_SIZE)) \
-            return 0x00; \
+            return ROM_OOB_ ## type (addr); \
     return *GET_ARRAY_PTR(type, gba->gamepak.ROM[addr]); \
 \
     MEMORY_READ_SAVE_DATA_ ## type ; \
@@ -124,17 +148,16 @@ switch((addr >> 24) & 0xF){ \
     return; \
 \
     case 0x5: \
-    *GET_ARRAY_PTR(type, ppu->PALETTE_RAM[addr & 0x3FF]) = val; \
+    WRITE_PALETTE_RAM_ ## type; \
     return; \
 \
     case 0x6: \
-    addr -= 0x6000000; \
-    addr %= VRAM_SIZE; \
+    MASK_VRAM_ADDRESS(addr); \
     WRITE_VRAM_ ## type ; \
     return; \
 \
     case 0x7: \
-    *GET_ARRAY_PTR(type, ppu->OAM[addr & 0x3FF]) = val; \
+    WRITE_OAM_ ## type ; \
     return; \
 \
     MEMORY_WRITE_SAVE_DATA_ ## type ; \
