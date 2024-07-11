@@ -88,9 +88,8 @@ MEMORY_WRITE_SAVE_DATA_ZONE(E)
 
 #define MEMORY_TABLE_READ(type) \
 GET_POINTERS; \
-switch((addr >> 24) & 0xF){ \
+switch((addr >> 24) & 0xFF){ \
     case 0x0: \
-    case 0x1: \
     if((cpu->r[15] >> 24) & 0xF) \
         return bios->last_fetched; \
     bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
@@ -130,11 +129,11 @@ switch((addr >> 24) & 0xF){ \
 \
     default: \
     return 0x00; \
-} \
+}
 
 #define MEMORY_TABLE_WRITE(type) \
 GET_POINTERS; \
-switch((addr >> 24) & 0xF){ \
+switch((addr >> 24) & 0xFF){ \
     case 0x2: \
     *GET_ARRAY_PTR(type, gba->WRAM_BOARD[addr & 0x3FFFF]) = val; \
     return; \
