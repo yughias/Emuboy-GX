@@ -1,5 +1,6 @@
 #include "integer.h"
 
+#define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #define INLINE static inline __attribute__ ((always_inline))
 
@@ -79,6 +80,10 @@ if(addr < (1 << 16)) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val <
 #define WRITE_SRAM_16 writeSram(gamepak, not_aligned_addr, val); writeSram(gamepak, not_aligned_addr+1, val) 
 #define WRITE_SRAM_8 writeSram(gamepak, not_aligned_addr, val)
 
+#define THUMB_OPENBUS (cpu->pipeline_opcode[1] & 0xFFFF) | (cpu->pipeline_opcode[1] << 16)
+
+#define READ_OPENBUS cpu->thumb_mode ? THUMB_OPENBUS : cpu->pipeline_opcode[1];
+
 // add open bus for bios to fix fzero climax
 // it sufficient to return 0xFF
 // also konami collector relies on this!
@@ -90,10 +95,13 @@ if(addr < (1 << 16)) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val <
 GET_POINTERS; \
 switch((addr >> 24) & 0xFF){ \
     case 0x0: \
-    if((cpu->r[15] >> 24) & 0xFF) \
+    if(likely(addr < BIOS_SIZE)){ \
+        if((cpu->r[15] >> 24) & 0xFF) \
+            return bios->last_fetched; \
+        bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
         return bios->last_fetched; \
-    bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
-    return bios->last_fetched; \
+    } \
+    return READ_OPENBUS; \
 \
     case 0x2: \
     WRAM_BOARD_TIMING_ ## n_bits \
@@ -131,7 +139,7 @@ switch((addr >> 24) & 0xFF){ \
         return readEeprom(gamepak); \
 \
         default: \
-        return 0x00; \
+        return READ_OPENBUS; \
     } \
 \
     case 0xE: \
@@ -144,11 +152,11 @@ switch((addr >> 24) & 0xFF){ \
         return readFlash(gamepak, addr); \
 \
         default: \
-        return 0x00; \
+        return READ_OPENBUS; \
     } \
 \
     default: \
-    return 0x00; \
+    return READ_OPENBUS; \
 }
 
 #define MEMORY_TABLE_WRITE(n_bits) \
