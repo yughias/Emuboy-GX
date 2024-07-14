@@ -1,41 +1,21 @@
 #include "gba.h"
-#include "arm7tdmi/arm7tdmi.h"
+
+#include "sram.h"
+#include "flash.h"
+#include "eeprom.h"
+
 #include "memory_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-u8 readByte(arm7tdmi_t* cpu, u32 addr){
-    MEMORY_TABLE_READ(8);
-}
+DEFINE_READ_FUNC(Byte, 8, 0)
+DEFINE_READ_FUNC(HalfWord, 16, 0b1)
+DEFINE_READ_FUNC(Word, 32, 0b11)
 
-u16 readHalfWord(arm7tdmi_t* cpu, u32 addr){
-    addr &= ~0b1;
-
-    MEMORY_TABLE_READ(16);
-}
-
-u32 readWord(arm7tdmi_t* cpu, u32 addr){
-    addr &= ~0b11;
-
-    MEMORY_TABLE_READ(32);
-}
-
-void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val){
-    MEMORY_TABLE_WRITE(8);
-}
-
-void writeHalfWord(arm7tdmi_t* cpu, u32 addr, u16 val){
-    addr &= ~0b1;
-    
-    MEMORY_TABLE_WRITE(16);
-}
-
-void writeWord(arm7tdmi_t* cpu, u32 addr, u32 val){
-    addr &= ~0b11;
-    
-    MEMORY_TABLE_WRITE(32);
-}
+DEFINE_WRITE_FUNC(Byte, 8, 0)
+DEFINE_WRITE_FUNC(HalfWord, 16, 0b1)
+DEFINE_WRITE_FUNC(Word, 32, 0b11)
 
 void loadBios(const char* filename, u8** bios){
     FILE* fptr = fopen(filename, "rb");

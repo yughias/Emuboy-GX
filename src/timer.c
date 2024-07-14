@@ -6,7 +6,7 @@
 #define GET_RELOAD(x) (x->TMCNT & 0xFFFF)
 #define GET_SPEED_SHIFT(x) (timerSpeedShift[(x->TMCNT >> 16) & 0b11])
 
-#define gba_tmr_tRIGGER_DELAY 3
+#define TIMER_TRIGGER_DELAY 3
 
 const u32 timerSpeedShift[4] = {0, 6, 8, 10};
 
@@ -25,7 +25,7 @@ void triggerTimer(gba_t* gba, int i){
     duration <<= timer->speed_shift;
 
     // delay occurs only if timer was disabled 
-    u8 delay = timer->scheduled_event ? 0 : gba_tmr_tRIGGER_DELAY;
+    u8 delay = timer->scheduled_event ? 0 : TIMER_TRIGGER_DELAY;
 
     scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
     timer->scheduled_event = block;

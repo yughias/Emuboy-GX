@@ -17,6 +17,7 @@ typedef struct flash_t {
     u8 id_byte[2];
 } flash_t;
 
+void setupFlashMemory(gamepak_t* gamepak, size_t size, u16 id_code);
 u8 readFlash(gamepak_t* gamepak, u16 addr);
 void writeFlash(gamepak_t* gamepak, u16 addr, u8 byte);
 

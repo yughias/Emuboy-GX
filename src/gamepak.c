@@ -114,59 +114,7 @@ bool romContains(u8* rom, const char* string, size_t rom_size){
 
 void setupRomOnlyMemory(gamepak_t* gamepak){
     gamepak->type = GAMEPAK_ROM_ONLY;
-    gamepak->readByte_D = gamePakEmptySaveRead;
-    gamepak->writeByte_D = gamePakEmptySaveWrite;
-    gamepak->readByte_E = gamePakEmptySaveRead;
-    gamepak->writeByte_E = gamePakEmptySaveWrite;
     printf("ROM ONLY!\n");
-}
-
-void setupSramMemory(gamepak_t* gamepak, size_t size){
-    gamepak->type = GAMEPAK_SRAM;
-    gamepak->savMemorySize = size;
-    gamepak->savMemory = (u8*)malloc(size);
-    gamepak->readByte_D = gamePakEmptySaveRead;
-    gamepak->writeByte_D = gamePakEmptySaveWrite;
-    gamepak->readByte_E = readSram;
-    gamepak->writeByte_E = writeSram;
-    gamepak->savSizeMask = size - 1;
-    printf("SRAM DETECTED!\n");
-}
-
-void setupFlashMemory(gamepak_t* gamepak, size_t size, u16 id_code){
-    gamepak->type = GAMEPAK_FLASH;
-    gamepak->savMemorySize = size;
-    gamepak->savMemory = malloc(size);
-    gamepak->internalData = malloc(sizeof(flash_t));
-    flash_t* flash = gamepak->internalData;
-    flash->bank = 0;
-    flash->state = FLASH_READY;
-    flash->id_byte[0] = id_code & 0xFF;
-    flash->id_byte[1] = id_code >> 8;
-    memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
-    gamepak->readByte_D = gamePakEmptySaveRead;
-    gamepak->writeByte_D = gamePakEmptySaveWrite;
-    gamepak->readByte_E = readFlash;
-    gamepak->writeByte_E = writeFlash;
-    gamepak->savSizeMask = size - 1;
-
-    if(size == FLASH_64K_SIZE) printf("FLASH 64K DETECTED!\n");
-    if(size == FLASH_128K_SIZE) printf("FLASH 128K DETECTED!\n");
-}
-
-void setupEepromMemory(gamepak_t* gamepak, size_t size){
-    gamepak->type = GAMEPAK_EEPROM;
-    gamepak->savMemorySize = size;
-    gamepak->savMemory = malloc(size);
-    gamepak->internalData = malloc(sizeof(eeprom_t));
-    memset(gamepak->internalData, 0, sizeof(eeprom_t));
-    memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
-    ((eeprom_t*)gamepak->internalData)->n = (size == EEPROM_512B_SIZE) ? 6 : 14; 
-    gamepak->readByte_D = readEeprom;
-    gamepak->writeByte_D = writeEeprom;
-    gamepak->readByte_E = gamePakEmptySaveRead;
-    gamepak->writeByte_E = gamePakEmptySaveWrite;
-    gamepak->savSizeMask = size - 1;
 }
 
 void freeGamePak(gamepak_t* gamepak){

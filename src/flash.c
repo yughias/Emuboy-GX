@@ -1,7 +1,25 @@
 #include "flash.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+void setupFlashMemory(gamepak_t* gamepak, size_t size, u16 id_code){
+    gamepak->type = GAMEPAK_FLASH;
+    gamepak->savMemorySize = size;
+    gamepak->savMemory = malloc(size);
+    gamepak->internalData = malloc(sizeof(flash_t));
+    flash_t* flash = gamepak->internalData;
+    flash->bank = 0;
+    flash->state = FLASH_READY;
+    flash->id_byte[0] = id_code & 0xFF;
+    flash->id_byte[1] = id_code >> 8;
+    memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
+    gamepak->savSizeMask = size - 1;
+
+    if(size == FLASH_64K_SIZE) printf("FLASH 64K DETECTED!\n");
+    if(size == FLASH_128K_SIZE) printf("FLASH 128K DETECTED!\n");
+}
 
 u8 readFlash(gamepak_t* gamepak, u16 addr){
     flash_t* flash = gamepak->internalData;

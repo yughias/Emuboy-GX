@@ -7,8 +7,8 @@ typedef struct gba_t gba_t;
 typedef struct arm7tdmi_t arm7tdmi_t;
 
 #define BIOS_SIZE 0x4000
-#define WRAM_BOARD_SIZE (1 << 18)
-#define WRAM_CHIP_SIZE (1 << 15)
+#define EWRAM_SIZE (1 << 18)
+#define IWRAM_SIZE (1 << 15)
 
 typedef struct bios_t {
     u8* data;

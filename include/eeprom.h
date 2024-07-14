@@ -22,8 +22,8 @@ typedef struct eeprom_t
     uint64_t buffer;
 } eeprom_t;
 
-
-u8 readEeprom(gamepak_t* gamepak, u16 addr);
-void writeEeprom(gamepak_t* gamepak, u16 addr, u8 val);
+void setupEepromMemory(gamepak_t* gampepak, size_t size);
+u8 readEeprom(gamepak_t* gamepak);
+void writeEeprom(gamepak_t* gamepak, u8 val);
 
 #endif

@@ -1,8 +1,23 @@
 #include "eeprom.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define EEPROM_RESET_STATE(new_state) eeprom->bit_counter = 0; eeprom->state = new_state
 
-u8 readEeprom(gamepak_t* gamepak, u16 addr){
+void setupEepromMemory(gamepak_t* gamepak, size_t size){
+    gamepak->type = GAMEPAK_EEPROM;
+    gamepak->savMemorySize = size;
+    gamepak->savMemory = malloc(size);
+    gamepak->internalData = malloc(sizeof(eeprom_t));
+    memset(gamepak->internalData, 0, sizeof(eeprom_t));
+    memset(gamepak->savMemory, 0xFF, gamepak->savMemorySize);
+    ((eeprom_t*)gamepak->internalData)->n = (size == EEPROM_512B_SIZE) ? 6 : 14; 
+    gamepak->savSizeMask = size - 1;
+}
+
+u8 readEeprom(gamepak_t* gamepak){
     eeprom_t* eeprom = gamepak->internalData;
     bool bit;
     switch(eeprom->state){
@@ -27,7 +42,7 @@ u8 readEeprom(gamepak_t* gamepak, u16 addr){
     }
 }
 
-void writeEeprom(gamepak_t* gamepak, u16 addr, u8 byte){
+void writeEeprom(gamepak_t* gamepak, u8 byte){
     eeprom_t* eeprom = gamepak->internalData;
     bool bit = byte & 1;
     eeprom->buffer <<= 1;
