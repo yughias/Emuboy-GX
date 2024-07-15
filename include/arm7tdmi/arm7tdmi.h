@@ -21,6 +21,7 @@ typedef struct arm7tdmi_t {
     u32 irq_r[2];
     u32 svc_r[2];
     u32 fiq_r[7];
+    u32 und_r[2];
     
     union {
         u32 CPSR;

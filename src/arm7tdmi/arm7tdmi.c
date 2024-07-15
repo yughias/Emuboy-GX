@@ -66,6 +66,14 @@ void saveBankedReg(arm7tdmi_t* cpu){
         memcpy(&cpu->usr_r[15], &cpu->r[15], sizeof(u32)*1);
         break;
 
+        case 0x1B:
+        memcpy(cpu->usr_r, cpu->r, sizeof(u32)*13);;
+        memcpy(cpu->und_r, &cpu->r[13], sizeof(u32)*2);
+        memcpy(&cpu->usr_r[15], &cpu->r[15], sizeof(u32)*1);
+        break;
+
+        break;
+
         default:
         printf("CANNOT DECODE MODE! 0x%X\n", cpu->mode_bits);
         exit(0);
@@ -95,6 +103,12 @@ void loadBankedReg(arm7tdmi_t* cpu){
         case 0x13:
         memcpy(cpu->r, cpu->usr_r, sizeof(u32)*13);
         memcpy(&cpu->r[13], cpu->svc_r, sizeof(u32)*2);
+        memcpy(&cpu->r[15], &cpu->usr_r[15], sizeof(u32)*1);
+        break;
+
+        case 0x1B:
+        memcpy(cpu->r, cpu->usr_r, sizeof(u32)*13);
+        memcpy(&cpu->r[13], cpu->und_r, sizeof(u32)*2);
         memcpy(&cpu->r[15], &cpu->usr_r[15], sizeof(u32)*1);
         break;
 
