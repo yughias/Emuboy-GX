@@ -26,7 +26,7 @@ int main(int argc, const char* argv[]){
     }
 
     GEN(default:);
-    GEN(return 0x00;);
+    GEN(return readOpenBus(cpu) >> ((addr & 0b11) << 3););
     GEN(};);
     GEN(});
 }

@@ -164,6 +164,6 @@ return ((u8*)&gba->IME)[1];
 case 0x300:
 return gba->POSTFLG;
 default:
-return 0x00;
+return readOpenBus(cpu) >> ((addr & 0b11) << 3);
 };
 }
