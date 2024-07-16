@@ -61,7 +61,7 @@ if(x >= (1 << 16)) x = (x & 0x7FFF) | (1 << 16)
 #define WRITE_VRAM_16 WRITE_VRAM_DEFAULT(16)
 #define WRITE_VRAM_32 WRITE_VRAM_DEFAULT(32)
 #define WRITE_VRAM_8 \
-if(addr < (1 << 16)) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 8) \
+if(addr < 0x14000) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 8) \
 
 #define WRITE_PALETTE_RAM_DEFAULT(n_bits) \
 *GET_ARRAY_PTR(n_bits, ppu->PALETTE_RAM[addr & 0x3FF]) = val
