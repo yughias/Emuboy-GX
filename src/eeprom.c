@@ -92,5 +92,8 @@ void writeEeprom(gamepak_t* gamepak, u8 byte){
         case EEPROM_WRITE_END:
         EEPROM_RESET_STATE(EEPROM_IDLE);
         return;
+
+        default:
+        return;
     }
 }

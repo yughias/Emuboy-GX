@@ -143,7 +143,7 @@ void setupSaveMemoryWithDb(gamepak_t* gamepak, db_hash hash){
         break;
     
         case 0x0: case 0x1: case 0x2: case 0x3:
-        printf("EEPROM %d DETECTED!\n", db_get_size(hash));
+        printf("EEPROM %zu DETECTED!\n", db_get_size(hash));
         setupEepromMemory(gamepak, db_get_size(hash));
         break;
 
