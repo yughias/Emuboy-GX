@@ -47,7 +47,10 @@ void generateSwitchCase(int addr){
         if(addr >= 0x4000008 + 0x2*i && addr < 0x4000008 + 0x2*(i+1)){
             addr -= 0x4000008 + 0x2*i;
             GEN_CASE;
-            printf("((u8*)&ppu->BGCNT[%d])[%d] = val;\n", i, addr);
+            if(i <= 1 && addr == 1)
+                printf("((u8*)&ppu->BGCNT[%d])[%d] = val & 0xDF;\n", i, addr);
+            else 
+                printf("((u8*)&ppu->BGCNT[%d])[%d] = val;\n", i, addr);
             RET;
             return;
         }
@@ -142,7 +145,7 @@ void generateSwitchCase(int addr){
     if(addr >= 0x4000048 && addr < 0x400004A){
         addr -= 0x4000048;
         GEN_CASE;
-        printf("((u8*)&ppu->WININ)[%d] = val;\n", addr);
+        printf("((u8*)&ppu->WININ)[%d] = val & 0x3F;\n", addr);
         RET;
         return;
     }
@@ -150,7 +153,7 @@ void generateSwitchCase(int addr){
     if(addr >= 0x400004A && addr < 0x400004C){
         addr -= 0x400004A;
         GEN_CASE;
-        printf("((u8*)&ppu->WINOUT)[%d] = val;\n", addr);
+        printf("((u8*)&ppu->WINOUT)[%d] = val & 0x3F;\n", addr);
         RET;
         return;
     }
@@ -158,7 +161,10 @@ void generateSwitchCase(int addr){
     if(addr >= 0x4000050 && addr < 0x4000052){
         addr -= 0x4000050;
         GEN_CASE;
-        printf("((u8*)&ppu->BLDCNT)[%d] = val;\n", addr);
+        if(addr == 1)
+            printf("((u8*)&ppu->BLDCNT)[%d] = val & 0x3F;\n", addr);
+        else
+            printf("((u8*)&ppu->BLDCNT)[%d] = val;\n", addr);
         RET;
         return;
     }
@@ -166,7 +172,7 @@ void generateSwitchCase(int addr){
     if(addr >= 0x4000052 && addr < 0x4000054){
         addr -= 0x4000052;
         GEN_CASE;
-        printf("((u8*)&ppu->BLDALPHA)[%d] = val;\n", addr);
+        printf("((u8*)&ppu->BLDALPHA)[%d] = val & 0x1F;\n", addr);
         RET;
         return;
     }
@@ -182,7 +188,10 @@ void generateSwitchCase(int addr){
     if(addr >= 0x4000080 && addr < 0x4000082){
         addr -= 0x4000080;
         GEN_CASE;
-        printf("((u8*)&apu->SOUNDCNT_L)[%d] = val;\n", addr);
+        if(addr == 0)
+            printf("((u8*)&apu->SOUNDCNT_L)[%d] = val & 0x77;\n", addr);
+        else
+            printf("((u8*)&apu->SOUNDCNT_L)[%d] = val;\n", addr);
         RET;
         return;
     }
@@ -239,7 +248,13 @@ void generateSwitchCase(int addr){
                 GEN_CASE;
                 printf("{");
                 printf("bool old_trigger = gba->dmas[%d].DMACNT >> 31;\n", i);
-                printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val;\n", i, addr - 0x8);
+                if(addr - 0x8 == 2)
+                    printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val & 0xE0;\n", i, addr - 0x8);
+                else if(addr - 0x8 == 3 && i != 3)
+                    printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val & 0xF7;\n", i, addr - 0x8);
+                else
+                    printf("((u8*)&gba->dmas[%d].DMACNT)[%d] = val;\n", i, addr - 0x8);
+
                 printf("bool new_trigger = gba->dmas[%d].DMACNT >> 31;\n", i);
                 GEN(if(!old_trigger && new_trigger));
                 printf("triggerDma(gba, %d);\n", i);

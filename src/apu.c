@@ -17,7 +17,7 @@ void updateChannelMixing(apu_t* apu){
         apu->dma_sound_enabled_right[i] = apu->SOUNDCNT_H & (1 << (8 + i*4));
     }
 
-    apu->SOUNDCNT_H &= ~( (1 << 11) | (1 << 15) );
+    apu->SOUNDCNT_H &= ~( (1 << 11) | (1 << 15) | (0xF << 4));
 }
 
 void apuCheckTimer(gba_t* gba, u8 tmr_idx){

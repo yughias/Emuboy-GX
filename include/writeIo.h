@@ -20,13 +20,13 @@ case 0x8:
 ((u8*)&ppu->BGCNT[0])[0] = val;
 return;
 case 0x9:
-((u8*)&ppu->BGCNT[0])[1] = val;
+((u8*)&ppu->BGCNT[0])[1] = val & 0xDF;
 return;
 case 0xA:
 ((u8*)&ppu->BGCNT[1])[0] = val;
 return;
 case 0xB:
-((u8*)&ppu->BGCNT[1])[1] = val;
+((u8*)&ppu->BGCNT[1])[1] = val & 0xDF;
 return;
 case 0xC:
 ((u8*)&ppu->BGCNT[2])[0] = val;
@@ -225,28 +225,28 @@ case 0x47:
 ((u8*)&ppu->WINV[1])[1] = val;
 return;
 case 0x48:
-((u8*)&ppu->WININ)[0] = val;
+((u8*)&ppu->WININ)[0] = val & 0x3F;
 return;
 case 0x49:
-((u8*)&ppu->WININ)[1] = val;
+((u8*)&ppu->WININ)[1] = val & 0x3F;
 return;
 case 0x4A:
-((u8*)&ppu->WINOUT)[0] = val;
+((u8*)&ppu->WINOUT)[0] = val & 0x3F;
 return;
 case 0x4B:
-((u8*)&ppu->WINOUT)[1] = val;
+((u8*)&ppu->WINOUT)[1] = val & 0x3F;
 return;
 case 0x50:
 ((u8*)&ppu->BLDCNT)[0] = val;
 return;
 case 0x51:
-((u8*)&ppu->BLDCNT)[1] = val;
+((u8*)&ppu->BLDCNT)[1] = val & 0x3F;
 return;
 case 0x52:
-((u8*)&ppu->BLDALPHA)[0] = val;
+((u8*)&ppu->BLDALPHA)[0] = val & 0x1F;
 return;
 case 0x53:
-((u8*)&ppu->BLDALPHA)[1] = val;
+((u8*)&ppu->BLDALPHA)[1] = val & 0x1F;
 return;
 case 0x54:
 ((u8*)&ppu->BLDY)[0] = val;
@@ -255,7 +255,7 @@ case 0x55:
 ((u8*)&ppu->BLDY)[1] = val;
 return;
 case 0x80:
-((u8*)&apu->SOUNDCNT_L)[0] = val;
+((u8*)&apu->SOUNDCNT_L)[0] = val & 0x77;
 return;
 case 0x81:
 ((u8*)&apu->SOUNDCNT_L)[1] = val;
@@ -338,14 +338,14 @@ triggerDma(gba, 0);
 }return;
 case 0xBA:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
-((u8*)&gba->dmas[0].DMACNT)[2] = val;
+((u8*)&gba->dmas[0].DMACNT)[2] = val & 0xE0;
 bool new_trigger = gba->dmas[0].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
 }return;
 case 0xBB:
 {bool old_trigger = gba->dmas[0].DMACNT >> 31;
-((u8*)&gba->dmas[0].DMACNT)[3] = val;
+((u8*)&gba->dmas[0].DMACNT)[3] = val & 0xF7;
 bool new_trigger = gba->dmas[0].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 0);
@@ -390,14 +390,14 @@ triggerDma(gba, 1);
 }return;
 case 0xC6:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
-((u8*)&gba->dmas[1].DMACNT)[2] = val;
+((u8*)&gba->dmas[1].DMACNT)[2] = val & 0xE0;
 bool new_trigger = gba->dmas[1].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
 }return;
 case 0xC7:
 {bool old_trigger = gba->dmas[1].DMACNT >> 31;
-((u8*)&gba->dmas[1].DMACNT)[3] = val;
+((u8*)&gba->dmas[1].DMACNT)[3] = val & 0xF7;
 bool new_trigger = gba->dmas[1].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 1);
@@ -442,14 +442,14 @@ triggerDma(gba, 2);
 }return;
 case 0xD2:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
-((u8*)&gba->dmas[2].DMACNT)[2] = val;
+((u8*)&gba->dmas[2].DMACNT)[2] = val & 0xE0;
 bool new_trigger = gba->dmas[2].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
 }return;
 case 0xD3:
 {bool old_trigger = gba->dmas[2].DMACNT >> 31;
-((u8*)&gba->dmas[2].DMACNT)[3] = val;
+((u8*)&gba->dmas[2].DMACNT)[3] = val & 0xF7;
 bool new_trigger = gba->dmas[2].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 2);
@@ -494,7 +494,7 @@ triggerDma(gba, 3);
 }return;
 case 0xDE:
 {bool old_trigger = gba->dmas[3].DMACNT >> 31;
-((u8*)&gba->dmas[3].DMACNT)[2] = val;
+((u8*)&gba->dmas[3].DMACNT)[2] = val & 0xE0;
 bool new_trigger = gba->dmas[3].DMACNT >> 31;
 if(!old_trigger && new_trigger)
 triggerDma(gba, 3);
