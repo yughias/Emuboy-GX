@@ -3,13 +3,6 @@
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-
-// emscripten doesn't include Mix_LoadWAV and Mix_PlayChannel macros 
-#ifdef MAINLOOP_AUDIO
-#define Mix_LoadWAV(file) Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1);
-#define Mix_PlayChannel(channel, chunk, loops) Mix_PlayChannelTimed(channel, chunk, loops, -1);
-#endif
-
 #endif
 
 #define MAX_NAME  64
@@ -18,7 +11,7 @@ unsigned int displayWidth;
 unsigned int displayHeight;
 int width = 800;
 int height = 600;
-int* pixels;
+uint16_t* pixels;
 
 float frameRate = 60;
 unsigned int frameCount = 0;
@@ -49,9 +42,9 @@ SDL_Surface* surface;
 
 bool running = false;
 
-#ifdef MAINLOOP_GL
+#ifndef __EMSCRIPTEN__
 Uint32 winFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE;
-#else 
+#else
 Uint32 winFlags = SDL_WINDOW_HIDDEN;
 #endif
 
@@ -63,7 +56,6 @@ char** main_argv;
 
 bool render_every_frame = true;
 
-#ifdef MAINLOOP_GL
 SDL_Renderer* renderer = NULL;
 SDL_Texture* drawBuffer = NULL;
 GLuint globalShader = 0;
@@ -106,9 +98,8 @@ GLuint compileProgram(const char*);
 GLuint compileShader(const char*, GLuint);
 
 void calculateRescaleVars();
-void renderOpenGL();
+void renderBufferToWindow();
 int filterResize(void*, SDL_Event*);
-#endif
 
 #ifdef MAINLOOP_WINDOWS
 #include <SDL2/SDL_syswm.h>
@@ -144,7 +135,6 @@ void updateMenuVect(HMENU, bool);
 #endif
 
 void mainloop();
-void render();
 
 // variables used for run loop at correct framerate
 #ifndef __EMSCRIPTEN__
@@ -194,7 +184,7 @@ int main(int argc, char* argv[]){
         SDL_INIT_JOYSTICK |
         SDL_INIT_GAMECONTROLLER |
         SDL_INIT_SENSOR
-        #ifdef MAINLOOP_GL
+        #ifndef __EMSCRIPTEN__
         | SDL_VIDEO_OPENGL
         #endif
     );
@@ -207,10 +197,6 @@ int main(int argc, char* argv[]){
     displayWidth = displayMode.w;
     displayHeight = displayMode.h;
     strcpy(windowName, "window");
-    
-    #ifdef MAINLOOP_AUDIO
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    #endif
     
     setup();
 
@@ -256,11 +242,6 @@ int main(int argc, char* argv[]){
     if(onExit)
         (*onExit)();
 
-    #ifdef MAINLOOP_AUDIO
-    Mix_CloseAudio();
-    #endif
-
-    #ifdef MAINLOOP_GL
     SDL_DestroyTexture(drawBuffer);
 	SDL_DestroyRenderer(renderer);
     
@@ -269,7 +250,6 @@ int main(int argc, char* argv[]){
         free(shader_list);
         shader_list = tmp;
     }
-    #endif
 
     #ifdef MAINLOOP_WINDOWS
     free(buttons);
@@ -284,11 +264,6 @@ int main(int argc, char* argv[]){
 
 void mainloop(){
     frameCount++;
-
-    #ifdef MAINLOOP_GL
-    SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
-    pixels = (int*)surface->pixels;
-    #endif
 
     #ifdef MAINLOOP_WINDOWS
     MSG msg;
@@ -311,13 +286,13 @@ void mainloop(){
     pmouseX = mouseX;
     pmouseY = mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
-    #ifdef MAINLOOP_GL
+    #ifndef __EMSCRIPTEN__
     calculateRescaleVars();
+    #endif
     mouseX -= localX;
     mouseY -= localY;
     mouseX *= width/render_width;
     mouseY *= height/render_height;
-    #endif
     if(mouseX < 0)
         mouseX = 0;
     if(mouseY < 0)
@@ -373,16 +348,7 @@ void mainloop(){
     loop();
 
     if(render_every_frame)
-        render();
-}
-
-void render(){
-    #ifdef MAINLOOP_GL
-    SDL_UnlockTexture(drawBuffer);  
-    renderOpenGL();
-    #else 
-    SDL_UpdateWindowSurface(window);
-    #endif
+        renderPixels();
 }
 
 void size(int w, int h){
@@ -393,12 +359,14 @@ void size(int w, int h){
         height = h;
         window = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, winFlags);
 
-        #ifdef MAINLOOP_GL
+        #ifndef __EMSCRIPTEN__
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-        drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+        #endif
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGR555, SDL_TEXTUREACCESS_STREAMING, width, height);
         SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
 
+        #ifndef __EMSCRIPTEN__
         setScaleMode(scale_mode);
         SDL_SetEventFilter(filterResize, NULL);
 
@@ -418,23 +386,16 @@ void size(int w, int h){
         glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)SDL_GL_GetProcAddress("glGetUniformLocation");
         glUniform1f = (PFNGLUNIFORM1FPROC)SDL_GL_GetProcAddress("glUniform1f");
         glUniform2f = (PFNGLUNIFORM2FPROC)SDL_GL_GetProcAddress("glUniform2f");
-
-        pixels = (int*)surface->pixels;
-        #else
-        surface = SDL_GetWindowSurface(window);
-        pixels = (int*)surface->pixels;
         #endif
+
+        pixels = surface->pixels;
     } else {
-        #ifdef MAINLOOP_GL
+        #ifndef __EMSCRIPTEN__
         SDL_DestroyTexture(drawBuffer);
-        drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+        drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGR555, SDL_TEXTUREACCESS_STREAMING, width, height);
         SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
         calculateRescaleVars();
-        pixels = (int*)surface->pixels;
-        #else
-        SDL_SetWindowSize(window, w, h);
-        surface = SDL_GetWindowSurface(window);
-        pixels = (int*)surface->pixels;
+        pixels = surface->pixels;
         #endif
     }
 }
@@ -480,12 +441,6 @@ void fullScreen(){
     
     if(window)
         SDL_SetWindowFullscreen(window, winFlags & SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-    #ifndef MAINLOOP_GL
-    SDL_GetWindowSize(window, &width, &height);
-    surface = SDL_GetWindowSurface(window);
-    pixels = (int*)surface->pixels;
-    #endif
 }
 
 void background(int col){
@@ -525,30 +480,12 @@ void autoRender(){
 }
 
 void renderPixels(){
-    render();
-    #ifdef MAINLOOP_GL
+    SDL_UnlockTexture(drawBuffer);
+    renderBufferToWindow();
     SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
-    pixels = (int*)surface->pixels;
-    #endif
+    pixels = surface->pixels;
 }
 
-#ifdef MAINLOOP_AUDIO
-
-Sound* loadSound(const char* filename){
-    return Mix_LoadWAV(filename);
-}
-
-void playSound(Sound* sound){
-    Mix_PlayChannel(-1, sound, 0);
-}
-
-void freeSound(Sound* sound){
-    Mix_FreeChunk(sound);
-}
-
-#endif
-
-#ifdef MAINLOOP_GL
 GLuint compileShader(const char* source, GLuint shaderType) {
 	GLuint result = glCreateShader(shaderType);
 	glShaderSource(result, 1, &source, NULL);
@@ -673,8 +610,10 @@ void calculateRescaleVars(){
     localY = win_height/2-render_height/2;
 }
 
-void renderOpenGL(){
+void renderBufferToWindow(){
     SDL_RenderClear(renderer);
+
+    #ifndef __EMSCRIPTEN__
     SDL_GL_BindTexture(drawBuffer, NULL, NULL);
     glUseProgram(globalShader);
 
@@ -689,6 +628,10 @@ void renderOpenGL(){
         glTexCoord2f(1, 1); glVertex2f(1, -1);
         glTexCoord2f(0, 1); glVertex2f(-1, -1);
     glEnd();
+    #else
+    SDL_RenderCopy(renderer, drawBuffer, NULL, NULL);
+    #endif
+
     SDL_RenderPresent(renderer);
 }
 
@@ -696,14 +639,12 @@ int filterResize(void* userdata, SDL_Event* event){
     if(event->type == SDL_WINDOWEVENT)
         if(event->window.event == SDL_WINDOWEVENT_RESIZED || event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
             calculateRescaleVars();
-            renderOpenGL();
+            renderBufferToWindow();
             return 0;
         }
 
     return 1;
 }
-
-#endif
 
 #ifdef MAINLOOP_WINDOWS
 void getAbsoluteDir(char* dst){

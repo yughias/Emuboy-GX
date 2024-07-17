@@ -60,9 +60,6 @@ typedef struct ppu_t {
 void composeDispstat(ppu_t* ppu);
 void checkVCount(gba_t* gba);
 
-void drawPaletteRam(SDL_Window* win, u8* ptr);
-void drawTileMap(SDL_Window* win, ppu_t* ppu);
-
 void event_startScanline(gba_t* gba, u32 vcount, u32 dummy);
 void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2);
 

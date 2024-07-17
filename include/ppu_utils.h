@@ -6,16 +6,6 @@ INLINE u16 getRgb555FromMemory(u8* palettePtr, int idx){
     return palettePtr[idx*2] | (palettePtr[idx*2+1] << 8);
 }
 
-INLINE u32 rgb555torgb888(u16 rgb555){
-    u8 red = rgb555 & 0x1F;
-    u8 green = (rgb555 >> 5) & 0x1F;
-    u8 blue = (rgb555 >> 10) & 0x1F;
-    red = (red << 3) | (red >> 2);
-    green = (green << 3) | (green >> 2);
-    blue = (blue << 3) | (blue >> 2);
-    return color(red, green, blue);
-}
-
 INLINE bool isInsideWindow(u8 x, u8 y, u16 winh, u16 winv){
     u8 left = winh >> 8;
     u8 right = winh & 0xFF;

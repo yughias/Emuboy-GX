@@ -2,18 +2,7 @@
 #define _SDL_MAINLOOP_H_
 
 #include <SDL2/SDL.h>
-
-#if defined(MAINLOOP_GL) || defined(MAINLOOP_WINDOWS)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#ifdef MAINLOOP_AUDIO
-#include <SDL2/SDL_mixer.h>
-#endif
-
-#ifdef MAINLOOP_GL
 #include <SDL2/SDL_opengl.h>
-#endif
 
 #ifdef MAINLOOP_WINDOWS
 #include <windows.h>
@@ -40,7 +29,7 @@ extern unsigned int displayWidth;
 extern unsigned int displayHeight;
 extern int width;
 extern int height;
-extern int* pixels;
+extern uint16_t* pixels;
 
 extern float frameRate;
 extern unsigned int frameCount;
@@ -84,37 +73,13 @@ void renderPixels();
 int getArgc();
 const char* getArgv(int);
 
-#ifdef MAINLOOP_AUDIO
-typedef Mix_Chunk Sound;
-
-// Audio function 
-Sound* loadSound(const char*);
-void playSound(Sound*);
-void freeSound(Sound*);
-#else
-typedef int Sound;
-#define loadSound(x) 0
-#define playSound(x); 
-#define freeSound(x); 
-#endif
-
-// define MAINLOOP_GL variables and functions, if symbol does not exit function are transformed to empty macros
 typedef enum {NEAREST, LINEAR, ANISOTROPIC} ScaleMode;
-#ifdef MAINLOOP_GL
 typedef GLuint* Shader;
 Shader loadShader(const char*);
 void noGlobalShader();
 void setGlobalShader(Shader);
 void setScaleMode(ScaleMode);
 void setVoidColor(int, int, int);
-#else
-typedef int Shader;
-#define loadShader(x) 0
-#define noGlobalShader();
-#define setGlobalShader(x);
-#define setScaleMode(x);
-#define setVoidColor(a, b, c);
-#endif
 
 typedef size_t menuId;
 typedef size_t buttonId;

@@ -4,10 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-SDL_Window* bgPaletteWin;
-SDL_Window* objPaletteWin;
-SDL_Window* tileMapWin;
-
 int speed = 1;
 gba_t gba;
 
@@ -41,14 +37,6 @@ void setup(){
 
     init_keypad();
 
-    #ifndef EMSCRIPTEN
-    /*
-    bgPaletteWin = SDL_CreateWindow("bg palette", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 16*20, 16*20, 0);
-    objPaletteWin = SDL_CreateWindow("obj palette", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 16*20, 16*20, 0);
-    tileMapWin = SDL_CreateWindow("tile map", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 256, 512, 0);
-    */
-    #endif
-
     onExit = freeAll;
 }
 
@@ -59,21 +47,9 @@ void loop(){
         if(keyReleased == '=')
             speed <<= 1;
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
-        gba.ppu.frameSkip = speed >> 1;
+        gba.ppu.frameSkip = 0;//speed >> 1;
     }
 
     for(int i = 0; i < speed; i++)
         emulateGba(&gba);
-
-    #ifndef EMSCRIPTEN
-    /*
-    drawPaletteRam(bgPaletteWin, gba.ppu.PALETTE_RAM);
-    drawPaletteRam(objPaletteWin, gba.ppu.PALETTE_RAM + 512);
-    drawTileMap(tileMapWin, &gba.ppu);
-
-    SDL_UpdateWindowSurface(bgPaletteWin);
-    SDL_UpdateWindowSurface(objPaletteWin);
-    SDL_UpdateWindowSurface(tileMapWin);
-    */
-    #endif
 }

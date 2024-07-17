@@ -2,7 +2,7 @@ SRC = $(wildcard src/*.c) $(wildcard src/arm7tdmi/*.c)
 
 gcc:
 	windres config.rc -O coff -o config.res
-	gcc -Iinclude -Llib $(SRC) config.res -lmingw32 -lSDL2main -lSDL2 -lopengl32 -mavx -O2 -flto -DMAINLOOP_GL -o "emuboy gx.exe"
+	gcc -Iinclude -Llib $(SRC) config.res -lmingw32 -lSDL2main -lSDL2 -lopengl32 -mavx -O2 -flto -o "emuboy gx.exe"
 	del config.res
 
 emcc:
@@ -10,6 +10,7 @@ emcc:
 	-sUSE_SDL=2 \
 	-sINVOKE_RUN=0 \
 	-sTOTAL_MEMORY=128MB \
+	-msimd128 \
 	--embed-file data/vba_bios.bin \
 	-o website/emulator.js
 
