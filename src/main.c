@@ -47,7 +47,7 @@ void loop(){
         if(keyReleased == '=')
             speed <<= 1;
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
-        gba.ppu.frameSkip = 0;//speed >> 1;
+        gba.ppu.frameSkip = speed >> 1;
     }
 
     for(int i = 0; i < speed; i++)
