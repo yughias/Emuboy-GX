@@ -107,6 +107,11 @@ if(addr < 0x14000) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 
 #define WRITE_SRAM_16 writeSram(gamepak, not_aligned_addr, val); writeSram(gamepak, not_aligned_addr+1, val) 
 #define WRITE_SRAM_8 writeSram(gamepak, not_aligned_addr, val)
 
+#define READ_ROM(n_bits) \
+if(unlikely(addr >= gamepak->ROM_SIZE)) \
+            return ROM_OOB_ ## n_bits (addr); \
+return *GET_ARRAY_PTR(n_bits, gba->gamepak.ROM[addr]) 
+
 // add open bus for bios to fix fzero climax
 // it sufficient to return 0xFF
 // also konami collector relies on this!
@@ -151,25 +156,29 @@ switch((addr >> 24) & 0xFF){ \
 \
     case 0x8: \
     case 0x9: \
+    addr -= 0x08000000; \
+    READ_ROM(n_bits); \
+\
     case 0xA: \
     case 0xB: \
+    addr -= 0x0A000000; \
+    READ_ROM(n_bits); \
+\
     case 0xC: \
-    addr -= 0x08000000; \
-    if(unlikely(addr >= gamepak->ROM_SIZE)) \
-            return ROM_OOB_ ## n_bits (addr); \
-    return *GET_ARRAY_PTR(n_bits, gba->gamepak.ROM[addr]); \
+    addr -= 0x0C000000; \
+    READ_ROM(n_bits); \
 \
     case 0xD: \
+    addr -= 0x0C000000; \
     switch(gamepak->type){ \
         case GAMEPAK_EEPROM: \
         return readEeprom(gamepak); \
 \
         default: \
-        return readOpenBus(cpu); \
+        READ_ROM(n_bits); \
     } \
 \
     case 0xE: \
-    case 0xF: \
     switch(gamepak->type){ \
         case GAMEPAK_SRAM: \
         READ_SRAM_ ## n_bits ; \
