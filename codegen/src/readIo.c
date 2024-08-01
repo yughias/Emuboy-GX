@@ -14,7 +14,7 @@ int main(int argc, const char* argv[]){
 
     freopen(argv[1], "w", stdout);
 
-    GEN(u8 readIo8(arm7tdmi_t* cpu, u16 addr){);
+    GEN(u8 readIo8(arm7tdmi_t* cpu, u32 addr){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
     GEN(apu_t* apu = &gba->apu;);
@@ -193,6 +193,15 @@ void generateSwitchCase(int addr){
     if(addr == 0x4000300){
         GEN_CASE;
         GEN(return gba->POSTFLG;);
+        return;
+    }
+
+     if(
+        (addr & ~0b1) == 0x4000136 || (addr & ~0b1) == 0x4000142 || (addr & ~0b1) == 0x400015A ||
+        (addr & ~0b1) == 0x4000206 || (addr & ~0b1) == 0x400020A || (addr & ~0b1) == 0x4000302
+    ){
+        GEN_CASE;
+        GEN(return 0;);
         return;
     }
 }

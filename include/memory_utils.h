@@ -48,6 +48,10 @@ ppu_t* ppu = &gba->ppu; \
 gamepak_t* gamepak = &gba->gamepak; \
 bios_t* bios = &gba->bios
 
+#define EXTRA_CYCLE_32 cpu->cycles += 1
+#define EXTRA_CYCLE_16
+#define EXTRA_CYCLE_8
+
 #define GET_ARRAY_PTR(n_bits, name) \
 ((u ## n_bits*)&name)
 
@@ -86,10 +90,10 @@ if(addr < 0x14000) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 
 #define WRITE_IO_16(cpu, addr, val) writeIo8(cpu, addr, val); writeIo8(cpu, (addr) + 1, (val) >> 8)
 #define WRITE_IO_32(cpu, addr, val) WRITE_IO_16(cpu, addr, val); WRITE_IO_16(cpu, (addr) + 2, (val) >> 16)
 
-#define WRAM_BOARD_TIMING_32 cpu->cycles += 5;
-#define WRAM_BOARD_TIMING_16 WRAM_BOARD_TIMING_DEFAULT
-#define WRAM_BOARD_TIMING_8 WRAM_BOARD_TIMING_DEFAULT
-#define WRAM_BOARD_TIMING_DEFAULT cpu->cycles += 2;
+#define EWRAM_TIMING_32 cpu->cycles += 5;
+#define EWRAM_TIMING_16 EWRAM_TIMING_DEFAULT
+#define EWRAM_TIMING_8 EWRAM_TIMING_DEFAULT
+#define EWRAM_TIMING_DEFAULT cpu->cycles += 2;
 
 #define ROM_OOB_8(x) (((x) >> 1) & 0xFF)
 #define ROM_OOB_16(x) (((x) >> 1) & 0xFFFF)
@@ -123,19 +127,22 @@ switch((addr >> 24) & 0xFF){ \
     return readOpenBus(cpu); \
 \
     case 0x2: \
-    WRAM_BOARD_TIMING_ ## n_bits \
+    EWRAM_TIMING_ ## n_bits \
     return *GET_ARRAY_PTR(n_bits, gba->EWRAM[addr & 0x3FFFF]); \
 \
     case 0x3: \
     return *GET_ARRAY_PTR(n_bits, gba->IWRAM[addr & 0x7FFF]); \
 \
     case 0x4: \
+    addr -= 0x4000000; \
     return READ_IO_ ## n_bits (cpu, addr); \
 \
     case 0x5: \
+    EXTRA_CYCLE_ ## n_bits ; \
     return *GET_ARRAY_PTR(n_bits, ppu->PALETTE_RAM[addr & 0x3FF]); \
 \
     case 0x6: \
+    EXTRA_CYCLE_ ## n_bits ; \
     MASK_VRAM_ADDRESS(addr); \
     return *GET_ARRAY_PTR(n_bits, ppu->VRAM[addr]); \
 \
@@ -182,6 +189,7 @@ switch((addr >> 24) & 0xFF){ \
 GET_POINTERS; \
 switch((addr >> 24) & 0xFF){ \
     case 0x2: \
+    EWRAM_TIMING_ ## n_bits \
     *GET_ARRAY_PTR(n_bits, gba->EWRAM[addr & 0x3FFFF]) = val; \
     return; \
 \
@@ -190,14 +198,17 @@ switch((addr >> 24) & 0xFF){ \
     return; \
 \
     case 0x4: \
+    addr -= 0x4000000; \
     WRITE_IO_ ## n_bits (cpu, addr, val); \
     return; \
 \
     case 0x5: \
+    EXTRA_CYCLE_ ## n_bits ; \
     WRITE_PALETTE_RAM_ ## n_bits; \
     return; \
 \
     case 0x6: \
+    EXTRA_CYCLE_ ## n_bits; \
     MASK_VRAM_ADDRESS(addr); \
     WRITE_VRAM_ ## n_bits ; \
     return; \

@@ -1,4 +1,4 @@
-u8 readIo8(arm7tdmi_t* cpu, u16 addr){
+u8 readIo8(arm7tdmi_t* cpu, u32 addr){
 gba_t* gba = (gba_t*)cpu->master;
 ppu_t* ppu = &gba->ppu;
 apu_t* apu = &gba->apu;
@@ -145,6 +145,18 @@ case 0x134:
 return ((u8*)&gba->RCNT)[0];
 case 0x135:
 return ((u8*)&gba->RCNT)[1];
+case 0x136:
+return 0;
+case 0x137:
+return 0;
+case 0x142:
+return 0;
+case 0x143:
+return 0;
+case 0x15A:
+return 0;
+case 0x15B:
+return 0;
 case 0x200:
 return ((u8*)&gba->IE)[0];
 case 0x201:
@@ -157,12 +169,24 @@ case 0x204:
 return ((u8*)&gba->WAITCNT)[0];
 case 0x205:
 return ((u8*)&gba->WAITCNT)[1];
+case 0x206:
+return 0;
+case 0x207:
+return 0;
 case 0x208:
 return ((u8*)&gba->IME)[0];
 case 0x209:
 return ((u8*)&gba->IME)[1];
+case 0x20A:
+return 0;
+case 0x20B:
+return 0;
 case 0x300:
 return gba->POSTFLG;
+case 0x302:
+return 0;
+case 0x303:
+return 0;
 default:
 return readOpenBus(cpu) >> ((addr & 0b11) << 3);
 };

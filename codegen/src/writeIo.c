@@ -15,7 +15,7 @@ int main(int argc, const char* argv[]){
 
     freopen(argv[1], "w", stdout);
 
-    GEN(void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val){);
+    GEN(void writeIo8(arm7tdmi_t* cpu, u32 addr, u8 val){);
     GEN(gba_t* gba = (gba_t*)cpu->master;);
     GEN(ppu_t* ppu = &gba->ppu;);
     GEN(apu_t* apu = &gba->apu;);
@@ -342,6 +342,5 @@ void generateSwitchCase(int addr){
         RET;
         return;
     }
-
 }
 

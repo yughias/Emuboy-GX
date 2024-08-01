@@ -1,4 +1,4 @@
-void writeIo8(arm7tdmi_t* cpu, u16 addr, u8 val){
+void writeIo8(arm7tdmi_t* cpu, u32 addr, u8 val){
 gba_t* gba = (gba_t*)cpu->master;
 ppu_t* ppu = &gba->ppu;
 apu_t* apu = &gba->apu;

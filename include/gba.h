@@ -48,7 +48,7 @@ typedef struct gba_t {
     // MISC REGS
     u16 RCNT;
     u8 POSTFLG;
-    u16 WAITCNT;
+    u16 WAITCNT;    
 
     // SCHEDULER
     scheduler_t scheduler_pool[GBA_SCHEDULER_POOL_SIZE];
