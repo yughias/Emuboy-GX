@@ -2690,7 +2690,7 @@ u8 count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 0) * 4;
 rlist = opcode & 0xFF;
 cpu->fetch_seq = false;
-for(int i = 0; i < 16 && rlist; i++){
+for(int i = 0; rlist; i++){
 bool should_transfer = rlist & 1;
 rlist >>= 1;
 if(!should_transfer)
@@ -2706,7 +2706,7 @@ u8 count = __builtin_popcount(rlist);
 cpu->r[13] -= (count + 1) * 4;
 rlist = opcode & 0xFF;
 cpu->fetch_seq = false;
-for(int i = 0; i < 16 && rlist; i++){
+for(int i = 0; rlist; i++){
 bool should_transfer = rlist & 1;
 rlist >>= 1;
 if(!should_transfer)
@@ -2723,7 +2723,7 @@ u8 rlist = opcode & 0xFF;
 u8 count = __builtin_popcount(rlist);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-for(int i = 0; i < 16 && rlist; i++){
+for(int i = 0; rlist; i++){
 bool should_transfer = rlist & 1;
 rlist >>= 1;
 if(!should_transfer)
@@ -2737,7 +2737,7 @@ u8 rlist = opcode & 0xFF;
 u8 count = __builtin_popcount(rlist);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-for(int i = 0; i < 16 && rlist; i++){
+for(int i = 0; rlist; i++){
 bool should_transfer = rlist & 1;
 rlist >>= 1;
 if(!should_transfer)

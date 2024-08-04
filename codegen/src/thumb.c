@@ -617,7 +617,7 @@ void thumb_push_pop(bool l, bool r){
 
     GEN(cpu->fetch_seq = false;);
 
-    GEN(for(int i = 0; i < 16 && rlist; i++){);
+    GEN(for(int i = 0; rlist; i++){);
         GEN(bool should_transfer = rlist & 1;);
         GEN(rlist >>= 1;);
         GEN(if(!should_transfer));
