@@ -92,7 +92,8 @@ STR(void arm_step(arm7tdmi_t* cpu){)
 STR(    u32 opcode = cpu->pipeline_opcode[0];)
 STR(    cpu->pipeline_opcode[0] = cpu->pipeline_opcode[1];)
 STR(    cpu->r[15] += 4;)
-STR(    cpu->pipeline_opcode[1] = readWordS(cpu, cpu->r[15]);)
+STR(    cpu->pipeline_opcode[1] = readWordAndTick(cpu, cpu->r[15], cpu->fetch_seq);)
+STR(    cpu->fetch_seq = true;)
 STR()
 STR(    u8 cond = opcode >> 28;)
 STR(    if((*condFuncs[cond])(cpu) == false))
@@ -459,31 +460,38 @@ void arm_halfword_data_transfer(bool load_bit, bool up_bit, bool pre_bit, bool w
         case 0x01:
         if(load_bit) {
             GEN(cpu->cycles += I_CYCLES;);
-            GEN(*rd = readHalfWordN(cpu, addr););
+            GEN(cpu->fetch_seq = false;);
+            GEN(*rd = readHalfWordAndTick(cpu, addr, false););
             GEN(if(addr & 1));
                 GEN(*rd = (*rd >> 8) | (*rd << 24););
-        } else
-            GEN(writeHalfWordN(cpu, addr, *rd););
+        } else {
+            GEN(cpu->fetch_seq = false;);
+            GEN(writeHalfWordAndTick(cpu, addr, *rd, false););
+        }
         break;
 
         case 0x02:
         if(load_bit){
-            GEN(*rd = readByteN(cpu, addr););
+            GEN(*rd = readByteAndTick(cpu, addr, false););
             GEN(if(*rd & 0x80));
             GEN(    *rd |= 0xFFFFFF00;); 
-        } else
-            GEN(writeByteN(cpu, addr, *rd););
+        } else {
+            GEN(cpu->fetch_seq = false;);
+            GEN(writeByteAndTick(cpu, addr, *rd, false););
+        }
         break;
 
         case 0x03:
         if(load_bit){
-            GEN(*rd = readHalfWordN(cpu, addr););
+            GEN(*rd = readHalfWordAndTick(cpu, addr, false););
             GEN(if(*rd & 0x8000));
             GEN(    *rd |= 0xFFFF0000;);
             GEN(if(addr & 1));
             GEN(*rd = (*rd >> 8) | (*rd & 0x00800000 ? 0xFF000000 : 0););
-        } else
-            GEN(writeHalfWordN(cpu, addr, *rd););
+        } else {
+            GEN(cpu->fetch_seq = false;);
+            GEN(writeHalfWordAndTick(cpu, addr, *rd, false););
+        }
         break;
     }
 
@@ -520,22 +528,24 @@ void arm_single_data_transfer(bool i_bit, bool p_bit, bool u_bit, bool b_bit, bo
 
     if(l_bit){
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         if(b_bit)
-            GEN(*rd = readByteN(cpu, addr););
+            GEN(*rd = readByteAndTick(cpu, addr, false););
         else{
-            GEN(*rd = readWordN(cpu, addr););
+            GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
             GEN(if(rd_idx == 15));
             GEN(    arm7tdmi_pipeline_refill(cpu););
         }
     } else {
+        GEN(cpu->fetch_seq = false;);
         GEN(u32 val = *rd;);
         GEN(if(rd_idx == 15));
         GEN(    val += 4;);
         if(b_bit)
-            GEN(writeByteN(cpu, addr, val););
+            GEN(writeByteAndTick(cpu, addr, val, false););
         else
-            GEN(writeWordN(cpu, addr, val););
+            GEN(writeWordAndTick(cpu, addr, val, false););
     }
 
     if(!p_bit)
@@ -574,15 +584,17 @@ void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, boo
     if(l_bit)
         GEN(cpu->cycles += I_CYCLES;);
 
+    GEN(cpu->fetch_seq = false;);
+
     GEN(if(!reg_count){);
         if(l_bit){
-            GEN(cpu->r[15] = readWordN(cpu, *rn););
+            GEN(cpu->r[15] = readWordAndTick(cpu, *rn, false););
             GEN(arm7tdmi_pipeline_refill(cpu););
         } else {
             if(!u_bit)
-                printf("writeWordN(cpu, *rn - %s, cpu->r[15] + 4);\n", p_bit ? "0x3C" : "0x40");
+                printf("writeWordAndTick(cpu, *rn - %s, cpu->r[15] + 4, false);\n", p_bit ? "0x3C" : "0x40");
             else
-                printf("writeWordN(cpu, *rn + %s, cpu->r[15] + 4);\n", p_bit ? "0x04" : "0x00");
+                printf("writeWordAndTick(cpu, *rn + %s, cpu->r[15] + 4, false);\n", p_bit ? "0x04" : "0x00");
         }
         if(!u_bit)
             GEN(cpu->r[base_idx] -= 0x40;);
@@ -600,7 +612,7 @@ void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, boo
                 GEN(addr += 4;);
 
             if(l_bit){
-                GEN(regs[i] = readWordN(cpu, addr););
+                GEN(regs[i] = readWordAndTick(cpu, addr, !first_transfer););
                 GEN(if(i == 15){);
                 GEN(    arm7tdmi_pipeline_refill(cpu););
                     if(s_bit){
@@ -610,11 +622,11 @@ void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, boo
             } else {
                 GEN(if(i == base_idx && !first_transfer) {);
                     if(!u_bit)
-                        GEN(writeWordN(cpu, addr, *rn - (reg_count << 2)););
+                        GEN(writeWordAndTick(cpu, addr, *rn - (reg_count << 2), false););
                     else
-                        GEN(writeWordN(cpu, addr, *rn + (reg_count << 2)););
+                        GEN(writeWordAndTick(cpu, addr, *rn + (reg_count << 2), false););
                 GEN(} else);
-                    GEN(writeWordN(cpu, addr, i == 15 ? regs[i] + 4 : regs[i]););
+                    GEN(writeWordAndTick(cpu, addr, i == 15 ? regs[i] + 4 : regs[i], false););
             }
 
             if(!p_bit)
@@ -667,6 +679,8 @@ void arm_multiply(bool a, bool s){
     GEN(else);
         printf("cpu->cycles += %d;\n", a ? 5: 4);
 
+    GEN(cpu->fetch_seq = false;);
+
     if(s){
         GEN(cpu->Z_FLAG = !(*rd););
         GEN(cpu->N_FLAG = *rd >> 31;);
@@ -683,6 +697,8 @@ void arm_multiply_long(bool u, bool a, bool s){
     GEN(u32* rd_hi = &cpu->r[(opcode >> 16) & 0xF];);
     GEN(u64 result;);
 
+    GEN(cpu->fetch_seq = false;);
+
     if(u)
         GEN(result = ((i64)(i32)rm) * ((i64)(i32)rs););
     else
@@ -697,7 +713,9 @@ void arm_multiply_long(bool u, bool a, bool s){
     if(s){
         GEN(cpu->Z_FLAG = !result;);
         GEN(cpu->N_FLAG = result >> 63;);
+    }
 
+    if(u){
         GEN(if(!(rs & 0xFFFFFF00) || !((~rs) & 0xFFFFFF00)));
             printf("cpu->cycles += %d;\n", a ? 3: 2);
         GEN(else if(!(rs & 0xFFFF0000) || !((~rs) & 0xFFFF0000)));

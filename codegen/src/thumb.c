@@ -41,7 +41,8 @@ STR(void thumb_step(arm7tdmi_t* cpu){)
 STR(    u16 opcode = cpu->pipeline_opcode[0];)
 STR(    cpu->pipeline_opcode[0] = cpu->pipeline_opcode[1];)
 STR(    cpu->r[15] += 2;)
-STR(    cpu->pipeline_opcode[1] = readHalfWordS(cpu, cpu->r[15]););
+STR(    cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq);)
+STR(    cpu->fetch_seq = true;);
 
 const char end_src[] =
 STR(});
@@ -296,7 +297,8 @@ void thumb_pc_relative_load(int off3){
     printf("u32* rd = &cpu->r[%d];\n", off3);
     GEN(u32 addr = (cpu->r[15] & 0xFFFFFFFC) + (w8 << 2););
     GEN(cpu->cycles += I_CYCLES;);
-    GEN(*rd = readWordN(cpu, addr););
+    GEN(cpu->fetch_seq = false;);
+    GEN(*rd = readWordAndTick(cpu, addr, false););
     RET;
 }
 
@@ -379,16 +381,19 @@ void thumb_alu_operations(int op4){
 
         case 2:
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         GEN(alu_MOV(cpu, rd, 0, alu_LSL(cpu, *rd, rs, true), true););
         break;
 
         case 3:
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         GEN(alu_MOV(cpu, rd, 0, alu_LSR(cpu, *rd, rs, true), true););
         break;
 
         case 4:
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         GEN(alu_MOV(cpu, rd, 0, alu_ASR(cpu, *rd, rs, true), true););
         break;
 
@@ -402,6 +407,7 @@ void thumb_alu_operations(int op4){
 
         case 7:
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         GEN(alu_MOV(cpu, rd, 0, alu_ROR(cpu, *rd, rs, true), true););
         break;
 
@@ -428,19 +434,21 @@ void thumb_alu_operations(int op4){
 
         case 13:
         // MUL
+        GEN(u32 old_rd = *rd;);
         GEN(*rd = ((i32)*rd) * ((i32)rs););
         GEN(cpu->Z_FLAG = !(*rd););
         GEN(cpu->N_FLAG = *rd >> 31;);
 
-        GEN(if(!(rs & 0xFFFFFF00) || !((~rs) & 0xFFFFFF00)));
-            GEN(cpu->cycles += 1*I_CYCLES;);
-        GEN(else if(!(rs & 0xFFFF0000) || !((~rs) & 0xFFFF0000)));
-            GEN(cpu->cycles += 2*I_CYCLES;);
-        GEN(else if(!(rs & 0xFF000000) || !((~rs) & 0xFF000000)));
-            GEN(cpu->cycles += 3*I_CYCLES;);
+        GEN(if(!(old_rd & 0xFFFFFF00) || !((~old_rd) & 0xFFFFFF00)));
+            GEN(cpu->cycles += 1;);
+        GEN(else if(!(old_rd & 0xFFFF0000) || !((~old_rd) & 0xFFFF0000)));
+            GEN(cpu->cycles += 2;);
+        GEN(else if(!(old_rd & 0xFF000000) || !((~old_rd) & 0xFF000000)));
+            GEN(cpu->cycles += 3;);
         GEN(else);
-            GEN(cpu->cycles += 4*I_CYCLES;);
+            GEN(cpu->cycles += 4;);
 
+        GEN(cpu->fetch_seq = false;);
         break;
 
         case 14:
@@ -463,13 +471,15 @@ void thumb_multiple_load_store(int off3, bool l){
     if(l)
         GEN(cpu->cycles += I_CYCLES;);
 
+    GEN(cpu->fetch_seq = false;);
+
     GEN(u8 count = 0xFF;);
     GEN(if(!rlist){);
         if(l){
-            GEN(cpu->r[15] = readWordN(cpu, base););
+            GEN(cpu->r[15] = readWordAndTick(cpu, base, false););
             GEN(thumb_pipeline_refill(cpu););
         } else {
-            GEN(writeWordN(cpu, base, cpu->r[15] + 2););
+            GEN(writeWordAndTick(cpu, base, cpu->r[15] + 2, false););
         }
         printf("cpu->r[%d] += 0x40;\n", base_idx);
     GEN(} else{);
@@ -481,13 +491,13 @@ void thumb_multiple_load_store(int off3, bool l){
             GEN(count += 1;);
             GEN(if(!should_transfer));
             GEN(    continue;);
-            if(l)
-                GEN(cpu->r[count] = readWordN(cpu, base););
-            else {
+            if(l) {
+                GEN(cpu->r[count] = readWordAndTick(cpu, base, !first_transfer););
+            } else {
                 printf("if(count == %d && !first_transfer)", base_idx);
-                    GEN(writeWordN(cpu, base, cpu->r[count] + (rlist_size << 2)););
+                    GEN(writeWordAndTick(cpu, base, cpu->r[count] + (rlist_size << 2), true););
                 GEN(else);
-                    GEN(writeWordN(cpu, base, cpu->r[count]););
+                    GEN(writeWordAndTick(cpu, base, cpu->r[count], true););
             }
             GEN(base += 4;);
             GEN(first_transfer = false;);
@@ -577,18 +587,19 @@ void thumb_load_store_immediate_offset(bool b, bool l, int off5){
     if(l){
         GEN(cpu->cycles += I_CYCLES;);
         if(b)
-            printf("*rd = readByteN(cpu, rb + %d);\n", off5);
+            printf("*rd = readByteAndTick(cpu, rb + %d, false);\n", off5);
         else {
             printf("u32 addr = rb + (%d << 2);\n", off5);
-            GEN(*rd = readWordN(cpu, addr););
+            GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
         }
     } else {
         if(b)
-            printf("writeByteN(cpu, rb + %d, *rd);\n", off5);
+            printf("writeByteAndTick(cpu, rb + %d, *rd, false);\n", off5);
         else
-            printf("writeWordN(cpu, rb + %d, *rd);\n", off5 << 2);
+            printf("writeWordAndTick(cpu, rb + %d, *rd, false);\n", off5 << 2);
     }
+    GEN(cpu->fetch_seq = false;);
     RET;
 }
 
@@ -604,6 +615,8 @@ void thumb_push_pop(bool l, bool r){
         GEN(cpu->cycles += I_CYCLES;);
     }
 
+    GEN(cpu->fetch_seq = false;);
+
     GEN(for(int i = 0; i < 16 && rlist; i++){);
         GEN(bool should_transfer = rlist & 1;);
         GEN(rlist >>= 1;);
@@ -611,18 +624,18 @@ void thumb_push_pop(bool l, bool r){
         GEN(    continue;);
 
         if(l)
-            GEN(cpu->r[i] = readWordN(cpu, cpu->r[13]););
+            GEN(cpu->r[i] = readWordAndTick(cpu, cpu->r[13], false););
         else
-            GEN(writeWordN(cpu, cpu->r[13], cpu->r[i]););
+            GEN(writeWordAndTick(cpu, cpu->r[13], cpu->r[i], false););
 
         GEN(cpu->r[13] += 4;);
     GEN(});
 
     if(r){
         if(!l){
-            GEN(writeWordN(cpu, cpu->r[13], cpu->r[14]););
+            GEN(writeWordAndTick(cpu, cpu->r[13], cpu->r[14], false););
         } else {
-            GEN(cpu->r[15] = readWordN(cpu, cpu->r[13]););
+            GEN(cpu->r[15] = readWordAndTick(cpu, cpu->r[13], false););
             GEN(cpu->r[15] &= 0xFFFFFFFE;);
             GEN(thumb_pipeline_refill(cpu););
         }
@@ -643,11 +656,14 @@ void thumb_load_store_halfword(bool l, int off5){
 
     if(l) {
         GEN(cpu->cycles += I_CYCLES;);
-        printf("*rd = readHalfWordN(cpu, rb + %d);\n", off5);
+        printf("*rd = readHalfWordAndTick(cpu, rb + %d, false);\n", off5);
         GEN(if(rb & 1));
             GEN(*rd = (*rd << 24) | (*rd >> 8););
-    } else
-        printf("writeHalfWordN(cpu, rb + %d, *rd);\n", off5);
+    } else {
+        printf("writeHalfWordAndTick(cpu, rb + %d, *rd, false);\n", off5);
+    }
+
+    GEN(cpu->fetch_seq = false;);
 
     RET;
 }
@@ -662,26 +678,27 @@ void thumb_load_store_sign_extended(bool h, bool s, int off3){
 
     if(!h){
         if(!s){
-            GEN(writeHalfWordN(cpu, addr, *rd););
+            GEN(writeHalfWordAndTick(cpu, addr, *rd, false););
         } else {
             GEN(cpu->cycles += I_CYCLES;);
-            GEN(*rd = readByteN(cpu, addr););
+            GEN(*rd = readByteAndTick(cpu, addr, false););
             GEN(if(*rd & 0x80));
             GEN(    *rd |= 0xFFFFFF00;);
         }
     } else {
         GEN(cpu->cycles += I_CYCLES;);
+        GEN(cpu->fetch_seq = false;);
         GEN(if(addr & 1){);
             if(!s){
-                GEN(*rd = readHalfWordN(cpu, addr););
+                GEN(*rd = readHalfWordAndTick(cpu, addr, false););
                 GEN(*rd = (*rd >> 8) | (*rd << 24););
             } else {
-                GEN(*rd = readByteN(cpu, addr););
+                GEN(*rd = readByteAndTick(cpu, addr, false););
                 GEN(if(*rd & 0x80));
                 GEN(    *rd |= 0xFFFFFF00;);
             }
         GEN(} else {);
-            GEN(*rd = readHalfWordN(cpu, addr););
+            GEN(*rd = readHalfWordAndTick(cpu, addr, false););
             if(s){
                 GEN(if(*rd & 0xFFFF8000));
                 GEN(    *rd |= 0xFFFF0000;);
@@ -717,17 +734,19 @@ void thumb_load_store_register_offset(bool l, bool b, int off3){
     if(l){
         GEN(cpu->cycles += I_CYCLES;);
         if(b)
-            GEN(*rd = readByteN(cpu, addr););
+            GEN(*rd = readByteAndTick(cpu, addr, false););
         else {
-            GEN(*rd = readWordN(cpu, addr););
+            GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
         }
     } else {
         if(b)
-            GEN(writeByteN(cpu, addr, *rd););
+            GEN(writeByteAndTick(cpu, addr, *rd, false););
         else
-            GEN(writeWordN(cpu, addr, *rd););
+            GEN(writeWordAndTick(cpu, addr, *rd, false););
     }
+
+    GEN(cpu->fetch_seq = false;);
 
     RET;
 }
@@ -753,11 +772,13 @@ void thumb_sp_relative_load_store(bool l, int op3){
 
     if(l) {
         GEN(cpu->cycles += I_CYCLES;);
-        GEN(*rd = readWordN(cpu, addr););
+        GEN(*rd = readWordAndTick(cpu, addr, false););
         GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
-    } else
-        GEN(writeWordN(cpu, addr, *rd););
-    
+    } else {
+        GEN(writeWordAndTick(cpu, addr, *rd, false););
+    }
+
+    GEN(cpu->fetch_seq = false;);
     RET;
 }
 

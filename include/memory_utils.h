@@ -31,13 +31,13 @@ INLINE u32 readOpenBus(arm7tdmi_t* cpu){
 #include "writeIo.h"
 
 #define DEFINE_READ_FUNC(name, n_bits, mask) \
-u ## n_bits read ## name (arm7tdmi_t* cpu, u32 not_aligned_addr){ \
+u ## n_bits read ## name (arm7tdmi_t* cpu, u32 not_aligned_addr, bool seq){ \
     u32 addr = not_aligned_addr & ~mask; \
     MEMORY_TABLE_READ(n_bits); \
 }
 
 #define DEFINE_WRITE_FUNC(name, n_bits, mask) \
-void write ## name (arm7tdmi_t* cpu, u32 not_aligned_addr, u ## n_bits val){ \
+void write ## name (arm7tdmi_t* cpu, u32 not_aligned_addr, u ## n_bits val, bool seq){ \
     u32 addr = not_aligned_addr & ~mask; \
     MEMORY_TABLE_WRITE(n_bits); \
 }
@@ -112,6 +112,14 @@ if(unlikely(addr >= gamepak->ROM_SIZE)) \
             return ROM_OOB_ ## n_bits (addr); \
 return *GET_ARRAY_PTR(n_bits, gba->gamepak.ROM[addr]) 
 
+#define DEFAULT_WAIT_STATE(zone, seq) cpu->cycles += gamepak->waitstates[zone][seq]
+
+#define WAIT_STATE_32(zone, seq) DEFAULT_WAIT_STATE(zone, seq); cpu->cycles += 1; DEFAULT_WAIT_STATE(zone, true)
+#define WAIT_STATE_16(zone, seq) DEFAULT_WAIT_STATE(zone, seq)
+#define WAIT_STATE_8(zone, seq) DEFAULT_WAIT_STATE(zone, seq)
+
+#define FORCE_N_CYCLE if(!(addr & 0x1FFFF)) seq = false
+
 // add open bus for bios to fix fzero climax
 // it sufficient to return 0xFF
 // also konami collector relies on this!
@@ -156,19 +164,27 @@ switch((addr >> 24) & 0xFF){ \
 \
     case 0x8: \
     case 0x9: \
+    FORCE_N_CYCLE; \
+    WAIT_STATE_ ## n_bits (0, seq); \
     addr -= 0x08000000; \
     READ_ROM(n_bits); \
 \
     case 0xA: \
     case 0xB: \
+    FORCE_N_CYCLE; \
+    WAIT_STATE_ ## n_bits (1, seq); \
     addr -= 0x0A000000; \
     READ_ROM(n_bits); \
 \
     case 0xC: \
+    FORCE_N_CYCLE; \
+    WAIT_STATE_ ## n_bits (2, seq); \
     addr -= 0x0C000000; \
     READ_ROM(n_bits); \
 \
     case 0xD: \
+    FORCE_N_CYCLE; \
+    WAIT_STATE_ ## n_bits (2, seq); \
     addr -= 0x0C000000; \
     switch(gamepak->type){ \
         case GAMEPAK_EEPROM: \

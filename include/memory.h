@@ -15,13 +15,13 @@ typedef struct bios_t {
     u32 last_fetched;
 } bios_t;
 
-u8 readByte(arm7tdmi_t* cpu, u32 addr);
-u16 readHalfWord(arm7tdmi_t* cpu, u32 addr);
-u32 readWord(arm7tdmi_t* cpu, u32 addr);
+u8 readByte(arm7tdmi_t* cpu, u32 addr, bool seq);
+u16 readHalfWord(arm7tdmi_t* cpu, u32 addr, bool seq);
+u32 readWord(arm7tdmi_t* cpu, u32 addr, bool seq);
 
-void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val);
-void writeHalfWord(arm7tdmi_t* cpu, u32 addr, u16 val);
-void writeWord(arm7tdmi_t* cpu, u32 addr, u32 val);
+void writeByte(arm7tdmi_t* cpu, u32 addr, u8 val, bool seq);
+void writeHalfWord(arm7tdmi_t* cpu, u32 addr, u16 val, bool seq);
+void writeWord(arm7tdmi_t* cpu, u32 addr, u32 val, bool seq);
 
 void loadBios(const char * filename, u8** bios);
 

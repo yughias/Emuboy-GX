@@ -35,12 +35,12 @@ void transferDma(gba_t* gba, int i){
         int step;
         if(transfer_size){
             step = 4;
-            u32 word = cpu->readWord(cpu, dma->internal_source);
-            cpu->writeWord(cpu, dma->internal_dest, word);
+            u32 word = cpu->readWord(cpu, dma->internal_source, true);
+            cpu->writeWord(cpu, dma->internal_dest, word, true);
         } else {
             step = 2;
-            u16 halfword = cpu->readHalfWord(cpu, dma->internal_source);
-            cpu->writeHalfWord(cpu, dma->internal_dest, halfword);
+            u16 halfword = cpu->readHalfWord(cpu, dma->internal_source, true);
+            cpu->writeHalfWord(cpu, dma->internal_dest, halfword, true);
         }
 
         switch(sa){
