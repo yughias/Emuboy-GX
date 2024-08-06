@@ -5,8 +5,9 @@
 
 void triggerDma(gba_t* gba, int i){
     dma_t* dma = &gba->dmas[i];
-    dma->internal_source = dma->DMASAD;
-    dma->internal_dest = dma->DMADAD;
+    u32 mask = i ? (1 << 28) - 1 : (1 << 27) - 1;
+    dma->internal_source = dma->DMASAD & mask;
+    dma->internal_dest = dma->DMADAD & mask;
     u8 dma_mode = (dma->DMACNT >> 0x1C) & 0b11; 
     if(!dma_mode)
         transferDma(gba, i);
@@ -24,6 +25,8 @@ void transferDma(gba_t* gba, int i){
     bool irq_enable = (DMACNT >> 0x1E) & 1;
     u8 timing_mode = (DMACNT >> 0x1C) & 0b11;
 
+    gba->active_dma = i;
+
     if(!n)
         n = 0xFFFF;
 
@@ -36,10 +39,13 @@ void transferDma(gba_t* gba, int i){
         if(transfer_size){
             step = 4;
             u32 word = cpu->readWord(cpu, dma->internal_source, true);
+            dma->bus = word;
             cpu->writeWord(cpu, dma->internal_dest, word, true);
         } else {
             step = 2;
             u16 halfword = cpu->readHalfWord(cpu, dma->internal_source, true);
+            dma->bus &= 0xFFFF0000;
+            dma->bus |= halfword;
             cpu->writeHalfWord(cpu, dma->internal_dest, halfword, true);
         }
 
@@ -78,6 +84,8 @@ void transferDma(gba_t* gba, int i){
         gba->IF |= 1 << (0x8 + i);
         checkInterrupts(gba);
     }
+
+    gba->active_dma = -1;
 }
 
 void updateHblankDma(gba_t* gba){

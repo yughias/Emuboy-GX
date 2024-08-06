@@ -69,6 +69,8 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     gba->cpu.writeWord = writeWord;
     gba->cpu.master = gba;
 
+    gba->active_dma = DMA_OFF;
+
     gba->KEYINPUT = 0xFFFF;
     gba->RCNT = 0x8000;
     updateWaitStates(&gba->gamepak, gba->WAITCNT);

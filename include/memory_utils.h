@@ -7,6 +7,11 @@
 #define THUMB_OPENBUS(idx1, idx2) (cpu->pipeline_opcode[idx1] & 0xFFFF) | (cpu->pipeline_opcode[idx2] << 16)
 
 INLINE u32 readOpenBus(arm7tdmi_t* cpu){
+    gba_t* gba = cpu->master;
+
+    if(gba->active_dma != DMA_OFF)
+        return gba->dmas[gba->active_dma].bus;
+
     if(cpu->thumb_mode) {
         switch((cpu->r[15] >> 24) & 0xFF){
             // MAIN RAM | PALETTE RAM | VRAM | ROM
@@ -99,13 +104,17 @@ if(addr < 0x14000) *GET_ARRAY_PTR(16, ppu->VRAM[addr & (~0b1)]) = val | (val << 
 #define ROM_OOB_16(x) (((x) >> 1) & 0xFFFF)
 #define ROM_OOB_32(x) (ROM_OOB_16(addr + 2) << 16) | ROM_OOB_16(addr)
 
-#define READ_SRAM_32 { u8 byte = readSram(gamepak, not_aligned_addr); return byte | (byte << 8) | (byte << 16) | (byte << 24); }
-#define READ_SRAM_16 { u8 byte = readSram(gamepak, not_aligned_addr); return byte | (byte << 8); }
-#define READ_SRAM_8 return readSram(gamepak, not_aligned_addr)
+#define READ_SRAM_32 { u8 byte = readSram(gamepak, sram_addr); return byte | (byte << 8) | (byte << 16) | (byte << 24); }
+#define READ_SRAM_16 { u8 byte = readSram(gamepak, sram_addr); return byte | (byte << 8); }
+#define READ_SRAM_8 return readSram(gamepak, sram_addr)
 
-#define WRITE_SRAM_32 writeSram(gamepak, not_aligned_addr, val); writeSram(gamepak, not_aligned_addr+1, val); writeSram(gamepak, not_aligned_addr+2, val);  writeSram(gamepak, not_aligned_addr+3, val)  
-#define WRITE_SRAM_16 writeSram(gamepak, not_aligned_addr, val); writeSram(gamepak, not_aligned_addr+1, val) 
-#define WRITE_SRAM_8 writeSram(gamepak, not_aligned_addr, val)
+#define WRITE_SRAM_32 writeSram(gamepak, sram_addr, val); writeSram(gamepak, sram_addr+1, val); writeSram(gamepak, sram_addr+2, val);  writeSram(gamepak, sram_addr+3, val)  
+#define WRITE_SRAM_16 writeSram(gamepak, sram_addr, val); writeSram(gamepak, sram_addr+1, val) 
+#define WRITE_SRAM_8 writeSram(gamepak, sram_addr, val)
+
+#define WAIT_SRAM_8 cpu->cycles += gamepak->sram_wait
+#define WAIT_SRAM_16 cpu->cycles += 1 + gamepak->sram_wait*2
+#define WAIT_SRAM_32 cpu->cycles += 3 + gamepak->sram_wait*4
 
 #define READ_ROM(n_bits) \
 if(unlikely(addr >= gamepak->ROM_SIZE)) \
@@ -133,7 +142,7 @@ switch((addr >> 24) & 0xFF){ \
     case 0x0: \
     if(likely(addr < BIOS_SIZE)){ \
         if((cpu->r[15] >> 24) & 0xFF) \
-            return bios->last_fetched; \
+            return gba->active_dma == DMA_OFF ? bios->last_fetched : gba->dmas[gba->active_dma].bus; \
         bios->last_fetched = *GET_ARRAY_PTR(32, bios->data[addr & (BIOS_SIZE - 1)]); \
         return bios->last_fetched; \
     } \
@@ -195,9 +204,14 @@ switch((addr >> 24) & 0xFF){ \
     } \
 \
     case 0xE: \
+    case 0xF: \
     switch(gamepak->type){ \
         case GAMEPAK_SRAM: \
-        READ_SRAM_ ## n_bits ; \
+        { \
+            u32 sram_addr = gba->active_dma == DMA_OFF ? not_aligned_addr : addr; \
+            WAIT_SRAM_ ## n_bits ; \
+            READ_SRAM_ ## n_bits ; \
+        } \
 \
         case GAMEPAK_FLASH: \
         return readFlash(gamepak, addr); \
@@ -256,8 +270,12 @@ switch((addr >> 24) & 0xFF){ \
     case 0xF: \
     switch(gamepak->type){ \
         case GAMEPAK_SRAM: \
-        WRITE_SRAM_ ## n_bits ;  \
-        return; \
+        { \
+            u32 sram_addr = gba->active_dma == DMA_OFF ? not_aligned_addr : addr; \
+            WAIT_SRAM_ ## n_bits ; \
+            WRITE_SRAM_ ## n_bits ;  \
+            return; \
+        } \
 \
         case GAMEPAK_FLASH: \
         writeFlash(gamepak, addr, val); \
