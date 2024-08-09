@@ -40,7 +40,7 @@ void setup(){
     onExit = freeAll;
 }
 
-void loop(){
+void loop(){    
     if(isKeyReleased){
         if(keyReleased == '-')
             speed = speed == 1 ? 1 : speed >> 1;

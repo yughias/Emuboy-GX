@@ -254,6 +254,60 @@ return;
 case 0x55:
 ((u8*)&ppu->BLDY)[1] = val;
 return;
+case 0x60:
+((u8*)&apu->SOUND1CNT_L)[0] = val;
+return;
+case 0x61:
+((u8*)&apu->SOUND1CNT_L)[1] = val;
+return;
+case 0x62:
+((u8*)&apu->SOUND1CNT_H)[0] = val;
+updateSOUND12CNT_Duty(gba, apu->SOUND1CNT_H, 0);
+return;
+case 0x63:
+((u8*)&apu->SOUND1CNT_H)[1] = val;
+updateSOUND12CNT_Duty(gba, apu->SOUND1CNT_H, 0);
+return;
+case 0x64:
+((u8*)&apu->SOUND1CNT_X)[0] = val;
+updateSOUND12CNT_Freq(gba, apu->SOUND1CNT_X, 0);
+return;
+case 0x65:
+((u8*)&apu->SOUND1CNT_X)[1] = val;
+updateSOUND12CNT_Freq(gba, apu->SOUND1CNT_X, 0);
+return;
+case 0x68:
+((u8*)&apu->SOUND2CNT_L)[0] = val;
+updateSOUND12CNT_Duty(gba, apu->SOUND2CNT_L, 1);
+return;
+case 0x69:
+((u8*)&apu->SOUND2CNT_L)[1] = val;
+updateSOUND12CNT_Duty(gba, apu->SOUND2CNT_L, 1);
+return;
+case 0x6C:
+((u8*)&apu->SOUND2CNT_H)[0] = val;
+updateSOUND12CNT_Freq(gba, apu->SOUND2CNT_H, 1);
+return;
+case 0x6D:
+((u8*)&apu->SOUND2CNT_H)[1] = val;
+updateSOUND12CNT_Freq(gba, apu->SOUND2CNT_H, 1);
+return;
+case 0x78:
+((u8*)&apu->SOUND4CNT_L)[0] = val;
+updateSOUND4CNT_L(gba, apu->SOUND4CNT_L);
+return;
+case 0x79:
+((u8*)&apu->SOUND4CNT_L)[1] = val;
+updateSOUND4CNT_L(gba, apu->SOUND4CNT_L);
+return;
+case 0x7C:
+((u8*)&apu->SOUND4CNT_H)[0] = val;
+updateSOUND4CNT_H(gba, apu->SOUND4CNT_H);
+return;
+case 0x7D:
+((u8*)&apu->SOUND4CNT_H)[1] = val;
+updateSOUND4CNT_H(gba, apu->SOUND4CNT_H);
+return;
 case 0x80:
 ((u8*)&apu->SOUNDCNT_L)[0] = val & 0x77;
 return;
@@ -262,11 +316,11 @@ case 0x81:
 return;
 case 0x82:
 ((u8*)&apu->SOUNDCNT_H)[0] = val;
-updateChannelMixing(apu);
+updateSoundHControl(apu);
 return;
 case 0x83:
 ((u8*)&apu->SOUNDCNT_H)[1] = val;
-updateChannelMixing(apu);
+updateSoundHControl(apu);
 return;
 case 0x88:
 ((u8*)&apu->SOUNDBIAS)[0] = val;

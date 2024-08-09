@@ -49,6 +49,54 @@ case 0x52:
 return ((u8*)&ppu->BLDALPHA)[0];
 case 0x53:
 return ((u8*)&ppu->BLDALPHA)[1];
+case 0x60:
+{ u32 tmp = apu->SOUND1CNT_L & 0x7F; return ((u8*)&tmp)[0]; }
+case 0x61:
+{ u32 tmp = apu->SOUND1CNT_L & 0x7F; return ((u8*)&tmp)[1]; }
+case 0x62:
+{ u32 tmp = apu->SOUND1CNT_H & 0xFFC0; return ((u8*)&tmp)[0]; }
+case 0x63:
+{ u32 tmp = apu->SOUND1CNT_H & 0xFFC0; return ((u8*)&tmp)[1]; }
+case 0x64:
+{ u32 tmp = apu->SOUND1CNT_X & 0x4000; return ((u8*)&tmp)[0]; }
+case 0x65:
+{ u32 tmp = apu->SOUND1CNT_X & 0x4000; return ((u8*)&tmp)[1]; }
+case 0x66:
+{ u32 tmp = apu->SOUND1CNT_X & 0x4000; return ((u8*)&tmp)[2]; }
+case 0x67:
+{ u32 tmp = apu->SOUND1CNT_X & 0x4000; return ((u8*)&tmp)[3]; }
+case 0x68:
+{ u32 tmp = apu->SOUND2CNT_L & 0xFFC0; return ((u8*)&tmp)[0]; }
+case 0x69:
+{ u32 tmp = apu->SOUND2CNT_L & 0xFFC0; return ((u8*)&tmp)[1]; }
+case 0x6A:
+{ u32 tmp = apu->SOUND2CNT_L & 0xFFC0; return ((u8*)&tmp)[2]; }
+case 0x6B:
+{ u32 tmp = apu->SOUND2CNT_L & 0xFFC0; return ((u8*)&tmp)[3]; }
+case 0x6C:
+{ u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[0]; }
+case 0x6D:
+{ u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[1]; }
+case 0x6E:
+{ u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[2]; }
+case 0x6F:
+{ u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[3]; }
+case 0x78:
+{ u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[0]; }
+case 0x79:
+{ u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[1]; }
+case 0x7A:
+{ u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[2]; }
+case 0x7B:
+{ u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[3]; }
+case 0x7C:
+{ u32 tmp = apu->SOUND4CNT_H & 0x40FF; return ((u8*)&tmp)[0]; }
+case 0x7D:
+{ u32 tmp = apu->SOUND4CNT_H & 0x40FF; return ((u8*)&tmp)[1]; }
+case 0x7E:
+{ u32 tmp = apu->SOUND4CNT_H & 0x40FF; return ((u8*)&tmp)[2]; }
+case 0x7F:
+{ u32 tmp = apu->SOUND4CNT_H & 0x40FF; return ((u8*)&tmp)[3]; }
 case 0x80:
 return ((u8*)&apu->SOUNDCNT_L)[0];
 case 0x81:

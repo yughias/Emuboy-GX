@@ -50,6 +50,56 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    
+    if(addr >= 0x4000060 && addr < 0x4000062){
+        addr -= 0x4000060;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND1CNT_L & 0x7F; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000062 && addr < 0x4000064){
+        addr -= 0x4000062;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND1CNT_H & 0xFFC0; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000064 && addr < 0x4000068){
+        addr -= 0x4000064;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND1CNT_X & 0x4000; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000068 && addr < 0x400006C){
+        addr -= 0x4000068;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND2CNT_L & 0xFFC0; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x400006C && addr < 0x4000070){
+        addr -= 0x400006C;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000078 && addr < 0x400007C){
+        addr -= 0x4000078;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x400007C && addr < 0x4000080){
+        addr -= 0x400007C;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND4CNT_H & 0x40FF; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
     if(addr >= 0x4000080 && addr < 0x4000082){
         addr -= 0x4000080;
         GEN_CASE;

@@ -185,6 +185,68 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    if(addr >= 0x4000060 && addr < 0x4000062){
+        addr -= 0x4000060;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND1CNT_L)[%d] = val;\n", addr);
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000062 && addr < 0x4000064){
+        addr -= 0x4000062;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND1CNT_H)[%d] = val;\n", addr);
+        GEN(updateSOUND12CNT_Duty(gba, apu->SOUND1CNT_H, 0););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000064 && addr < 0x4000066){
+        addr -= 0x4000064;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND1CNT_X)[%d] = val;\n", addr);
+        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND1CNT_X, 0););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000068 && addr < 0x400006A){
+        addr -= 0x4000068;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND2CNT_L)[%d] = val;\n", addr);
+        GEN(updateSOUND12CNT_Duty(gba, apu->SOUND2CNT_L, 1););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x400006C && addr < 0x400006E){
+        addr -= 0x400006C;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND2CNT_H)[%d] = val;\n", addr);
+        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND2CNT_H, 1););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000078 && addr < 0x400007A){
+        addr -= 0x4000078;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND4CNT_L)[%d] = val;\n", addr);
+        GEN(updateSOUND4CNT_L(gba, apu->SOUND4CNT_L););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x400007C && addr < 0x400007E){
+        addr -= 0x400007C;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND4CNT_H)[%d] = val;\n", addr);
+        GEN(updateSOUND4CNT_H(gba, apu->SOUND4CNT_H););
+        RET;
+        return;
+    }
+
     if(addr >= 0x4000080 && addr < 0x4000082){
         addr -= 0x4000080;
         GEN_CASE;
@@ -200,7 +262,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000082;
         GEN_CASE;
         printf("((u8*)&apu->SOUNDCNT_H)[%d] = val;\n", addr);
-        GEN(updateChannelMixing(apu););
+        GEN(updateSoundHControl(apu););
         RET;
         return;
     }

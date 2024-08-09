@@ -61,6 +61,9 @@ void removeEventToScheduler(scheduler_t** list, scheduler_t* event){
     while(p && p->next != event)
         p = p->next;
 
+    if(!p)
+        printf("ERROR ON REMOVE!\n");
+
     p->next = event->next;
 }
 

@@ -13,8 +13,10 @@
 
 // 1 PPU
 // 4 TIMERS
+// 2*3 WAVE CHANNEL: LENGTH + UPDATE WAVE + ENVELOPE
+// 3 NOISE CHANNEL: LENGTH + UPDATE LFSR + ENVELOPE
 // 1 push sample to audio device 
-#define GBA_SCHEDULER_POOL_SIZE 6
+#define GBA_SCHEDULER_POOL_SIZE 15
 
 typedef struct gba_t {
     arm7tdmi_t cpu;
