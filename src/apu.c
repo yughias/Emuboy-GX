@@ -183,9 +183,9 @@ void updateSOUNDCNT_H(apu_t* apu){
         apu->timer_idx[i] = (bool)(apu->SOUNDCNT_H & (1 << (10 + i*4)));
         if(apu->SOUNDCNT_H & (1 << (11 + i*4)))
             resetFifo(&apu->fifo[i]);
-        apu->dma_sound_volume[i] = apu->SOUNDCNT_H & (1 << (2 + i));
-        apu->dma_sound_enabled_left[i] = 1 - (apu->SOUNDCNT_H & (1 << (9 + i*4)));
-        apu->dma_sound_enabled_right[i] = 1 - (apu->SOUNDCNT_H & (1 << (8 + i*4)));
+        apu->dma_sound_volume[i] = 1 - (apu->SOUNDCNT_H & (1 << (2 + i)));
+        apu->dma_sound_enabled_left[i] = apu->SOUNDCNT_H & (1 << (9 + i*4));
+        apu->dma_sound_enabled_right[i] = apu->SOUNDCNT_H & (1 << (8 + i*4));
     }
 
     apu->sound_channels_volume = 2 - (apu->SOUNDCNT_H & 0b11);
