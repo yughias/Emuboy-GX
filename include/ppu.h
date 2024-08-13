@@ -60,7 +60,7 @@ typedef struct ppu_t {
 void composeDispstat(ppu_t* ppu);
 void checkVCount(gba_t* gba);
 
-void event_startScanline(gba_t* gba, u32 vcount, u32 dummy);
-void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2);
+void event_startScanline(gba_t* gba, u32 vcount);
+void event_startHBlank(gba_t* gba, u32 dummy);
 
 #endif

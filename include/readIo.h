@@ -81,6 +81,22 @@ case 0x6E:
 { u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[2]; }
 case 0x6F:
 { u32 tmp = apu->SOUND2CNT_H & 0x4000; return ((u8*)&tmp)[3]; }
+case 0x70:
+{ u32 tmp = apu->SOUND3CNT_L & 0x00E0; return ((u8*)&tmp)[0]; }
+case 0x71:
+{ u32 tmp = apu->SOUND3CNT_L & 0x00E0; return ((u8*)&tmp)[1]; }
+case 0x72:
+{ u32 tmp = apu->SOUND3CNT_H & 0xE000; return ((u8*)&tmp)[0]; }
+case 0x73:
+{ u32 tmp = apu->SOUND3CNT_H & 0xE000; return ((u8*)&tmp)[1]; }
+case 0x74:
+{ u32 tmp = apu->SOUND3CNT_X & 0x4000; return ((u8*)&tmp)[0]; }
+case 0x75:
+{ u32 tmp = apu->SOUND3CNT_X & 0x4000; return ((u8*)&tmp)[1]; }
+case 0x76:
+{ u32 tmp = apu->SOUND3CNT_X & 0x4000; return ((u8*)&tmp)[2]; }
+case 0x77:
+{ u32 tmp = apu->SOUND3CNT_X & 0x4000; return ((u8*)&tmp)[3]; }
 case 0x78:
 { u32 tmp = apu->SOUND4CNT_L & 0xFF00; return ((u8*)&tmp)[0]; }
 case 0x79:
@@ -105,10 +121,54 @@ case 0x82:
 return ((u8*)&apu->SOUNDCNT_H)[0];
 case 0x83:
 return ((u8*)&apu->SOUNDCNT_H)[1];
+case 0x84:
+return getSOUNDCNT_X(apu);
+case 0x85:
+return 0x00;
+case 0x86:
+return 0x00;
+case 0x87:
+return 0x00;
 case 0x88:
 return ((u8*)&apu->SOUNDBIAS)[0];
 case 0x89:
 return ((u8*)&apu->SOUNDBIAS)[1];
+case 0x8A:
+return 0x00;
+case 0x8B:
+return 0x00;
+case 0x90:
+return readWaveRam(gba, 0x0);
+case 0x91:
+return readWaveRam(gba, 0x1);
+case 0x92:
+return readWaveRam(gba, 0x2);
+case 0x93:
+return readWaveRam(gba, 0x3);
+case 0x94:
+return readWaveRam(gba, 0x4);
+case 0x95:
+return readWaveRam(gba, 0x5);
+case 0x96:
+return readWaveRam(gba, 0x6);
+case 0x97:
+return readWaveRam(gba, 0x7);
+case 0x98:
+return readWaveRam(gba, 0x8);
+case 0x99:
+return readWaveRam(gba, 0x9);
+case 0x9A:
+return readWaveRam(gba, 0xA);
+case 0x9B:
+return readWaveRam(gba, 0xB);
+case 0x9C:
+return readWaveRam(gba, 0xC);
+case 0x9D:
+return readWaveRam(gba, 0xD);
+case 0x9E:
+return readWaveRam(gba, 0xE);
+case 0x9F:
+return readWaveRam(gba, 0xF);
 case 0xB8:
 return 0;
 case 0xB9:

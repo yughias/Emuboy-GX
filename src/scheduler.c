@@ -61,9 +61,6 @@ void removeEventToScheduler(scheduler_t** list, scheduler_t* event){
     while(p && p->next != event)
         p = p->next;
 
-    if(!p)
-        printf("ERROR ON REMOVE!\n");
-
     p->next = event->next;
 }
 
@@ -81,8 +78,31 @@ void stepScheduler(gba_t* gba, scheduler_t** scheduler, u32 cycles_step){
         if(!closest_event->remaining){
             closest_event->used = false;
             *scheduler = closest_event->next;
-            (closest_event->event)(gba, closest_event->arg1, closest_event->arg2);
+            (closest_event->event)(gba, closest_event->arg);
         }
         closest_event = (*scheduler);
     }
+}
+
+void removeEventIfPresent(scheduler_t** list, scheduler_t** event){
+    if(*event){
+        removeEventToScheduler(list, *event);
+        *event = NULL;
+    }
+}
+
+
+scheduler_t* createAndAddEventWith0Args(scheduler_t** list, scheduler_t* pool, size_t pool_size, eventFunc event, u64 remaining){
+    scheduler_t* block = occupySchedulerBlock(pool, pool_size);
+    block->event = event;
+    block->remaining = remaining;
+    addEventToScheduler(list, block);
+    return block;
+}
+
+
+scheduler_t* createAndAddEventWith1Arg(scheduler_t** list, scheduler_t* pool, size_t pool_size, eventFunc event, u32 arg, u64 remaining){
+    scheduler_t* block = createAndAddEventWith0Args(list, pool, pool_size, event, remaining);
+    block->arg = arg;
+    return block;
 }

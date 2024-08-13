@@ -206,7 +206,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000064;
         GEN_CASE;
         printf("((u8*)&apu->SOUND1CNT_X)[%d] = val;\n", addr);
-        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND1CNT_X, 0););
+        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND1CNT_H, &apu->SOUND1CNT_X, 0););
         RET;
         return;
     }
@@ -224,7 +224,34 @@ void generateSwitchCase(int addr){
         addr -= 0x400006C;
         GEN_CASE;
         printf("((u8*)&apu->SOUND2CNT_H)[%d] = val;\n", addr);
-        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND2CNT_H, 1););
+        GEN(updateSOUND12CNT_Freq(gba, apu->SOUND2CNT_L, &apu->SOUND2CNT_H, 1););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000070 && addr < 0x4000072){
+        addr -= 0x4000070;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND3CNT_L)[%d] = val;\n", addr);
+        GEN(updateSOUND3CNT_L(gba););
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000072 && addr < 0x4000074){
+        addr -= 0x4000072;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND3CNT_H)[%d] = val;\n", addr);
+        GEN(updateSOUND3CNT_H(gba););
+        RET;
+        return;
+    }
+    
+    if(addr >= 0x4000074 && addr < 0x4000076){
+        addr -= 0x4000074;
+        GEN_CASE;
+        printf("((u8*)&apu->SOUND3CNT_X)[%d] = val;\n", addr);
+        GEN(updateSOUND3CNT_X(gba););
         RET;
         return;
     }
@@ -233,7 +260,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000078;
         GEN_CASE;
         printf("((u8*)&apu->SOUND4CNT_L)[%d] = val;\n", addr);
-        GEN(updateSOUND4CNT_L(gba, apu->SOUND4CNT_L););
+        GEN(updateSOUND4CNT_L(gba););
         RET;
         return;
     }
@@ -242,7 +269,7 @@ void generateSwitchCase(int addr){
         addr -= 0x400007C;
         GEN_CASE;
         printf("((u8*)&apu->SOUND4CNT_H)[%d] = val;\n", addr);
-        GEN(updateSOUND4CNT_H(gba, apu->SOUND4CNT_H););
+        GEN(updateSOUND4CNT_H(gba););
         RET;
         return;
     }
@@ -254,6 +281,7 @@ void generateSwitchCase(int addr){
             printf("((u8*)&apu->SOUNDCNT_L)[%d] = val & 0x77;\n", addr);
         else
             printf("((u8*)&apu->SOUNDCNT_L)[%d] = val;\n", addr);
+        GEN(updateSOUNDCNT_L(apu););
         RET;
         return;
     }
@@ -262,7 +290,14 @@ void generateSwitchCase(int addr){
         addr -= 0x4000082;
         GEN_CASE;
         printf("((u8*)&apu->SOUNDCNT_H)[%d] = val;\n", addr);
-        GEN(updateSoundHControl(apu););
+        GEN(updateSOUNDCNT_H(apu););
+        RET;
+        return;
+    }
+
+    if(addr == 0x4000084){
+        GEN_CASE;
+        GEN(apu->SOUNDCNT_X = val;);
         RET;
         return;
     }
@@ -271,6 +306,14 @@ void generateSwitchCase(int addr){
         addr -= 0x4000088;
         GEN_CASE;
         printf("((u8*)&apu->SOUNDBIAS)[%d] = val;\n", addr);
+        RET;
+        return;
+    }
+
+    if(addr >= 0x4000090 && addr < 0x40000A0){
+        addr -= 0x4000090;
+        GEN_CASE;
+        printf("writeWaveRam(gba, 0x%X, val);\n", addr);
         RET;
         return;
     }

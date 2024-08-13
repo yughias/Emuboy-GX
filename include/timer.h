@@ -22,6 +22,6 @@ void updateTimerCounter(gba_t* gba, int i);
 void descheduleTimer(gba_t* gba, int i);
 void disableCascadeModeTimer(gba_t* gba, int i);
 
-void event_timerOverflow(gba_t* gba, u32 i, u32 dummy);
+void event_timerOverflow(gba_t* gba, u32 i);
 
 #endif

@@ -40,7 +40,7 @@ void checkVCount(gba_t* gba){
     ppu->isVCount = new_isVCount;
 }
 
-void event_startScanline(gba_t* gba, u32 vcount, u32 dummy){
+void event_startScanline(gba_t* gba, u32 vcount){
     ppu_t* ppu = &gba->ppu;
     ppu->isHBlank = false;
     ppu->isVBlank = vcount >= 160;
@@ -68,13 +68,10 @@ void event_startScanline(gba_t* gba, u32 vcount, u32 dummy){
         }
     }
 
-    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    block->remaining = DRAW_CYCLES;
-    block->event = event_startHBlank;
-    addEventToScheduler(&gba->scheduler_head, block);
+    createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_startHBlank, DRAW_CYCLES);
 }
 
-void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2){
+void event_startHBlank(gba_t* gba, u32 dummy){
     ppu_t* ppu = &gba->ppu;
     ppu->isHBlank = true;
 
@@ -89,11 +86,8 @@ void event_startHBlank(gba_t* gba, u32 dummy1, u32 dummy2){
         updateHblankDma(gba);
     }
 
-    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    block->arg1 = (ppu->VCOUNT + 1) % N_SCANLINES;
-    block->remaining = HBLANK_CYCLES;
-    block->event = event_startScanline;
-    addEventToScheduler(&gba->scheduler_head, block);
+    u32 arg = (ppu->VCOUNT + 1) % N_SCANLINES;
+    createAndAddEventWith1Arg(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_startScanline, arg, HBLANK_CYCLES);
 }
   
 void renderLine(ppu_t* ppu){

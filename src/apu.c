@@ -7,10 +7,15 @@
 #define LENGTH_UNIT (1 << 16)
 #define NOISE_FREQ_UNIT (1 << 5)
 #define ENV_UNIT (1 << 18)
-#define WAVE_FREQ_UNIT (1 << 4)
+#define TONE_FREQ_UNIT (1 << 4)
+#define WAVE_FREQ_UNIT (1 << 3)
+#define SWEEP_UNIT 131072
 #define CALCULATE_LENGTH_TIME(reg) (64 - (reg)) * LENGTH_UNIT
+#define CALCULATE_SWEEP_TIME(reg) ((reg >> 4) & 0b111) * SWEEP_UNIT
+#define IS_PLAYBACK(reg) ((reg >> 11) & 0x1F)
+#define HOST_GAIN 32
 
-bool waveforms[4][8] = {
+static const bool waveforms[4][8] = {
     { 0, 0, 0, 0, 0, 0, 0, 1 },
     { 1, 0, 0, 0, 0, 0, 0, 1 },
     { 1, 0, 0, 0, 0, 1, 1, 1 },
@@ -21,13 +26,9 @@ void resetFifo(fifo_t* fifo);
 u8 popFifo(fifo_t* fifo);
 void refillFifo(gba_t* gba, u32 fifo_addr);
 
-void restartEnvelopeEvent(gba_t* gba, sound_channel_t* ch, int idx){
-    if(ch->envelope_time && ((ch->envelope_dir && ch->volume != 15) || (!ch->envelope_dir && ch->volume != 0))){
-        ch->envUpdate = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-        ch->envUpdate->arg1 = idx;
-        ch->envUpdate->event = event_updateEnvelope;
-        ch->envUpdate->remaining = ch->envelope_time;
-        addEventToScheduler(&gba->scheduler_head, ch->envUpdate);
+void startEnvelopeEvent(gba_t* gba, sound_channel_t* ch, int idx){
+    if(ch->envelope_time){
+        ch->envUpdate = createAndAddEventWith1Arg(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateEnvelope, idx, ch->envelope_time);
     } else {
         ch->envUpdate = NULL;
     }
@@ -36,76 +37,110 @@ void restartEnvelopeEvent(gba_t* gba, sound_channel_t* ch, int idx){
 void triggerChannel(gba_t* gba, sound_channel_t* ch, u8 idx, eventFunc lengthFunc, eventFunc envFunc, eventFunc freqFunc){
     scheduler_t** scheduler = &gba->scheduler_head;
 
-    if(ch->lengthExpired)
-        removeEventToScheduler(scheduler, ch->lengthExpired);
+    removeEventIfPresent(scheduler, &ch->lengthExpired);
+    removeEventIfPresent(scheduler, &ch->envUpdate);
+    removeEventIfPresent(scheduler, &ch->freqUpdate);
 
-    if(ch->envUpdate)
-        removeEventToScheduler(scheduler, ch->envUpdate);
-
-    if(ch->freqUpdate)
-        removeEventToScheduler(scheduler, ch->freqUpdate);
-
-    ch->freqUpdate = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    ch->freqUpdate->arg1 = idx;
-    ch->freqUpdate->event = freqFunc;
-    ch->freqUpdate->remaining = ch->freq;
-    addEventToScheduler(scheduler, ch->freqUpdate);
+    ch->freqUpdate = createAndAddEventWith1Arg(scheduler, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, freqFunc, idx, ch->freq);
 
     if(ch->length_enabled){
-        ch->lengthExpired = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-        ch->lengthExpired->arg1 = idx;
-        ch->lengthExpired->event = lengthFunc;
-        ch->lengthExpired->remaining = ch->length;
-        addEventToScheduler(scheduler, ch->lengthExpired);
+        ch->lengthExpired = createAndAddEventWith1Arg(scheduler, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, lengthFunc, idx, ch->length);
     } else {
         ch->lengthExpired = NULL;
     }
 
-    restartEnvelopeEvent(gba, ch, idx);
-}
-
-void restartFreqEvent(gba_t* gba, sound_channel_t* sound_channel, int idx, eventFunc freqFunc){
-    sound_channel->freqUpdate = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    sound_channel->freqUpdate->remaining = sound_channel->freq;
-    sound_channel->freqUpdate->event = freqFunc;
-    sound_channel->freqUpdate->arg1 = idx;
-    addEventToScheduler(&gba->scheduler_head, sound_channel->freqUpdate);
+    startEnvelopeEvent(gba, ch, idx);
 }
 
 void updateSOUND12CNT_Duty(gba_t* gba, u16 reg, int idx){
     sound_channel_t* ch = &gba->apu.sound_channels[idx];
-    waveform_t* waveform = &gba->apu.waveforms[idx];
     ch->length = CALCULATE_LENGTH_TIME(reg & 0x3F);
-    waveform->selected = (reg >> 6) & 0x3;
-    ch->envelope_time = ((reg >> 8) & 0b111) * ENV_UNIT;
-    ch->envelope_dir = reg & (1 << 11);
-    ch->volume = (reg >> 12) & 0xF;
+
+    u16 playback_reg = idx ? gba->apu.SOUND2CNT_L : gba->apu.SOUND1CNT_H;
+    bool playback = IS_PLAYBACK(playback_reg); 
+
+    if(!playback)
+        turnOffDac(gba, idx);
 }
 
-void updateSOUND12CNT_Freq(gba_t* gba, u16 reg, int idx){
-    sound_channel_t* ch = &gba->apu.sound_channels[idx];
-    ch->freq = (2048 - (reg & 0x7FF)) * WAVE_FREQ_UNIT;
-    u32 old_l = ch->length_enabled;
-    ch->length_enabled = reg & (1 << 14);
+void updateSOUND12CNT_Freq(gba_t* gba, u16 l_reg, u16* h_reg, int idx){
+    apu_t* apu = &gba->apu;
+    sound_channel_t* ch = &apu->sound_channels[idx];
+    u16 playback_reg = idx ? gba->apu.SOUND2CNT_L : gba->apu.SOUND1CNT_H;
+    bool playback = IS_PLAYBACK(playback_reg); 
+    ch->freq = (2048 - ((*h_reg) & 0x7FF)) * TONE_FREQ_UNIT;
+    ch->length_enabled = (*h_reg) & (1 << 14);
     
-    if(reg & (1 << 15)){
+    if((*h_reg) & (1 << 15) && playback){
+        waveform_t* waveform = &gba->apu.waveforms[idx];
         ch->enabled = true;
-        triggerChannel(gba, ch, idx, event_lengthExpired, event_updateEnvelope, event_updateWave);
+        waveform->selected = (l_reg >> 6) & 0x3;
+        ch->envelope_time = ((l_reg >> 8) & 0b111) * ENV_UNIT;
+        ch->envelope_dir = l_reg & (1 << 11);
+        ch->volume = (l_reg >> 12) & 0xF;
+        triggerChannel(gba, ch, idx, event_lengthExpired, event_updateEnvelope, event_updateTone);
+    
+        if(!idx){
+            u32 sweep_time = CALCULATE_SWEEP_TIME((*h_reg));
+            removeEventIfPresent(&gba->scheduler_head, &apu->updateSweep);
+
+            if(sweep_time){
+                apu->updateSweep = createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateSweep, sweep_time);
+            }
+        }
+
+        (*h_reg) &= ~(1 << 15);
     }
 }
 
-void updateSOUND4CNT_L(gba_t* gba, u16 reg){
-    sound_channel_t* noise_channel = &gba->apu.sound_channels[3];
-    noise_channel->length = CALCULATE_LENGTH_TIME(reg & 0x3F);
-    noise_channel->envelope_time = ((reg >> 8) & 0b111) * ENV_UNIT;
-    noise_channel->envelope_dir = reg & (1 << 11);
-    noise_channel->volume = (reg >> 12) & 0xF;
+void updateSOUND3CNT_L(gba_t* gba){
+    bool playback = gba->apu.SOUND3CNT_L & (1 << 7);
+
+    if(!playback)
+        turnOffDac(gba, 2);
 }
 
-void updateSOUND4CNT_H(gba_t* gba, u16 reg){
+void updateSOUND3CNT_H(gba_t* gba){
+    u16 reg = gba->apu.SOUND3CNT_H;
+    sound_channel_t* ch = &gba->apu.sound_channels[2];
+    ch->length = (256 - (reg & 0xFF)) * LENGTH_UNIT;
+}
+
+void updateSOUND3CNT_X(gba_t* gba){
+    apu_t* apu = &gba->apu;
+    sound_channel_t* ch = &apu->sound_channels[2];
+    bool playback = apu->SOUND3CNT_L & (1 << 7);
+    ch->freq = (2048 - (apu->SOUND3CNT_X & 0x7FF)) * WAVE_FREQ_UNIT;
+
+    if(apu->SOUND3CNT_X & (1 << 15) && playback){
+        ch->enabled = true;
+        ch->length_enabled = apu->SOUND3CNT_X & (1 << 14);
+        ch->envelope_time = 0;
+        apu->wave_idx = 0;
+        ch->sample = true;
+        triggerChannel(gba, ch, 2, event_lengthExpired, NULL, event_updateWave);
+
+        apu->SOUND3CNT_X &= ~(1 << 15);
+    }
+}
+
+void updateSOUND4CNT_L(gba_t* gba){
+    u16 reg = gba->apu.SOUND4CNT_L;
     sound_channel_t* noise_channel = &gba->apu.sound_channels[3];
-    u8 r = reg & 0x7;
-    u8 s = (reg >> 4) & 0xF;
+    noise_channel->length = CALCULATE_LENGTH_TIME(reg & 0x3F);
+    bool playback = IS_PLAYBACK(gba->apu.SOUND4CNT_L); 
+
+    if(!playback)
+        turnOffDac(gba, 3);
+}
+
+void updateSOUND4CNT_H(gba_t* gba){
+    sound_channel_t* noise_channel = &gba->apu.sound_channels[3];
+    u16 l_reg = gba->apu.SOUND4CNT_L;
+    u16 h_reg = gba->apu.SOUND4CNT_H;
+    u8 r = h_reg & 0x7;
+    u8 s = (h_reg >> 4) & 0xF;
+    bool playback = IS_PLAYBACK(gba->apu.SOUND4CNT_L); 
     noise_channel->freq = NOISE_FREQ_UNIT << (s+1);
     
     if(!r)
@@ -113,29 +148,47 @@ void updateSOUND4CNT_H(gba_t* gba, u16 reg){
     else
         noise_channel->freq *= r; 
 
-    noise_channel->length_enabled = reg & (1 << 14);
+    noise_channel->length_enabled = h_reg & (1 << 14);
 
-    if(reg & (1 << 15)){
+    if(h_reg & (1 << 15) && playback){
         noise_channel->enabled = true;
+        noise_channel->envelope_time = ((l_reg >> 8) & 0b111) * ENV_UNIT;
+        noise_channel->envelope_dir = l_reg & (1 << 11);
+        noise_channel->volume = (l_reg >> 12) & 0xF;
 
-        if(reg & (1 << 3))
+        if(h_reg & (1 << 3))
             gba->apu.lfsr = 0x40;
         else
             gba->apu.lfsr = 0x4000;
 
         triggerChannel(gba, noise_channel, 3, event_lengthExpired, event_updateEnvelope, event_updateLfsr);
+
+        gba->apu.SOUND4CNT_H &= ~(1 << 15);
     }
 }
 
-void updateSoundHControl(apu_t* apu){
+void updateSOUNDCNT_L(apu_t* apu){
+    u16 reg = apu->SOUNDCNT_L;
+    apu->sound_channels_amplifier_right = (reg & 0b111) + 1;
+    apu->sound_channels_amplifier_left = ((reg >> 4) & 0b111) + 1;
+
+    for(int i = 0; i < 4; i++){
+        apu->sound_channels_enabled_right[i] = reg & (1 << (8+i));
+        apu->sound_channels_enabled_left[i] = reg & (1 << (12+i));
+    }
+}
+
+void updateSOUNDCNT_H(apu_t* apu){
     for(int i = 0; i < 2; i++){
         apu->timer_idx[i] = (bool)(apu->SOUNDCNT_H & (1 << (10 + i*4)));
         if(apu->SOUNDCNT_H & (1 << (11 + i*4)))
             resetFifo(&apu->fifo[i]);
         apu->dma_sound_volume[i] = apu->SOUNDCNT_H & (1 << (2 + i));
-        apu->dma_sound_enabled_left[i] = apu->SOUNDCNT_H & (1 << (9 + i*4));
-        apu->dma_sound_enabled_right[i] = apu->SOUNDCNT_H & (1 << (8 + i*4));
+        apu->dma_sound_enabled_left[i] = 1 - (apu->SOUNDCNT_H & (1 << (9 + i*4)));
+        apu->dma_sound_enabled_right[i] = 1 - (apu->SOUNDCNT_H & (1 << (8 + i*4)));
     }
+
+    apu->sound_channels_volume = 2 - (apu->SOUNDCNT_H & 0b11);
 
     apu->SOUNDCNT_H &= ~( (1 << 11) | (1 << 15) | (0xF << 4));
 }
@@ -211,31 +264,27 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
     gba->cpu.cycles = old_cycles;
 }
 
-void event_pushSampleToAudioDevice(gba_t* gba, u32 arg1, u32 arg2){
+void event_pushSampleToAudioDevice(gba_t* gba, u32 dummy){
     apu_t* apu = &gba->apu;
     atomic_fifo_t* buffer = &apu->sample_buffer;
 
     if(buffer->size != SAMPLE_BUFFER_SIZE){
         sample_t* sample = &buffer->data[buffer->w_idx];
-        *sample = mixDmaSoundSample(apu);
-        
-        for(int i = 0; i < 4; i++){
-            u16 dac_sample = apu->sound_channels[i].sample * apu->sound_channels[i].volume * 128;
-            sample->left += dac_sample;
-            sample->right += dac_sample;
-        }
+        sample->left = sample->right = 0;
+        mixDmaSound(apu, sample);
+        mixDacSound(apu, sample);
 
         sample->right += apu->audioSpec.silence;
         sample->left += apu->audioSpec.silence;
 
+        sample->left = (i16)sample->left * HOST_GAIN;
+        sample->right = (i16)sample->right * HOST_GAIN;
 
         buffer->w_idx = (buffer->w_idx + 1) % SAMPLE_BUFFER_SIZE; 
         buffer->size += 1;
     }
 
-    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    block->remaining = gba->apu.samplePushRate;
-    addEventToScheduler(&gba->scheduler_head, block);
+    createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_pushSampleToAudioDevice, gba->apu.samplePushRate);
 }
 
 void audioCallback(void* userdata, Uint8* stream, int len){
@@ -251,34 +300,61 @@ void audioCallback(void* userdata, Uint8* stream, int len){
     }
 }
 
-sample_t mixDmaSoundSample(apu_t* apu){
-    sample_t sample = {0, 0};
+void mixDmaSound(apu_t* apu, sample_t* sample){
     for(int i = 0; i < 2; i++){
         if(apu->dma_sound_enabled_right[i])
-            sample.right += (((i16)(i8)apu->dma_sound_sample[i]) * 64) >> (1 - apu->dma_sound_volume[i]);
+            sample->right += (((i16)(i8)apu->dma_sound_sample[i])) >> apu->dma_sound_volume[i];
         if(apu->dma_sound_enabled_left[i])
-            sample.left += (((i16)(i8)apu->dma_sound_sample[i]) * 64) >> (1 - apu->dma_sound_volume[i]);
+            sample->left += (((i16)(i8)apu->dma_sound_sample[i])) >> apu->dma_sound_volume[i];
     }
-    return sample;
 }
 
-void event_lengthExpired(gba_t* gba, u32 idx, u32 dummy){
+void mixDacSound(apu_t* apu, sample_t* sample){
+    sample_t dac_sample = {0, 0};
+    
+    for(int i = 0; i < 4; i++){
+        u16 sample_value = apu->sound_channels[i].sample * apu->sound_channels[i].volume;
+        dac_sample.left += sample_value * apu->sound_channels_enabled_left[i];
+        dac_sample.right += sample_value * apu->sound_channels_enabled_right[i];    
+    }
+
+    dac_sample.left *= apu->sound_channels_amplifier_left;
+    dac_sample.right *= apu->sound_channels_amplifier_right;
+
+    dac_sample.left >>= apu->sound_channels_volume;
+    dac_sample.right >>= apu->sound_channels_volume;
+
+    sample->left += dac_sample.left;
+    sample->right += dac_sample.right;
+}
+
+void event_lengthExpired(gba_t* gba, u32 idx){
     sound_channel_t* ch = &gba->apu.sound_channels[idx];
 
     ch->enabled = false;
-    removeEventToScheduler(&gba->scheduler_head, ch->freqUpdate);
-    ch->freqUpdate = NULL;
+    removeEventIfPresent(&gba->scheduler_head, &ch->freqUpdate);
+    removeEventIfPresent(&gba->scheduler_head, &ch->envUpdate);
     ch->lengthExpired = NULL;
+
+    if(!idx)
+        removeEventIfPresent(&gba->scheduler_head, &gba->apu.updateSweep);
 }
 
-void event_updateEnvelope(gba_t* gba, u32 idx, u32 dummy){
+void event_updateEnvelope(gba_t* gba, u32 idx){
     sound_channel_t* ch = &gba->apu.sound_channels[idx];
-    ch->volume += ch->envelope_dir ? +1 : -1;
-    restartEnvelopeEvent(gba, ch, idx);
+    if(ch->envelope_dir){
+        if(ch->volume != 15)
+            ch->volume += 1;
+    } else {
+        if(ch->volume != 0)
+            ch->volume -= 1;
+    }
+    startEnvelopeEvent(gba, ch, idx);
 }
 
-void event_updateLfsr(gba_t* gba, u32 dummy1, u32 dummy2){
+void event_updateLfsr(gba_t* gba, u32 dummy){
     sound_channel_t* noise_channel = &gba->apu.sound_channels[3];
+
     u16* lfsr = &gba->apu.lfsr;
     bool carry = *lfsr & 1;
     noise_channel->sample = carry;
@@ -291,15 +367,94 @@ void event_updateLfsr(gba_t* gba, u32 dummy1, u32 dummy2){
             *lfsr ^= 0x6000;
     }
 
-    restartFreqEvent(gba, noise_channel, 3, event_updateLfsr);
+    noise_channel->freqUpdate = createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateLfsr, noise_channel->freq);
 }
 
-void event_updateWave(gba_t* gba, u32 idx, u32 dummy2){
+void event_updateTone(gba_t* gba, u32 idx){
     sound_channel_t* ch = &gba->apu.sound_channels[idx];
     waveform_t* waveform = &gba->apu.waveforms[idx];   
 
     ch->sample = waveforms[waveform->selected][waveform->idx];
     waveform->idx = (waveform->idx + 1) % 8; 
 
-    restartFreqEvent(gba, ch, idx, event_updateWave);
+    ch->freqUpdate = createAndAddEventWith1Arg(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateTone, idx, ch->freq);
+}
+
+void event_updateWave(gba_t* gba, u32 dummy){
+    apu_t* apu = &gba->apu;
+    sound_channel_t* ch = &apu->sound_channels[2];
+    u16 l_reg = apu->SOUND3CNT_L;
+
+    u8 base = (bool)(l_reg & (1 << 6)) * 0x10;
+    u8 buffer_size = (bool)(l_reg & (1 << 5)) * 0x20 + 0x20;
+    u8 sample = apu->wave_ram[(base + (apu->wave_idx >> 1)) % WAVE_RAM_SIZE];
+    ch->volume = apu->wave_idx & 1 ? sample & 0x0F : sample >> 4;
+    apu->wave_idx = (apu->wave_idx + 1) % buffer_size;
+
+    u16 h_reg = apu->SOUND3CNT_H;
+    if(h_reg & (1 << 15)) {
+        ch->volume -= ch->volume >> 2;
+    } else {
+        u8 sound_volume = (h_reg >> 13) & 0b11;
+        if(!sound_volume)
+            ch->volume = 0;
+        else
+            ch->volume >>= (sound_volume - 1);
+    }
+
+    ch->freqUpdate = createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateWave, ch->freq);
+}
+
+void event_updateSweep(gba_t* gba, u32 dummy){
+    apu_t* apu = &gba->apu;
+    sound_channel_t* ch = &apu->sound_channels[0];
+    u32 sweep_time = CALCULATE_SWEEP_TIME(apu->SOUND1CNT_L);
+
+    if(!sweep_time){
+        apu->updateSweep = NULL;
+        return;
+    }
+
+    u16 freq = apu->SOUND1CNT_X & 0x7FF;
+    u8 n = apu->SOUND1CNT_L & 0b111;
+    bool sweep_dir = gba->apu.SOUND1CNT_L & (1 << 3);
+    freq += sweep_dir ? -(freq >> n) : (freq >> n);
+    apu->SOUND1CNT_X &= ~0x7FF;
+    apu->SOUND1CNT_X |= freq & 0x7FF;
+
+    if(freq >= 2048 || !freq){
+        ch->enabled = false;
+        removeEventIfPresent(&gba->scheduler_head, &ch->freqUpdate);
+        removeEventIfPresent(&gba->scheduler_head, &ch->lengthExpired);
+        removeEventIfPresent(&gba->scheduler_head, &ch->envUpdate);
+        apu->updateSweep = NULL;
+    } else {
+        ch->freq = (2048 - freq) * TONE_FREQ_UNIT;
+        apu->updateSweep = createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_updateSweep, sweep_time);
+    }
+}
+
+u8 readWaveRam(gba_t* gba, u8 addr){
+    bool bank = gba->apu.SOUND3CNT_L & (1 << 6);
+    return gba->apu.wave_ram[addr + (!bank) * 0x10];
+}
+
+void writeWaveRam(gba_t* gba, u8 addr, u8 byte){
+    bool bank = gba->apu.SOUND3CNT_L & (1 << 6);
+    gba->apu.wave_ram[addr + (!bank) * 0x10] = byte;
+}
+
+void turnOffDac(gba_t* gba, u32 idx){
+    sound_channel_t* ch = &gba->apu.sound_channels[idx];
+    if(!ch->enabled)
+        return;
+    removeEventIfPresent(&gba->scheduler_head, &ch->lengthExpired);
+    event_lengthExpired(gba, idx);
+}
+
+u8 getSOUNDCNT_X(apu_t* apu){
+    apu->SOUNDCNT_X &= (1 << 7);
+    for(int i = 0; i < 4; i++)
+        apu->SOUNDCNT_X |= apu->sound_channels[i].enabled << i;
+    return apu->SOUNDCNT_X;
 }

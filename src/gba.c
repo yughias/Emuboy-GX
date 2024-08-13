@@ -93,13 +93,11 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     apu->audioSpec.callback = audioCallback;
     apu->audioSpec.userdata = &apu->sample_buffer;
     apu->audioDev = SDL_OpenAudioDevice(0, 0, &apu->audioSpec, &apu->audioSpec, 0);
-    
     apu->samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE / apu->audioSpec.freq;
+    apu->sound_channels_amplifier_left = 1;
+    apu->sound_channels_amplifier_right = 1;
+    createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_pushSampleToAudioDevice, gba->apu.samplePushRate);
 
-    block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    block->remaining = gba->apu.samplePushRate;
-    block->event = event_pushSampleToAudioDevice;
-    addEventToScheduler(&gba->scheduler_head, block);
 
     SDL_PauseAudioDevice(gba->apu.audioDev, 0);
 }

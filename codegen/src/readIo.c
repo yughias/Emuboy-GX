@@ -86,6 +86,27 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    if(addr >= 0x4000070 && addr < 0x4000072){
+        addr -= 0x4000070;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND3CNT_L & 0x00E0; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000072 && addr < 0x4000074){
+        addr -= 0x4000072;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND3CNT_H & 0xE000; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
+    if(addr >= 0x4000074 && addr < 0x4000078){
+        addr -= 0x4000074;
+        GEN_CASE;
+        printf("{ u32 tmp = apu->SOUND3CNT_X & 0x4000; return ((u8*)&tmp)[%d]; }\n", addr);
+        return;
+    }
+
     if(addr >= 0x4000078 && addr < 0x400007C){
         addr -= 0x4000078;
         GEN_CASE;
@@ -114,10 +135,33 @@ void generateSwitchCase(int addr){
         return;
     }
 
+    if(addr >= 0x4000084 && addr < 0x4000088){
+        GEN_CASE;
+        if(addr == 0x4000084){
+            GEN(return getSOUNDCNT_X(apu););
+        } else {
+            GEN( return 0x00;);
+        }
+        return;
+    }
+
     if(addr >= 0x4000088 && addr < 0x400008A){
         addr -= 0x4000088;
         GEN_CASE;
         printf("return ((u8*)&apu->SOUNDBIAS)[%d];\n", addr);
+        return;
+    }
+
+    if(addr == 0x400008A || addr == 0x400008B){
+        GEN_CASE;
+        GEN(return 0x00;);
+        return;
+    }
+
+    if(addr >= 0x4000090 && addr < 0x40000A0){
+        addr -= 0x4000090;
+        GEN_CASE;
+        printf("return readWaveRam(gba, 0x%X);\n", addr);
         return;
     }
 

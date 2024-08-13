@@ -27,15 +27,11 @@ void triggerTimer(gba_t* gba, int i){
     // delay occurs only if timer was disabled 
     u8 delay = timer->scheduled_event ? 0 : TIMER_TRIGGER_DELAY;
 
-    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    timer->scheduled_event = block;
     timer->started_clock = gba->frame_clock + gba->cpu.cycles + delay;
     timer->started_value = GET_RELOAD(timer);
 
-    block->remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling) + delay;
-    block->arg1 = i;
-    block->event = event_timerOverflow;
-    addEventToScheduler(&gba->scheduler_head, block);
+    u64 remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling) + delay;
+    timer->scheduled_event = createAndAddEventWith1Arg(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_timerOverflow, i, remaining);
 }
 
 void disableCascadeModeTimer(gba_t* gba, int i){
@@ -45,15 +41,11 @@ void disableCascadeModeTimer(gba_t* gba, int i){
     u32 duration = 0x10000 - timer->counter;
     duration <<= timer->speed_shift;
 
-    scheduler_t* block = occupySchedulerBlock(gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE);
-    timer->scheduled_event = block;
     timer->started_clock = gba->frame_clock + gba->cpu.cycles;
     timer->started_value = timer->counter;
 
-    block->remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling);
-    block->arg1 = i;
-    block->event = event_timerOverflow;
-    addEventToScheduler(&gba->scheduler_head, block);   
+    u64 remaining = duration + (gba->cpu.cycles - gba->clock_before_scheduling);
+    timer->scheduled_event = createAndAddEventWith1Arg(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_timerOverflow, i, remaining);
 }
 
 void descheduleTimer(gba_t* gba, int i){
@@ -63,11 +55,7 @@ void descheduleTimer(gba_t* gba, int i){
     if(!cascade)
         updateTimerCounter(gba, i);
     
-    if(!timer->scheduled_event)
-        return;
-
-    removeEventToScheduler(&gba->scheduler_head, timer->scheduled_event);
-    timer->scheduled_event = NULL;
+    removeEventIfPresent(&gba->scheduler_head, &timer->scheduled_event);
 }
 
 void updateTimerCounter(gba_t* gba, int i){
@@ -84,7 +72,7 @@ void updateTimerCounter(gba_t* gba, int i){
     timer->counter = (timer->started_value + elapsed) & 0xFFFF;
 }
 
-void event_timerOverflow(gba_t* gba, u32 i, u32 dummy){
+void event_timerOverflow(gba_t* gba, u32 i){
     gba_tmr_t* timer = &gba->timers[i];
 
     apuCheckTimer(gba, i);
