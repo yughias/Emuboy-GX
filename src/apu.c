@@ -321,8 +321,8 @@ void mixDacSound(apu_t* apu, sample_t* sample){
     dac_sample.left *= apu->sound_channels_amplifier_left;
     dac_sample.right *= apu->sound_channels_amplifier_right;
 
-    dac_sample.left >>= apu->sound_channels_volume + 3;
-    dac_sample.right >>= apu->sound_channels_volume + 3;
+    dac_sample.left >>= apu->sound_channels_volume + 2;
+    dac_sample.right >>= apu->sound_channels_volume + 2;
 
     sample->left += dac_sample.left;
     sample->right += dac_sample.right;

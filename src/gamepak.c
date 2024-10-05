@@ -173,6 +173,7 @@ void updateWaitStates(gamepak_t* gamepak, u16 waitcnt_reg){
         gamepak->waitstates[2][N_WAIT_IDX] = wait_n[(waitcnt_reg >> 8) & 0b11];
         gamepak->waitstates[2][S_WAIT_IDX] = wait2_s[(waitcnt_reg >> 10) & 0b1];
     } else {
+        // proper emulate prefetch buffer!
         gamepak->waitstates[0][N_WAIT_IDX] = wait_n[(waitcnt_reg >> 2) & 0b11];
         gamepak->waitstates[0][S_WAIT_IDX] = 0;
 

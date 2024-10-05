@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int speed = 1;
 gba_t gba;
@@ -25,13 +26,28 @@ void setup(){
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
-    setWindowIcon("data/logo.bmp");
+
+    char* exe_path = SDL_GetBasePath();
+    char data_path[FILENAME_MAX];
+    char logo_path[FILENAME_MAX];
+    char bios_path[FILENAME_MAX];
+
+    strncpy(data_path, exe_path, FILENAME_MAX - 1);
+    strncat(data_path, "data/", FILENAME_MAX - 1);
+    strncpy(logo_path, data_path, FILENAME_MAX - 1);
+    strncpy(bios_path, data_path, FILENAME_MAX - 1);
+
+    strncat(logo_path, "logo.bmp", FILENAME_MAX - 1);
+
+    setWindowIcon(logo_path);
     frameRate(REFRESH_RATE);
     #ifndef EMSCRIPTEN
-    initGba(&gba, "data/gba_bios.bin", getArgv(1));
+    strncat(bios_path, "gba_bios.bin", FILENAME_MAX - 1);
     #else
-    initGba(&gba, "data/vba_bios.bin", getArgv(1));
+    strncat(bios_path, "vba_bios.bin", FILENAME_MAX - 1);
     #endif
+
+    initGba(&gba, bios_path, getArgv(1));
 
     noRender();
 
@@ -41,6 +57,8 @@ void setup(){
 }
 
 void loop(){    
+    check_controller_connection();
+
     if(isKeyReleased){
         if(keyReleased == '-')
             speed = speed == 1 ? 1 : speed >> 1;

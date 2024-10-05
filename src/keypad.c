@@ -15,7 +15,22 @@ SDL_GameController* gameController;
 
 void init_keypad(){
     keystate = SDL_GetKeyboardState(NULL);
-    gameController = SDL_GameControllerOpen(0);
+    if(SDL_NumJoysticks())
+        gameController = SDL_GameControllerOpen(0);
+}
+
+void check_controller_connection(){
+    if(gameController){
+        if(SDL_GameControllerGetAttached(gameController)){
+            return;
+        } else {
+            SDL_GameControllerClose(gameController);
+            gameController = NULL;
+        }
+    }
+
+    if(SDL_NumJoysticks())
+        gameController = SDL_GameControllerOpen(0);
 }
 
 u16 update_keypad(){

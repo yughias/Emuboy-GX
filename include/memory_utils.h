@@ -129,13 +129,6 @@ return *GET_ARRAY_PTR(n_bits, gba->gamepak.ROM[addr])
 
 #define FORCE_N_CYCLE if(!(addr & 0x1FFFF)) seq = false
 
-// add open bus for bios to fix fzero climax
-// it sufficient to return 0xFF
-// also konami collector relies on this!
-// metal slug depends on openbus, returning 0xFF
-// make things even worse!
-// kirby breaks on level intro with 0xFF open bug fix!
-
 #define MEMORY_TABLE_READ(n_bits) \
 GET_POINTERS; \
 switch((addr >> 24) & 0xFF){ \
