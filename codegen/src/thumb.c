@@ -4,7 +4,8 @@
 
 #define STR(x) #x "\n" 
 #define GEN(x) printf(#x "\n")
-#define RET printf("return; }\n")
+#define RET GEN(return; })
+#define FETCH GEN(cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;)
 
 #define LOOP(i, limit) for(int i = 0; i < (limit); i++)
 
@@ -40,9 +41,7 @@ const char step_src[] =
 STR(void thumb_step(arm7tdmi_t* cpu){)
 STR(    u16 opcode = cpu->pipeline_opcode[0];)
 STR(    cpu->pipeline_opcode[0] = cpu->pipeline_opcode[1];)
-STR(    cpu->r[15] += 2;)
-STR(    cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq);)
-STR(    cpu->fetch_seq = true;);
+STR(    cpu->r[15] += 2;);
 
 const char end_src[] =
 STR(});
@@ -271,6 +270,7 @@ void generateLUT_data(){
 
 void thumb_move_shifted_register(int off5, int switch2){
     printf("thumb_move_shifted_register_%X_%X:{\n", off5, switch2);
+    FETCH;
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
     GEN(u32 rs = cpu->r[(opcode >> 3) & 0b111];);
 
@@ -293,17 +293,19 @@ void thumb_move_shifted_register(int off5, int switch2){
 
 void thumb_pc_relative_load(int off3){
     printf("thumb_pc_relative_load_%X:{\n", off3);
+    FETCH;
     GEN(u8 w8 = opcode & 0xFF;);
     printf("u32* rd = &cpu->r[%d];\n", off3);
     GEN(u32 addr = (cpu->r[15] & 0xFFFFFFFC) + (w8 << 2););
+    GEN(*rd = readWordAndTick(cpu, addr, false););
     GEN(cpu->cycles += I_CYCLES;);
     GEN(cpu->fetch_seq = false;);
-    GEN(*rd = readWordAndTick(cpu, addr, false););
     RET;
 }
 
 void thumb_conditional_branch(int cond4){
     printf("thumb_conditional_branch_%X:{\n", cond4);
+    FETCH;
     GEN(u8 w8 = opcode & 0xFF;);
     printf("if(%s == false) return;\n", condFuncs[cond4]);
 
@@ -314,6 +316,7 @@ void thumb_conditional_branch(int cond4){
 
 void thumb_unconditional_branch(){
     printf("thumb_unconditional_branch:{\n");
+    FETCH;
     GEN(u32 offset = (opcode & 0b11111111111) << 1;);
     GEN(cpu->r[15] += offset & 0x800 ? 0xFFFFF000 | offset : offset;);
     GEN(thumb_pipeline_refill(cpu););
@@ -322,6 +325,7 @@ void thumb_unconditional_branch(){
 
 void thumb_misc_immediate(int off3, int switch2){
     printf("thumb_misc_immediate_%X_%X:{\n", off3, switch2);
+    FETCH;
     GEN(u8 w8 = opcode & 0xFF;);
     printf("u32* rd = &cpu->r[%d];\n", off3);
 
@@ -348,6 +352,7 @@ void thumb_misc_immediate(int off3, int switch2){
 
 void thumb_long_branch_link(bool h){
     printf("thumb_long_branch_link_%X:{\n", h);
+    FETCH;
     GEN(u32 offset = (opcode & 0b11111111111););
 
     if(!h){
@@ -367,6 +372,7 @@ void thumb_long_branch_link(bool h){
 
 void thumb_alu_operations(int op4){
     printf("thumb_alu_operations_%X:{\n", op4);
+    FETCH;
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
     GEN(u32 rs = cpu->r[(opcode >> 3) & 0b111];);
 
@@ -464,6 +470,7 @@ void thumb_alu_operations(int op4){
 
 void thumb_multiple_load_store(int off3, bool l){
     printf("thumb_multiple_load_store_%X_%X:{\n", off3, l);
+    FETCH;
     int base_idx = off3;
     printf("u32 base = cpu->r[%d];\n", base_idx);
     GEN(u8 rlist = opcode & 0xFF;);
@@ -510,7 +517,7 @@ void thumb_multiple_load_store(int off3, bool l){
 
 void thumb_hi_reg_op(bool h1, bool h2, int switch2){
     printf("thumb_hi_reg_op_%X_%X_%X:{\n", h1, h2, switch2);
-
+    FETCH;
     switch(switch2){
         case 0b00:
         printf("u8 rd_idx = (opcode & 0b111) %s;\n", h1 ? "+ 8" : ""); 
@@ -559,7 +566,7 @@ void thumb_hi_reg_op(bool h1, bool h2, int switch2){
 
 void thumb_add_subtract(bool i, bool op, int off3){
     printf("thumb_add_subtract_%X_%X_%X:{\n", i, op, off3);
-
+    FETCH;
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
     GEN(u32 rs = cpu->r[(opcode >> 3) & 0b111];);
 
@@ -580,12 +587,11 @@ void thumb_add_subtract(bool i, bool op, int off3){
 
 void thumb_load_store_immediate_offset(bool b, bool l, int off5){
     printf("thumb_load_store_immediate_offset_%X_%X_%X:{\n", b, l, off5);
-
+    FETCH;
     GEN(u32 rb = cpu->r[(opcode >> 3) & 0b111];);
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
 
     if(l){
-        GEN(cpu->cycles += I_CYCLES;);
         if(b)
             printf("*rd = readByteAndTick(cpu, rb + %d, false);\n", off5);
         else {
@@ -593,6 +599,7 @@ void thumb_load_store_immediate_offset(bool b, bool l, int off5){
             GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
         }
+        GEN(cpu->cycles += I_CYCLES;);
     } else {
         if(b)
             printf("writeByteAndTick(cpu, rb + %d, *rd, false);\n", off5);
@@ -605,6 +612,7 @@ void thumb_load_store_immediate_offset(bool b, bool l, int off5){
 
 void thumb_push_pop(bool l, bool r){
     printf("thumb_push_pop_%X_%X:{\n", l, r);
+    FETCH;
     GEN(u8 rlist = opcode & 0xFF;);
 
     GEN(u8 count = __builtin_popcount(rlist););
@@ -650,15 +658,15 @@ void thumb_push_pop(bool l, bool r){
 
 void thumb_load_store_halfword(bool l, int off5){
     printf("thumb_load_store_halfword_%X_%X:{\n", l, off5);
-
+    FETCH;
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
     GEN(u32 rb = cpu->r[(opcode >> 3) & 0b111];);
 
     if(l) {
-        GEN(cpu->cycles += I_CYCLES;);
         printf("*rd = readHalfWordAndTick(cpu, rb + %d, false);\n", off5);
         GEN(if(rb & 1));
             GEN(*rd = (*rd << 24) | (*rd >> 8););
+        GEN(cpu->cycles += I_CYCLES;);
     } else {
         printf("writeHalfWordAndTick(cpu, rb + %d, *rd, false);\n", off5);
     }
@@ -670,7 +678,7 @@ void thumb_load_store_halfword(bool l, int off5){
 
 void thumb_load_store_sign_extended(bool h, bool s, int off3){
     printf("thumb_load_store_sign_extended_%X_%X_%X:{\n", h, s, off3);
-
+    FETCH;
     printf("u32 ro = cpu->r[%d];\n", off3);
     GEN(u32 rb = cpu->r[(opcode >> 3) & 0b111];);
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
@@ -680,10 +688,10 @@ void thumb_load_store_sign_extended(bool h, bool s, int off3){
         if(!s){
             GEN(writeHalfWordAndTick(cpu, addr, *rd, false););
         } else {
-            GEN(cpu->cycles += I_CYCLES;);
             GEN(*rd = readByteAndTick(cpu, addr, false););
             GEN(if(*rd & 0x80));
             GEN(    *rd |= 0xFFFFFF00;);
+            GEN(cpu->cycles += I_CYCLES;);
         }
     } else {
         GEN(cpu->cycles += I_CYCLES;);
@@ -711,6 +719,7 @@ void thumb_load_store_sign_extended(bool h, bool s, int off3){
 
 void thumb_load_address(bool sp, int off3){
     printf("thumb_load_address_%X_%X:{\n", sp, off3);
+    FETCH;
     GEN(u8 w8 = opcode & 0xFF;);
     printf("u32* rd = &cpu->r[%d];\n", off3);
     if(sp)
@@ -725,20 +734,20 @@ void thumb_load_address(bool sp, int off3){
 
 void thumb_load_store_register_offset(bool l, bool b, int off3){
     printf("thumb_load_store_register_offset_%X_%X_%X:{\n", l, b, off3);
-
+    FETCH;
     printf("u32 ro = cpu->r[%d];\n", off3);
     GEN(u32 rb = cpu->r[(opcode >> 3) & 0b111];);
     GEN(u32* rd = &cpu->r[opcode & 0b111];);
     GEN(u32 addr = rb + ro;);
 
     if(l){
-        GEN(cpu->cycles += I_CYCLES;);
         if(b)
             GEN(*rd = readByteAndTick(cpu, addr, false););
         else {
             GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
         }
+        GEN(cpu->cycles += I_CYCLES;);
     } else {
         if(b)
             GEN(writeByteAndTick(cpu, addr, *rd, false););
@@ -753,7 +762,7 @@ void thumb_load_store_register_offset(bool l, bool b, int off3){
 
 void thumb_add_offset_sp(bool s){
     printf("thumb_add_offset_sp_%X:{\n", s);
-
+    FETCH;
     GEN(u16 w9 = (opcode & 0b1111111) << 2;);
     if(s)
         GEN(cpu->r[13] -= w9;);
@@ -765,16 +774,17 @@ void thumb_add_offset_sp(bool s){
 
 void thumb_sp_relative_load_store(bool l, int op3){
     printf("thumb_sp_relative_load_store_%X_%X:{\n", l, op3);
-
     printf("u32* rd = &cpu->r[%d];\n", op3);
     GEN(u8 w8 = opcode & 0xFF;);
     GEN(u32 addr = cpu->r[13] + (w8 << 2););
 
     if(l) {
-        GEN(cpu->cycles += I_CYCLES;);
+        FETCH;
         GEN(*rd = readWordAndTick(cpu, addr, false););
         GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
+        GEN(cpu->cycles += I_CYCLES;);
     } else {
+        FETCH;
         GEN(writeWordAndTick(cpu, addr, *rd, false););
     }
 
@@ -784,6 +794,7 @@ void thumb_sp_relative_load_store(bool l, int op3){
 
 void thumb_software_interrupt(){
     printf("thumb_software_interrupt:{\n");
+    FETCH;
     GEN(arm7tdmi_trigger_exception(cpu, 0x8, 0x13););
     RET;
 }

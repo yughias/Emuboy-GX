@@ -6,7 +6,7 @@
 #define GET_RELOAD(x) (x->TMCNT & 0xFFFF)
 #define GET_SPEED_SHIFT(x) (timerSpeedShift[(x->TMCNT >> 16) & 0b11])
 
-#define TIMER_TRIGGER_DELAY 3
+#define TIMER_TRIGGER_DELAY 2
 
 const u32 timerSpeedShift[4] = {0, 6, 8, 10};
 

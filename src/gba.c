@@ -43,6 +43,7 @@ void emulateGba(gba_t* gba){
 
     gba->cpu.cycles -= CYCLES_PER_FRAME;
     gba->clock_before_scheduling -= CYCLES_PER_FRAME;
+    gba->cpu.prefetch_counter -= CYCLES_PER_FRAME;
     gba->frame_clock += CYCLES_PER_FRAME;
 }
 
@@ -73,7 +74,7 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
 
     gba->KEYINPUT = 0xFFFF;
     gba->RCNT = 0x8000;
-    updateWaitStates(&gba->gamepak, gba->WAITCNT);
+    updateWaitStates(&gba->gamepak, &gba->cpu, gba->WAITCNT);
 
     loadBios(biosFilename, &gba->bios.data);
     loadGamePak(&gba->gamepak, romFilename);

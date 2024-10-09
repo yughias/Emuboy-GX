@@ -167,6 +167,9 @@ switch((addr >> 24) & 0xFF){ \
     case 0x8: \
     case 0x9: \
     FORCE_N_CYCLE; \
+    if(cpu->prefetch_enabled){ \
+        return n_bits == 32 ? readWordWithPrefetcher(cpu, gamepak, addr, seq) : readHalfWordWithPrefetcher(cpu, gamepak, addr, seq); \
+    } \
     WAIT_STATE_ ## n_bits (0, seq); \
     addr -= 0x08000000; \
     READ_ROM(n_bits); \

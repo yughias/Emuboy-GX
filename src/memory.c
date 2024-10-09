@@ -30,3 +30,79 @@ void loadBios(const char* filename, u8** bios){
 
     fclose(fptr);
 }
+
+u16 readHalfWordWithPrefetcher(arm7tdmi_t* cpu, gamepak_t* gamepak, u32 addr, bool seq){
+    if(addr == cpu->r[15]){
+        u32 elapsed = cpu->cycles - cpu->prefetch_counter;
+        u8 wt = gamepak->waitstates[0][true];
+        
+        while(cpu->prefetch_n < 16 && elapsed >= wt + 1){
+            cpu->prefetch_n += 1;
+            cpu->prefetch_counter += (wt + 1);
+            elapsed -= (wt + 1);
+        }
+
+        if(cpu->prefetch_addr == addr){
+            if(cpu->prefetch_n >= 1){
+                cpu->prefetch_n -= 1;
+            } else {
+                cpu->cycles += wt + 1 - elapsed;
+                cpu->prefetch_counter = cpu->cycles;
+            }
+        } else {
+            cpu->cycles += gamepak->waitstates[0][seq];
+            cpu->prefetch_n = 0;
+            cpu->prefetch_counter = cpu->cycles;
+        }
+    } else {
+        cpu->cycles += gamepak->waitstates[0][seq];
+        cpu->prefetch_n = 0;
+        cpu->prefetch_counter = cpu->cycles;
+    }
+    cpu->prefetch_addr = addr + 2;
+    return *(u16*)(&gamepak->ROM[addr-0x08000000]);
+}
+
+u32 readWordWithPrefetcher(arm7tdmi_t* cpu, gamepak_t* gamepak, u32 addr, bool seq){
+    if(addr == cpu->r[15]){
+        u32 elapsed = cpu->cycles - cpu->prefetch_counter;
+        u8 wt = gamepak->waitstates[0][true];
+        
+        while(cpu->prefetch_n < 16 && elapsed >= wt + 1){
+            cpu->prefetch_n += 1;
+            cpu->prefetch_counter += (wt + 1);
+            elapsed -= (wt + 1);
+        }
+
+        if(cpu->prefetch_addr == addr){
+            /*
+            if(elapsed && cpu->prefetch_n < 16){
+                cpu->prefetch_n += 1;
+                cpu->cycles += wt + 1 - elapsed;
+                cpu->prefetch_counter = cpu->cycles;
+                elapsed = 0;
+            }
+            */
+
+            if(cpu->prefetch_n >= 2){
+                cpu->prefetch_n -= 2;
+            } else {
+                cpu->cycles += wt + 1 - elapsed;
+                if(!cpu->prefetch_n)
+                    cpu->cycles += wt + 1;
+                cpu->prefetch_n = 0;
+                cpu->prefetch_counter = cpu->cycles;
+            }
+        } else {
+            cpu->cycles += gamepak->waitstates[0][seq] + 1 + gamepak->waitstates[0][true];
+            cpu->prefetch_n = 0;
+            cpu->prefetch_counter = cpu->cycles;
+        }
+    } else {
+        cpu->cycles += gamepak->waitstates[0][seq] + 1 + gamepak->waitstates[0][true];
+        cpu->prefetch_n = 0;
+        cpu->prefetch_counter = cpu->cycles;
+    }
+    cpu->prefetch_addr = addr + 4;
+    return *(u32*)(&gamepak->ROM[addr-0x08000000]);
+}

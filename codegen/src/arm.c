@@ -459,11 +459,11 @@ void arm_halfword_data_transfer(bool load_bit, bool up_bit, bool pre_bit, bool w
 
         case 0x01:
         if(load_bit) {
-            GEN(cpu->cycles += I_CYCLES;);
-            GEN(cpu->fetch_seq = false;);
             GEN(*rd = readHalfWordAndTick(cpu, addr, false););
             GEN(if(addr & 1));
                 GEN(*rd = (*rd >> 8) | (*rd << 24););
+            GEN(cpu->cycles += I_CYCLES;);
+            GEN(cpu->fetch_seq = false;);
         } else {
             GEN(cpu->fetch_seq = false;);
             GEN(writeHalfWordAndTick(cpu, addr, *rd, false););
@@ -527,13 +527,15 @@ void arm_single_data_transfer(bool i_bit, bool p_bit, bool u_bit, bool b_bit, bo
         printf("addr += %s;\n", u_bit ? "offset" : "-offset");
 
     if(l_bit){
-        GEN(cpu->cycles += I_CYCLES;);
-        GEN(cpu->fetch_seq = false;);
-        if(b_bit)
+        if(b_bit){
             GEN(*rd = readByteAndTick(cpu, addr, false););
-        else{
+            GEN(cpu->cycles += I_CYCLES;);
+            GEN(cpu->fetch_seq = false;);
+        } else{
             GEN(*rd = readWordAndTick(cpu, addr, false););
             GEN(*rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false););
+            GEN(cpu->cycles += I_CYCLES;);
+            GEN(cpu->fetch_seq = false;);
             GEN(if(rd_idx == 15));
             GEN(    arm7tdmi_pipeline_refill(cpu););
         }

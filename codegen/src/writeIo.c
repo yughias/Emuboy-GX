@@ -421,7 +421,7 @@ void generateSwitchCase(int addr){
         addr -= 0x4000204;
         GEN_CASE;
         printf("((u8*)&gba->WAITCNT)[%d] = val;\n", addr);
-        GEN(updateWaitStates(&gba->gamepak, gba->WAITCNT););
+        GEN(updateWaitStates(&gba->gamepak, cpu, gba->WAITCNT););
         RET;
         return;
     }

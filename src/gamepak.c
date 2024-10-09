@@ -3,6 +3,7 @@
 #include "sram.h"
 #include "flash.h"
 #include "eeprom.h"
+#include "arm7tdmi/arm7tdmi.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -154,14 +155,17 @@ void setupSaveMemoryWithDb(gamepak_t* gamepak, db_hash hash){
     }
 }
 
-void updateWaitStates(gamepak_t* gamepak, u16 waitcnt_reg){
+void updateWaitStates(gamepak_t* gamepak, arm7tdmi_t* cpu, u16 waitcnt_reg){
     static const u8 wait_n[4] = {4, 3, 2, 8};
     static const u8 wait0_s[2] = {2, 1};
     static const u8 wait1_s[2] = {4, 1};
     static const u8 wait2_s[2] = {8, 1};
 
     gamepak->sram_wait = wait_n[waitcnt_reg & 0b11];
-    gamepak->prefetch_enabled = (waitcnt_reg >> 14) & 0b1;
+    cpu->prefetch_enabled = (waitcnt_reg >> 14) & 0b1;
+    cpu->prefetch_addr = 0;
+    cpu->prefetch_n = 0;
+    cpu->prefetch_counter = cpu->cycles;
 
     gamepak->waitstates[0][N_WAIT_IDX] = wait_n[(waitcnt_reg >> 2) & 0b11];
     gamepak->waitstates[0][S_WAIT_IDX] = wait0_s[(waitcnt_reg >> 4) & 0b1];

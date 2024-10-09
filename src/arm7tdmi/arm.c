@@ -11069,11 +11069,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -11084,11 +11084,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -11171,11 +11171,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -11186,11 +11186,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -11276,11 +11276,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 return; }
 arm_halfword_data_transfer_1_0_1_0_1_1:{
 u32 offset;
@@ -11289,11 +11289,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 return; }
 arm_halfword_data_transfer_1_0_1_0_2_0:{
 u32 offset;
@@ -11368,11 +11368,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rn != rd)
 *rn = addr;
 return; }
@@ -11383,11 +11383,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rn != rd)
 *rn = addr;
 return; }
@@ -11469,11 +11469,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -11484,11 +11484,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -11571,11 +11571,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -11586,11 +11586,11 @@ u32* rd = &cpu->r[(opcode >> 12) & 0xF];
 u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -11676,11 +11676,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 return; }
 arm_halfword_data_transfer_1_1_1_0_1_1:{
 u32 offset;
@@ -11689,11 +11689,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 return; }
 arm_halfword_data_transfer_1_1_1_0_2_0:{
 u32 offset;
@@ -11768,11 +11768,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = cpu->r[opcode & 0xF];
 u32 addr = *rn;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rn != rd)
 *rn = addr;
 return; }
@@ -11783,11 +11783,11 @@ u32* rn = &cpu->r[(opcode >> 16) & 0xF];
 offset = (opcode & 0xF) | (((opcode >> 8) & 0xF) << 4);
 u32 addr = *rn;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readHalfWordAndTick(cpu, addr, false);
 if(addr & 1)
 *rd = (*rd >> 8) | (*rd << 24);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rn != rd)
 *rn = addr;
 return; }
@@ -11983,10 +11983,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12001,10 +12001,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12019,10 +12019,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12037,10 +12037,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12055,10 +12055,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12073,10 +12073,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12091,10 +12091,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12109,10 +12109,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12255,10 +12255,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12273,10 +12273,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12291,10 +12291,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12309,10 +12309,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12327,10 +12327,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12345,10 +12345,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12363,10 +12363,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12381,10 +12381,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -12527,9 +12527,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12542,9 +12542,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12557,9 +12557,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12572,9 +12572,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12587,9 +12587,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12602,9 +12602,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12617,9 +12617,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12632,9 +12632,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12775,9 +12775,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12790,9 +12790,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12805,9 +12805,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12820,9 +12820,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12835,9 +12835,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12850,9 +12850,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12865,9 +12865,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -12880,9 +12880,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -13023,10 +13023,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13041,10 +13041,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13059,10 +13059,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13077,10 +13077,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13095,10 +13095,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13113,10 +13113,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13131,10 +13131,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13149,10 +13149,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13295,10 +13295,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13313,10 +13313,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13331,10 +13331,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13349,10 +13349,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13367,10 +13367,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13385,10 +13385,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13403,10 +13403,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13421,10 +13421,10 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -13567,9 +13567,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13582,9 +13582,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13597,9 +13597,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13612,9 +13612,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13627,9 +13627,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13642,9 +13642,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13657,9 +13657,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13672,9 +13672,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13815,9 +13815,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13830,9 +13830,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13845,9 +13845,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13860,9 +13860,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13875,9 +13875,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13890,9 +13890,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13905,9 +13905,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -13920,9 +13920,9 @@ u32* rd = &cpu->r[rd_idx];
 u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -14056,10 +14056,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14072,10 +14072,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14088,10 +14088,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14104,10 +14104,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14120,10 +14120,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14136,10 +14136,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14152,10 +14152,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14168,10 +14168,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -14312,10 +14312,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14330,10 +14330,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14348,10 +14348,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14366,10 +14366,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14384,10 +14384,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14402,10 +14402,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14420,10 +14420,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14438,10 +14438,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -14576,9 +14576,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_1:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14589,9 +14589,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_2:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14602,9 +14602,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_3:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14615,9 +14615,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_4:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14628,9 +14628,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_5:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14641,9 +14641,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_6:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14654,9 +14654,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_0_1_7:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14667,9 +14667,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_0_1_1_0_0:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -14808,9 +14808,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14823,9 +14823,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14838,9 +14838,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14853,9 +14853,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14868,9 +14868,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14883,9 +14883,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14898,9 +14898,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -14913,9 +14913,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15048,10 +15048,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15064,10 +15064,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15080,10 +15080,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15096,10 +15096,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15112,10 +15112,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15128,10 +15128,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15144,10 +15144,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15160,10 +15160,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -15304,10 +15304,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15322,10 +15322,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15340,10 +15340,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15358,10 +15358,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15376,10 +15376,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15394,10 +15394,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15412,10 +15412,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15430,10 +15430,10 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -15568,9 +15568,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_1:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15581,9 +15581,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_2:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15594,9 +15594,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_3:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15607,9 +15607,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_4:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15620,9 +15620,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_5:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15633,9 +15633,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_6:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15646,9 +15646,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_0_1_7:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15659,9 +15659,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_0_1_1_1_1_0_0:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -15800,9 +15800,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15815,9 +15815,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15830,9 +15830,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15845,9 +15845,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15860,9 +15860,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15875,9 +15875,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15890,9 +15890,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -15905,9 +15905,9 @@ u32 addr = *rn;
 u32 offset;
 offset = opcode & 0xFFF;
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -16106,10 +16106,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16132,10 +16132,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16156,10 +16156,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16182,10 +16182,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16206,10 +16206,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16232,10 +16232,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16255,10 +16255,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16281,10 +16281,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16486,10 +16486,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16512,10 +16512,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16536,10 +16536,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16562,10 +16562,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16586,10 +16586,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16612,10 +16612,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16635,10 +16635,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16661,10 +16661,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += -offset;
@@ -16866,9 +16866,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16889,9 +16889,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16910,9 +16910,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16933,9 +16933,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16954,9 +16954,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16977,9 +16977,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -16997,9 +16997,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17020,9 +17020,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17222,9 +17222,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17245,9 +17245,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17266,9 +17266,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17289,9 +17289,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17310,9 +17310,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17333,9 +17333,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17353,9 +17353,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17376,9 +17376,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += -offset;
 if(rn != rd)
 *rn = addr;
@@ -17578,10 +17578,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17604,10 +17604,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17628,10 +17628,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17654,10 +17654,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17678,10 +17678,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17704,10 +17704,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17727,10 +17727,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17753,10 +17753,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17958,10 +17958,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -17984,10 +17984,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18008,10 +18008,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18034,10 +18034,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18058,10 +18058,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18084,10 +18084,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18107,10 +18107,10 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18133,10 +18133,10 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 addr += offset;
@@ -18338,9 +18338,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18361,9 +18361,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18382,9 +18382,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18405,9 +18405,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18426,9 +18426,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18449,9 +18449,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18469,9 +18469,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18492,9 +18492,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18694,9 +18694,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18717,9 +18717,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18738,9 +18738,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18761,9 +18761,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18782,9 +18782,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18805,9 +18805,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18825,9 +18825,9 @@ u32 val = cpu->r[opcode & 0xF];
 shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -18848,9 +18848,9 @@ if((opcode & 0xF) == 15)
 val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 addr += offset;
 if(rn != rd)
 *rn = addr;
@@ -19043,10 +19043,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19067,10 +19067,10 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19089,10 +19089,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19113,10 +19113,10 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19135,10 +19135,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19159,10 +19159,10 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19180,10 +19180,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19204,10 +19204,10 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -19407,10 +19407,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19433,10 +19433,10 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19457,10 +19457,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19483,10 +19483,10 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19507,10 +19507,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19533,10 +19533,10 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19556,10 +19556,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19582,10 +19582,10 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -19779,9 +19779,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_1:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19800,9 +19800,9 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_2:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19819,9 +19819,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_3:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19840,9 +19840,9 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_4:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19859,9 +19859,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_5:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19880,9 +19880,9 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_6:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19898,9 +19898,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_0_1_7:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -19919,9 +19919,9 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_0_1_1_0_0:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -20119,9 +20119,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20142,9 +20142,9 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20163,9 +20163,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20186,9 +20186,9 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20207,9 +20207,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20230,9 +20230,9 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20250,9 +20250,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20273,9 +20273,9 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += -offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -20467,10 +20467,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20491,10 +20491,10 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20513,10 +20513,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20537,10 +20537,10 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20559,10 +20559,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20583,10 +20583,10 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20604,10 +20604,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20628,10 +20628,10 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 return; }
@@ -20831,10 +20831,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20857,10 +20857,10 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20881,10 +20881,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20907,10 +20907,10 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20931,10 +20931,10 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20957,10 +20957,10 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -20980,10 +20980,10 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -21006,10 +21006,10 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
-cpu->cycles += I_CYCLES;
-cpu->fetch_seq = false;
 *rd = readWordAndTick(cpu, addr, false);
 *rd = alu_ROR(cpu, *rd, (addr & 0b11) << 3, false);
+cpu->cycles += I_CYCLES;
+cpu->fetch_seq = false;
 if(rd_idx == 15)
 arm7tdmi_pipeline_refill(cpu);
 if(rn != rd)
@@ -21203,9 +21203,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_1:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21224,9 +21224,9 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_2:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21243,9 +21243,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_3:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21264,9 +21264,9 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_4:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21283,9 +21283,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_5:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21304,9 +21304,9 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_6:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21322,9 +21322,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_0_1_7:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21343,9 +21343,9 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 return; }
 arm_single_data_transfer_1_1_1_1_1_0_0:{
 u32 rn_idx = (opcode >> 16) & 0xF;
@@ -21543,9 +21543,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21566,9 +21566,9 @@ val += 4;
 offset = alu_LSL(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21587,9 +21587,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21610,9 +21610,9 @@ val += 4;
 offset = alu_LSR(cpu, val ,shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21631,9 +21631,9 @@ shift_amnt = !shift_amnt ? 32 : shift_amnt;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21654,9 +21654,9 @@ val += 4;
 offset = alu_ASR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21674,9 +21674,9 @@ shift_amnt = (opcode >> 7) & 0x1F;
 offset = !shift_amnt ? alu_RRX(cpu, val, shift_amnt, 0) : alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }
@@ -21697,9 +21697,9 @@ val += 4;
 offset = alu_ROR(cpu, val, shift_amnt, 0);
 }
 addr += offset;
+*rd = readByteAndTick(cpu, addr, false);
 cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
-*rd = readByteAndTick(cpu, addr, false);
 if(rn != rd)
 *rn = addr;
 return; }

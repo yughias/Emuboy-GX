@@ -883,11 +883,11 @@ case 0x203:
 return;
 case 0x204:
 ((u8*)&gba->WAITCNT)[0] = val;
-updateWaitStates(&gba->gamepak, gba->WAITCNT);
+updateWaitStates(&gba->gamepak, cpu, gba->WAITCNT);
 return;
 case 0x205:
 ((u8*)&gba->WAITCNT)[1] = val;
-updateWaitStates(&gba->gamepak, gba->WAITCNT);
+updateWaitStates(&gba->gamepak, cpu, gba->WAITCNT);
 return;
 case 0x208:
 ((u8*)&gba->IME)[0] = val;
