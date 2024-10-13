@@ -30,12 +30,9 @@ void transferDma(gba_t* gba, int i){
     if(!n)
         n = 0xFFFF;
 
-    // this cause bobbing on some games
-    //cpu->cycles += 2*I_CYCLES;
-    //cpu->cycles += 2*n*S_CYCLES;
-
     while(n){
         int step;
+        cpu->cycles += 1;
         if(transfer_size){
             step = 4;
             u32 word = cpu->readWord(cpu, dma->internal_source, true);
@@ -48,6 +45,7 @@ void transferDma(gba_t* gba, int i){
             dma->bus |= halfword;
             cpu->writeHalfWord(cpu, dma->internal_dest, halfword, true);
         }
+        cpu->cycles += 1;
 
         switch(sa){
             case 0b00:

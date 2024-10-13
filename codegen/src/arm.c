@@ -583,9 +583,6 @@ void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, boo
         p_bit ^= 1;
     }
 
-    if(l_bit)
-        GEN(cpu->cycles += I_CYCLES;);
-
     GEN(cpu->fetch_seq = false;);
 
     GEN(if(!reg_count){);
@@ -655,6 +652,9 @@ void arm_block_data_transfer(bool p_bit, bool u_bit, bool s_bit, bool w_bit, boo
             }
         }
     GEN(});
+
+    if(l_bit)
+        GEN(cpu->cycles += I_CYCLES;);
     RET;
 }
 

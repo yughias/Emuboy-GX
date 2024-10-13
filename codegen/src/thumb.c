@@ -475,9 +475,6 @@ void thumb_multiple_load_store(int off3, bool l){
     printf("u32 base = cpu->r[%d];\n", base_idx);
     GEN(u8 rlist = opcode & 0xFF;);
 
-    if(l)
-        GEN(cpu->cycles += I_CYCLES;);
-
     GEN(cpu->fetch_seq = false;);
 
     GEN(u8 count = 0xFF;);
@@ -509,6 +506,9 @@ void thumb_multiple_load_store(int off3, bool l){
             GEN(base += 4;);
             GEN(first_transfer = false;);
         GEN(});
+        
+        if(l)
+            GEN(cpu->cycles += I_CYCLES;);
 
         printf("cpu->r[%d] = base;\n", base_idx);
     GEN(});

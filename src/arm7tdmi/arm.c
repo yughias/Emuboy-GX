@@ -21771,7 +21771,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -21794,6 +21793,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_0_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -21803,7 +21803,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -21826,6 +21825,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_0_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -21897,7 +21897,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -21922,6 +21921,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_0_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -21931,7 +21931,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -21956,6 +21955,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_1_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22030,7 +22030,6 @@ saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22055,6 +22054,7 @@ addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 loadBankedReg(cpu);
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_1_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22064,7 +22064,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22088,6 +22087,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_1_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22164,7 +22164,6 @@ saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22191,6 +22190,7 @@ loadBankedReg(cpu);
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_0_1_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22200,7 +22200,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22226,6 +22225,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_0_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22290,7 +22290,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22312,6 +22311,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_0_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22320,7 +22320,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22342,6 +22341,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_0_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22408,7 +22408,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22432,6 +22431,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_0_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22440,7 +22440,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22464,6 +22463,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_1_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22533,7 +22533,6 @@ u32 addr = *rn;
 saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22557,6 +22556,7 @@ first_transfer = false;
 reg_list = opcode & 0xFFFF;
 loadBankedReg(cpu);
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_1_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22565,7 +22565,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22588,6 +22587,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_1_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22659,7 +22659,6 @@ u32 addr = *rn;
 saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22685,6 +22684,7 @@ loadBankedReg(cpu);
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_0_1_1_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22693,7 +22693,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22718,6 +22717,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_0_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22787,7 +22787,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22810,6 +22809,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_0_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22819,7 +22819,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22842,6 +22841,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_0_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22913,7 +22913,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22938,6 +22937,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_0_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -22947,7 +22947,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -22972,6 +22971,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_1_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23046,7 +23046,6 @@ saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23071,6 +23070,7 @@ addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 loadBankedReg(cpu);
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_1_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23080,7 +23080,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23104,6 +23103,7 @@ first_transfer = false;
 addr -= reg_count*4;
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_1_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23180,7 +23180,6 @@ saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23207,6 +23206,7 @@ loadBankedReg(cpu);
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_0_1_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23216,7 +23216,6 @@ u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
 addr -= reg_count*4;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23242,6 +23241,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_0_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23306,7 +23306,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23328,6 +23327,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_0_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23336,7 +23336,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23358,6 +23357,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_0_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23424,7 +23424,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23448,6 +23447,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_0_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23456,7 +23456,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23480,6 +23479,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_1_0_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23549,7 +23549,6 @@ u32 addr = *rn;
 saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23573,6 +23572,7 @@ first_transfer = false;
 reg_list = opcode & 0xFFFF;
 loadBankedReg(cpu);
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_1_0_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23581,7 +23581,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23604,6 +23603,7 @@ first_transfer = false;
 }
 reg_list = opcode & 0xFFFF;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_1_1_0_0:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23675,7 +23675,6 @@ u32 addr = *rn;
 saveBankedReg(cpu);
 regs = cpu->usr_r;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23701,6 +23700,7 @@ loadBankedReg(cpu);
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_block_data_transfer_1_1_1_1_1_1:{
 u8 base_idx = (opcode >> 16) & 0xF;
@@ -23709,7 +23709,6 @@ u16 reg_list = opcode & 0xFFFF;
 u32* regs = cpu->r;
 u32 addr = *rn;
 u32 reg_count = __builtin_popcount(reg_list);
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 if(!reg_count){
 cpu->r[15] = readWordAndTick(cpu, *rn, false);
@@ -23734,6 +23733,7 @@ reg_list = opcode & 0xFFFF;
 if(!(reg_list & (1 << base_idx)))
 *rn = addr;
 }
+cpu->cycles += I_CYCLES;
 return; }
 arm_multiply_0_0:{
 u32 rm = cpu->r[opcode & 0xF];

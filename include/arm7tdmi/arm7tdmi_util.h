@@ -268,15 +268,15 @@ static const condFunc condFuncs[16] = {
 
 INLINE void arm_pipeline_refill(arm7tdmi_t* cpu){
     cpu->pipeline_opcode[0] = readWordAndTick(cpu, cpu->r[15], false);
-    cpu->pipeline_opcode[1] = readWordAndTick(cpu, cpu->r[15] + 4, true);
     cpu->r[15] += 4;
+    cpu->pipeline_opcode[1] = readWordAndTick(cpu, cpu->r[15], true);
     cpu->fetch_seq = true;
 }
 
 INLINE void thumb_pipeline_refill(arm7tdmi_t* cpu){
     cpu->pipeline_opcode[0] = readHalfWordAndTick(cpu, cpu->r[15], false);
-    cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15] + 2, true);
     cpu->r[15] += 2;
+    cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], true);
     cpu->fetch_seq = true;
 }
 

@@ -2512,7 +2512,6 @@ thumb_multiple_load_store_0_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[0];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2532,6 +2531,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[0] = base;
 }
 return; }
@@ -2566,7 +2566,6 @@ thumb_multiple_load_store_1_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[1];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2586,6 +2585,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[1] = base;
 }
 return; }
@@ -2620,7 +2620,6 @@ thumb_multiple_load_store_2_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[2];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2640,6 +2639,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[2] = base;
 }
 return; }
@@ -2674,7 +2674,6 @@ thumb_multiple_load_store_3_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[3];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2694,6 +2693,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[3] = base;
 }
 return; }
@@ -2728,7 +2728,6 @@ thumb_multiple_load_store_4_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[4];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2748,6 +2747,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[4] = base;
 }
 return; }
@@ -2782,7 +2782,6 @@ thumb_multiple_load_store_5_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[5];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2802,6 +2801,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[5] = base;
 }
 return; }
@@ -2836,7 +2836,6 @@ thumb_multiple_load_store_6_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[6];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2856,6 +2855,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[6] = base;
 }
 return; }
@@ -2890,7 +2890,6 @@ thumb_multiple_load_store_7_1:{
 cpu->pipeline_opcode[1] = readHalfWordAndTick(cpu, cpu->r[15], cpu->fetch_seq); cpu->fetch_seq = true;
 u32 base = cpu->r[7];
 u8 rlist = opcode & 0xFF;
-cpu->cycles += I_CYCLES;
 cpu->fetch_seq = false;
 u8 count = 0xFF;
 if(!rlist){
@@ -2910,6 +2909,7 @@ cpu->r[count] = readWordAndTick(cpu, base, !first_transfer);
 base += 4;
 first_transfer = false;
 }
+cpu->cycles += I_CYCLES;
 cpu->r[7] = base;
 }
 return; }
