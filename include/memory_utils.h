@@ -51,7 +51,8 @@ void write ## name (arm7tdmi_t* cpu, u32 not_aligned_addr, u ## n_bits val, bool
 gba_t* gba = (gba_t*)cpu->master; \
 ppu_t* ppu = &gba->ppu; \
 gamepak_t* gamepak = &gba->gamepak; \
-bios_t* bios = &gba->bios
+bios_t* bios = &gba->bios; \
+prefetcher_t* prefetcher = &gba->prefetcher
 
 #define EXTRA_CYCLE_32 cpu->cycles += 1
 #define EXTRA_CYCLE_16
@@ -127,6 +128,10 @@ return *GET_ARRAY_PTR(n_bits, gba->gamepak.ROM[addr])
 #define WAIT_STATE_16(zone, seq) DEFAULT_WAIT_STATE(zone, seq)
 #define WAIT_STATE_8(zone, seq) DEFAULT_WAIT_STATE(zone, seq)
 
+#define ROM_WAIT_32(zone, seq) if(prefetcher->enabled) { addDelayWordWithPrefetcher(prefetcher, gamepak, cpu, addr, seq); } else { WAIT_STATE_32(zone, seq); }
+#define ROM_WAIT_16(zone, seq) if(prefetcher->enabled) { addDelayHalfWordWithPrefetcher(prefetcher, gamepak, cpu, addr, seq); } else { WAIT_STATE_16(zone, seq); }
+#define ROM_WAIT_8(zone, seq) WAIT_STATE_8(zone, seq)
+
 #define FORCE_N_CYCLE if(!(addr & 0x1FFFF)) seq = false
 
 #define MEMORY_TABLE_READ(n_bits) \
@@ -167,29 +172,26 @@ switch((addr >> 24) & 0xFF){ \
     case 0x8: \
     case 0x9: \
     FORCE_N_CYCLE; \
-    if(cpu->prefetch_enabled && n_bits != 8){ \
-        return n_bits == 32 ? readWordWithPrefetcher(cpu, gamepak, addr, seq) : readHalfWordWithPrefetcher(cpu, gamepak, addr, seq); \
-    } \
-    WAIT_STATE_ ## n_bits (0, seq); \
+    ROM_WAIT_ ## n_bits (0, seq); \
     addr -= 0x08000000; \
     READ_ROM(n_bits); \
 \
     case 0xA: \
     case 0xB: \
     FORCE_N_CYCLE; \
-    WAIT_STATE_ ## n_bits (1, seq); \
+    ROM_WAIT_ ## n_bits (1, seq); \
     addr -= 0x0A000000; \
     READ_ROM(n_bits); \
 \
     case 0xC: \
     FORCE_N_CYCLE; \
-    WAIT_STATE_ ## n_bits (2, seq); \
+    ROM_WAIT_ ## n_bits (2, seq); \
     addr -= 0x0C000000; \
     READ_ROM(n_bits); \
 \
     case 0xD: \
     FORCE_N_CYCLE; \
-    WAIT_STATE_ ## n_bits (2, seq); \
+    ROM_WAIT_ ## n_bits (2, seq); \
     addr -= 0x0C000000; \
     switch(gamepak->type){ \
         case GAMEPAK_EEPROM: \

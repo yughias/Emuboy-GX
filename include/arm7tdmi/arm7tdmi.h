@@ -55,10 +55,6 @@ typedef struct arm7tdmi_t {
     u32 cycles;
 
     bool fetch_seq;
-    bool prefetch_enabled;
-    u32 prefetch_addr;
-    u32 prefetch_n;
-    u32 prefetch_counter;
 
     void* master;
 } arm7tdmi_t;

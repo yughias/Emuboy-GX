@@ -43,7 +43,7 @@ void emulateGba(gba_t* gba){
 
     gba->cpu.cycles -= CYCLES_PER_FRAME;
     gba->clock_before_scheduling -= CYCLES_PER_FRAME;
-    gba->cpu.prefetch_counter -= CYCLES_PER_FRAME;
+    gba->prefetcher.cycle_counter -= CYCLES_PER_FRAME;
     gba->frame_clock += CYCLES_PER_FRAME;
 }
 

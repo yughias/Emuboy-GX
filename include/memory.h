@@ -26,7 +26,4 @@ void writeWord(arm7tdmi_t* cpu, u32 addr, u32 val, bool seq);
 
 void loadBios(const char * filename, u8** bios);
 
-u16 readHalfWordWithPrefetcher(arm7tdmi_t* cpu, gamepak_t* gamepak, u32 addr, bool seq);
-u32 readWordWithPrefetcher(arm7tdmi_t* cpu, gamepak_t* gamepak, u32 addr, bool seq);
-
 #endif

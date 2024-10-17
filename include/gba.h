@@ -8,6 +8,7 @@
 #include "dma.h"
 #include "timer.h"
 #include "gamepak.h"
+#include "prefetcher.h"
 #include "apu.h"
 #include "scheduler.h"
 
@@ -24,6 +25,7 @@ typedef struct gba_t {
     arm7tdmi_t cpu;
     ppu_t ppu;
     apu_t apu;
+    prefetcher_t prefetcher;
 
     // GBA RAM
     u8 EWRAM[EWRAM_SIZE];
