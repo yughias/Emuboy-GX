@@ -99,7 +99,6 @@ typedef struct apu_t {
     bool dma_sound_enabled_right[2];
     bool dma_sound_volume[2];
 
-    SDL_AudioDeviceID audioDev;
     SDL_AudioSpec audioSpec;
     u32 samplePushRate;
     atomic_fifo_t sample_buffer;

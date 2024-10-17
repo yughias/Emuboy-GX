@@ -47,13 +47,25 @@ void setup(){
     strncat(bios_path, "vba_bios.bin", FILENAME_MAX - 1);
     #endif
 
-    initGba(&gba, bios_path, getArgv(1));
+    SDL_AudioSpec audioSpec;
+    SDL_AudioDeviceID audioDev;
+    audioSpec.freq = 44100;
+    audioSpec.channels = 2;
+    audioSpec.format = AUDIO_S16;
+    audioSpec.samples = SAMPLE_PER_CALL;
+    audioSpec.callback = audioCallback;
+    audioSpec.userdata = &gba.apu.sample_buffer;
+    audioDev = SDL_OpenAudioDevice(0, 0, &audioSpec, &audioSpec, 0);
+
+    initGba(&gba, bios_path, getArgv(1), audioSpec);
 
     noRender();
 
     init_keypad();
 
     onExit = freeAll;
+
+    SDL_PauseAudioDevice(audioDev, 0);
 }
 
 void loop(){    

@@ -12,6 +12,8 @@
 #include "apu.h"
 #include "scheduler.h"
 
+typedef struct SDL_AudioSpec SDL_AudioSpec;
+
 // 1 PPU
 // 4 TIMERS
 // 1 SWEEP FOR CHANNEL 1
@@ -68,7 +70,7 @@ typedef struct gba_t {
 
 void checkInterrupts(gba_t* gba);
 void emulateGba(gba_t* gba);
-void initGba(gba_t* gba, const char* biosFilename, const char* romFilename);
+void initGba(gba_t* gba, const char* biosFilename, const char* romFilename, SDL_AudioSpec audioSpec);
 void freeGba(gba_t* gba);
 
 #endif

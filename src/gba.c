@@ -47,7 +47,7 @@ void emulateGba(gba_t* gba){
     gba->frame_clock += CYCLES_PER_FRAME;
 }
 
-void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
+void initGba(gba_t* gba, const char* biosFilename, const char* romFilename, SDL_AudioSpec audioSpec){
     memset(gba, 0, sizeof(gba_t));
     #ifdef EMSCRIPTEN
     gba->cpu.r[13] = 0x3007F00;
@@ -87,20 +87,13 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename){
     addEventToScheduler(&gba->scheduler_head, block);
 
     apu_t* apu = &gba->apu;
-    apu->audioSpec.freq = 44100;
-    apu->audioSpec.channels = 2;
-    apu->audioSpec.format = AUDIO_S16;
-    apu->audioSpec.samples = SAMPLE_PER_CALL;
-    apu->audioSpec.callback = audioCallback;
-    apu->audioSpec.userdata = &apu->sample_buffer;
-    apu->audioDev = SDL_OpenAudioDevice(0, 0, &apu->audioSpec, &apu->audioSpec, 0);
-    apu->samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE / apu->audioSpec.freq;
+    apu->audioSpec = audioSpec;
     apu->sound_channels_amplifier_left = 1;
     apu->sound_channels_amplifier_right = 1;
-    createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_pushSampleToAudioDevice, gba->apu.samplePushRate);
-
-
-    SDL_PauseAudioDevice(gba->apu.audioDev, 0);
+    if(apu->audioSpec.freq){
+        apu->samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE / apu->audioSpec.freq;
+        createAndAddEventWith0Args(&gba->scheduler_head, gba->scheduler_pool, GBA_SCHEDULER_POOL_SIZE, event_pushSampleToAudioDevice, gba->apu.samplePushRate);
+    }
 }
 
 void freeGba(gba_t* gba){
