@@ -231,7 +231,6 @@ u8 popFifo(fifo_t* fifo){
 
 void refillFifo(gba_t* gba, u32 fifo_addr){
     arm7tdmi_t* cpu = &gba->cpu;
-    u32 old_cycles = cpu->cycles;
 
     for(int i = 1; i <= 2; i++){
         dma_t* dma = &gba->dmas[i];
@@ -260,8 +259,6 @@ void refillFifo(gba_t* gba, u32 fifo_addr){
             }
         }
     }
-
-    gba->cpu.cycles = old_cycles;
 }
 
 void event_pushSampleToAudioDevice(gba_t* gba, u32 dummy){
