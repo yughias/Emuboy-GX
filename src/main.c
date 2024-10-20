@@ -1,5 +1,7 @@
 #include "SDL_MAINLOOP.h"
 #include "gba.h"
+#include "gba_recorder.h"
+#include "cheat_engine.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +9,9 @@
 
 int speed = 1;
 gba_t gba;
+
+SDL_AudioSpec audioSpec;
+SDL_AudioDeviceID audioDev;
 
 void freeAll(){
     if(gba.gamepak.type != GAMEPAK_ROM_ONLY && gba.gamepak.type != NO_GAMEPAK){
@@ -19,6 +24,7 @@ void freeAll(){
         }
     }
 
+    freeGbaRecorder();
     freeGba(&gba);
 }
 
@@ -47,15 +53,13 @@ void setup(){
     strncat(bios_path, "vba_bios.bin", FILENAME_MAX - 1);
     #endif
 
-    SDL_AudioSpec audioSpec;
-    SDL_AudioDeviceID audioDev;
     audioSpec.freq = 44100;
     audioSpec.channels = 2;
     audioSpec.format = AUDIO_S16;
     audioSpec.samples = SAMPLE_PER_CALL;
     audioSpec.callback = audioCallback;
     audioSpec.userdata = &gba.apu.sample_buffer;
-    audioDev = SDL_OpenAudioDevice(0, 0, &audioSpec, &audioSpec, 0);
+    audioDev = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &audioSpec, 0);
 
     initGba(&gba, bios_path, getArgv(1), audioSpec);
 
@@ -76,6 +80,35 @@ void loop(){
             speed = speed == 1 ? 1 : speed >> 1;
         if(keyReleased == '=')
             speed <<= 1;
+        if(keyReleased == SDLK_F1){
+            SDL_PauseAudioDevice(audioDev, 1);
+            SDL_CloseAudioDevice(audioDev);
+            isRecordingAudio ? stopGbaRecorder("audio.wav") : startGbaRecorder();
+            audioSpec.callback = isRecordingAudio ? recordAudioCallback : audioCallback;
+            audioDev = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &audioSpec, 0);
+            SDL_PauseAudioDevice(audioDev, 0);
+        }
+        if(keyReleased == SDLK_F2){
+            u32 value;
+            printf("(start scan for value?) ");
+            scanf("%d", &value);
+            cheatEngineNewSearch(&gba, value);
+            cheatEnginePrintAddresses();
+        }
+        if(keyReleased == SDLK_F3){
+            u32 value;
+            printf("(continue scan for value?) ");
+            scanf("%d", &value);
+            cheatEngineContinueSearch(&gba, value);
+            cheatEnginePrintAddresses();
+        }
+        if(keyReleased == SDLK_F4){
+            u32 value;
+            printf("(write value?) ");
+            scanf("%d", &value);
+            cheatEngineWrite(&gba, value);
+        }
+
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
         gba.ppu.frameSkip = speed >> 1;
     }
