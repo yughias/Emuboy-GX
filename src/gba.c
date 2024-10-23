@@ -59,8 +59,8 @@ void initGba(gba_t* gba, const char* biosFilename, const char* romFilename, SDL_
     gba->cpu.mode_bits = 0x1F;
     #else
     gba->cpu.mode_bits = 0x13;
-    gba->cpu.fiq_disable = true,
-    gba->cpu.irq_disable = true,
+    gba->cpu.fiq_disable = true;
+    gba->cpu.irq_disable = true;
     #endif
     gba->cpu.readByte = readByte;
     gba->cpu.readHalfWord = readHalfWord;

@@ -122,8 +122,10 @@ void loop(){
             scanf("%X", &address);
             cheatEngineWriteToAddress(&gba, address, value, type);
         }
-        if(keystate[SDL_SCANCODE_LCTRL] && keyReleased == SDLK_p)
-            pause ^= 1;
+        if(keystate[SDL_SCANCODE_LCTRL]){
+            if(keyReleased == SDLK_p)
+                pause ^= 1;
+        }
 
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
         gba.ppu.frameSkip = speed >> 1;
