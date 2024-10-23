@@ -82,18 +82,21 @@ void cheatEngineContinueSearch(gba_t* gba, u32 value_to_find){
     memcpy(&possible_addresses, &new_vec, sizeof(vector_t));
 }
 
-void cheatEngineWrite(gba_t* gba, u32 value_to_write){
+void cheatEngineWriteToFoundAddresses(gba_t* gba, u32 value_to_write){
     for(int i = 0; i < possible_addresses.size / sizeof(address_t); i++){
         address_t* addr_ptr = &((address_t*)possible_addresses.buffer)[i];
-        u32 address = addr_ptr->address;
-        u32 old_cycles = gba->cpu.cycles;
-        prefetcher_t old_prefetch;
-        memcpy(&old_prefetch, &gba->prefetcher, sizeof(prefetcher_t));
-        for(int j = 0; j < addr_ptr->type; j++){
-            gba->cpu.writeByte(&gba->cpu, address+j, value_to_write & 0xFF, true);
-            value_to_write >>= 8;
-        }
-        gba->cpu.cycles = old_cycles;
-        memcpy(&gba->prefetcher, &old_prefetch, sizeof(prefetcher_t));
+        cheatEngineWriteToAddress(gba, addr_ptr->address, value_to_write, addr_ptr->type);
     }
+}
+
+void cheatEngineWriteToAddress(gba_t* gba, u32 address, u32 value_to_write, u8 type){
+    u32 old_cycles = gba->cpu.cycles;
+    prefetcher_t old_prefetch;
+    memcpy(&old_prefetch, &gba->prefetcher, sizeof(prefetcher_t));
+    for(int j = 0; j < type; j++){
+        gba->cpu.writeByte(&gba->cpu, address+j, value_to_write & 0xFF, true);
+        value_to_write >>= 8;
+    }
+    gba->cpu.cycles = old_cycles;
+    memcpy(&gba->prefetcher, &old_prefetch, sizeof(prefetcher_t));
 }

@@ -8,6 +8,7 @@ typedef struct gba_t gba_t;
 void cheatEnginePrintAddresses();
 void cheatEngineNewSearch(gba_t* gba, u32 value_to_find);
 void cheatEngineContinueSearch(gba_t* gba, u32 value_to_find);
-void cheatEngineWrite(gba_t* gba, u32 value_to_write);
+void cheatEngineWriteToFoundAddresses(gba_t* gba, u32 value_to_write);
+void cheatEngineWriteToAddress(gba_t* gba, u32 address, u32 value_to_write, u8 type);
 
 #endif

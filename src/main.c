@@ -6,7 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
+bool pause = false;
 int speed = 1;
 gba_t gba;
 
@@ -29,6 +31,7 @@ void freeAll(){
 }
 
 void setup(){
+    srand(time(NULL));
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
@@ -106,13 +109,26 @@ void loop(){
             u32 value;
             printf("(write value?) ");
             scanf("%d", &value);
-            cheatEngineWrite(&gba, value);
+            cheatEngineWriteToFoundAddresses(&gba, value);
         }
+        if(keyReleased == SDLK_F5){
+            u32 address, value;
+            u32 type;
+            printf("(type?) ");
+            scanf("%d", &type);
+            printf("(write value?) ");
+            scanf("%d", &value);
+            printf("(address?) ");
+            scanf("%X", &address);
+            cheatEngineWriteToAddress(&gba, address, value, type);
+        }
+        if(keystate[SDL_SCANCODE_LCTRL] && keyReleased == SDLK_p)
+            pause ^= 1;
 
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
         gba.ppu.frameSkip = speed >> 1;
     }
 
-    for(int i = 0; i < speed; i++)
+    for(int i = 0; i < speed && !pause; i++)
         emulateGba(&gba);
 }
