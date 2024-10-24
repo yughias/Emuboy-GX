@@ -125,6 +125,8 @@ void loop(){
         if(keystate[SDL_SCANCODE_LCTRL]){
             if(keyReleased == SDLK_p)
                 pause ^= 1;
+            if(keyReleased == SDLK_r)
+                resetGba(&gba);
         }
 
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
