@@ -2,6 +2,7 @@
 #define __WAV_WRITER_H__
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct wav_settings {
     uint16_t num_channels;

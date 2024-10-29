@@ -26,11 +26,6 @@ void arm7tdmi_print(arm7tdmi_t* cpu){
 }
 
 void arm7tdmi_step(arm7tdmi_t* cpu){
-    static bool debug = false;    
-    
-    if(debug)
-        arm7tdmi_print(cpu);
-
     if(cpu->thumb_mode)
         thumb_step(cpu);
     else

@@ -12,14 +12,14 @@
 u8 gamePakEmptySaveRead(gamepak_t* gamepak, u16 addr){ return 0x00; }
 void gamePakEmptySaveWrite(gamepak_t* gamepak, u16 addr, u8 byte){ return; }
 
-void getSavFilename(char* savFilename, const char* romFilename){
-    strcpy(savFilename, romFilename);
-    char *dot = strrchr(savFilename, '.');
+void changeFilenameExtension(char* newFilename, const char* baseFilename, const char* extension){
+    strcpy(newFilename, baseFilename);
+    char *dot = strrchr(newFilename, '.');
 
     if(dot != NULL)
-        strcpy(dot, ".sav");
+        strcpy(dot, extension);
     else
-        strcat(savFilename, ".sav");
+        strcat(newFilename, extension);
 }
 
 void loadGamePak(gamepak_t* gamepak, const char* romFilename){
@@ -60,7 +60,7 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
 
     if(gamepak->type != GAMEPAK_ROM_ONLY){
         char savFilename[FILENAME_MAX];
-        getSavFilename(savFilename, romFilename);
+        changeFilenameExtension(savFilename, romFilename, ".sav");
 
         fptr = fopen(savFilename, "rb");
         if(fptr){

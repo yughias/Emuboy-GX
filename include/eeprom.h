@@ -19,7 +19,7 @@ typedef struct eeprom_t
     u8 n;
     u8 bit_counter;
     u16 address;
-    uint64_t buffer;
+    u64 buffer;
 } eeprom_t;
 
 void setupEepromMemory(gamepak_t* gampepak, size_t size);

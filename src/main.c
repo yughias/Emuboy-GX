@@ -1,12 +1,11 @@
 #include "SDL_MAINLOOP.h"
 #include "gba.h"
 #include "gba_recorder.h"
-#include "cheat_engine.h"
+#include "frontend.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 bool pause = false;
 int speed = 1;
@@ -16,22 +15,13 @@ SDL_AudioSpec audioSpec;
 SDL_AudioDeviceID audioDev;
 
 void freeAll(){
-    if(gba.gamepak.type != GAMEPAK_ROM_ONLY && gba.gamepak.type != NO_GAMEPAK){
-        char savFilename[FILENAME_MAX];
-        getSavFilename(savFilename, getArgv(1));
-        FILE* fptr = fopen(savFilename, "wb");
-        if(fptr){
-            fwrite(gba.gamepak.savMemory, 1, gba.gamepak.savMemorySize, fptr);
-            fclose(fptr);
-        }
-    }
+    frontend_writeSavToFile(&gba, getArgv(1));
 
     freeGbaRecorder();
     freeGba(&gba);
 }
 
 void setup(){
-    srand(time(NULL));
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
@@ -83,50 +73,28 @@ void loop(){
             speed = speed == 1 ? 1 : speed >> 1;
         if(keyReleased == '=')
             speed <<= 1;
-        if(keyReleased == SDLK_F1){
-            SDL_PauseAudioDevice(audioDev, 1);
-            SDL_CloseAudioDevice(audioDev);
-            isRecordingAudio ? stopGbaRecorder("audio.wav") : startGbaRecorder();
-            audioSpec.callback = isRecordingAudio ? recordAudioCallback : audioCallback;
-            audioDev = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &audioSpec, 0);
-            SDL_PauseAudioDevice(audioDev, 0);
-        }
-        if(keyReleased == SDLK_F2){
-            u32 value;
-            printf("(start scan for value?) ");
-            scanf("%d", &value);
-            cheatEngineNewSearch(&gba, value);
-            cheatEnginePrintAddresses();
-        }
-        if(keyReleased == SDLK_F3){
-            u32 value;
-            printf("(continue scan for value?) ");
-            scanf("%d", &value);
-            cheatEngineContinueSearch(&gba, value);
-            cheatEnginePrintAddresses();
-        }
-        if(keyReleased == SDLK_F4){
-            u32 value;
-            printf("(write value?) ");
-            scanf("%d", &value);
-            cheatEngineWriteToFoundAddresses(&gba, value);
-        }
-        if(keyReleased == SDLK_F5){
-            u32 address, value;
-            u32 type;
-            printf("(type?) ");
-            scanf("%d", &type);
-            printf("(write value?) ");
-            scanf("%d", &value);
-            printf("(address?) ");
-            scanf("%X", &address);
-            cheatEngineWriteToAddress(&gba, address, value, type);
-        }
+        if(keyReleased == SDLK_F1)
+            frontend_triggerGbaAudioRecorder(audioDev, gba.apu.audioSpec, getArgv(1));
+        if(keyReleased == SDLK_F2)
+            frontend_startCheatEngineSearch(&gba);
+        if(keyReleased == SDLK_F3)
+            frontend_continueCheatEngineSearch(&gba);
+        if(keyReleased == SDLK_F4)
+            frontend_writeToFoundAddressesCheatEngine(&gba);
+        if(keyReleased == SDLK_F5)
+            frontend_writeToSingleAddressCheatEngine(&gba);
+        if(keyReleased == SDLK_F12)
+            frontend_writeScreenShotToFile(pixels, width, height, getArgv(1));
+
         if(keystate[SDL_SCANCODE_LCTRL]){
             if(keyReleased == SDLK_p)
                 pause ^= 1;
             if(keyReleased == SDLK_r)
                 resetGba(&gba);
+            if(keyReleased == SDLK_s)
+                frontend_writeSaveStateToFile(&gba, getArgv(1));
+            if(keyReleased == SDLK_l)
+                frontend_readSaveStateFromFile(&gba, getArgv(1));
         }
 
         gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;

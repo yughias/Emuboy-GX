@@ -37,7 +37,7 @@ codegen-writeio:
 codegen: codegen-arm codegen-thumb codegen-readio codegen-writeio
 
 debug-compile:
-	gcc -pg -no-pie -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -DMAINLOOP_GL -o "emuboy gx.exe"
+	gcc -pg -no-pie -Iinclude -Llib $(SRC) -lmingw32 -lSDL2main -lSDL2 -lopengl32 -o "emuboy gx.exe"
 	
 debug-graph:
 	gprof "emuboy gx.exe" | gprof2dot -n0 -e0 | dot -Tsvg -o graph.svg

@@ -8,15 +8,58 @@
 
 #include "ppu_utils.h"
 
+#define NO_AFFINE_WRAP \
+if(offX < 0 || offX >= bg_width) \
+    continue; \
+if(offY < 0 || offY >= bg_height) \
+    continue;
+
+
+#define AFFINE_WRAP \
+if(!wrapping){ \
+    NO_AFFINE_WRAP \
+} else { \
+    offX = wrapValue(offX, bg_width); \
+    offY = wrapValue(offY, bg_height); \
+}
+
+#define LINE_AFFINE_RENDER(bg_idx, getPixel, isWrap) \
+int y = ppu->VCOUNT; \
+int aff_idx = bg_idx-2; \
+u16* bgp = ppu->BGP; \
+i16 dx = bgp[aff_idx*4 + 0]; \
+i16 dy = bgp[aff_idx*4 + 2]; \
+i16 dmx = bgp[aff_idx*4 + 1]; \
+i16 dmy = bgp[aff_idx*4 + 3]; \
+i32 startX = geti28(ppu->INTERNAL_BGX[aff_idx]); \
+i32 startY = geti28(ppu->INTERNAL_BGY[aff_idx]); \
+for(int x = 0; x < SCREEN_WIDTH; x++){ \
+    i32 offX = startX; \
+    i32 offY = startY; \
+    startX = geti28(startX + dx); \
+    startY = geti28(startY + dy); \
+    if(!windowShouldDraw(ppu, x, y, bg_idx, win_mask[x])) \
+        continue; \
+    offX >>= 8; \
+    offY >>= 8; \
+    isWrap \
+    getPixel \
+    int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_mask[x]); \
+    pixels[x + y * SCREEN_WIDTH] = out_col; \
+    blend_info[x] = bg_idx; \
+} \
+ppu->INTERNAL_BGX[aff_idx] = geti28(ppu->INTERNAL_BGX[aff_idx] + dmx); \
+ppu->INTERNAL_BGY[aff_idx] = geti28(ppu->INTERNAL_BGY[aff_idx] + dmy); \
+
 typedef enum {NO_BG = 0, TILED, AFFINE, BITMAP_3, BITMAP_4, BITMAP_5} bgType;
 typedef enum {IN_WIN0 = 0, IN_WIN1 = 1, IN_WINOUT = 2, IN_OBJWIN = 3, WIN_DISABLED = 0xFF} winType; 
 
 void renderLineMode(ppu_t* ppu, bgType* bg_type);
 void renderLine(ppu_t* ppu);
 
-void renderLineBitmap3(ppu_t* ppu, u8* blend_info);
+void renderLineBitmap3(ppu_t* ppu, u8* blend_info, winType* win_mask);
 void renderLineBitmap4(ppu_t* ppu, u8* blend_info, winType* win_mask);
-void renderLineBitmap5(ppu_t* ppu, u8* blend_info);
+void renderLineBitmap5(ppu_t* ppu, u8* blend_info, winType* win_mask);
 
 void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask);
 void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask);
@@ -195,60 +238,29 @@ void renderLineRegBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask){
 }
 
 void renderLineAffBg(ppu_t* ppu, int bg_idx, u8* blend_info, winType* win_mask){
-    int y = ppu->VCOUNT;
-    int aff_idx = bg_idx-2;
-    u8* VRAM = ppu->VRAM;
     u16 bgcnt = ppu->BGCNT[bg_idx];
     u8 char_base_block = (bgcnt >> 2) & 0b11;
     bool mosaic = (bgcnt >> 6) & 1;
-    u8* screen_base_block = &VRAM[((bgcnt >> 8) & 0b11111) << 11];
+    u8* screen_base_block = &ppu->VRAM[((bgcnt >> 8) & 0b11111) << 11];
     bool wrapping = (bgcnt >> 0xD) & 1;
     u8 bg_size = (bgcnt >> 0xE);
     int bg_width = 128 << bg_size;
     int bg_height = 128 << bg_size;
-    u16* bgp = ppu->BGP;
-    i16 dx = bgp[aff_idx*4 + 0];
-    i16 dy = bgp[aff_idx*4 + 2];
-    i16 dmx = bgp[aff_idx*4 + 1];
-    i16 dmy = bgp[aff_idx*4 + 3];
 
-    i32 startX = geti28(ppu->INTERNAL_BGX[aff_idx]);
-    i32 startY = geti28(ppu->INTERNAL_BGY[aff_idx]);
-
-    for(int x = 0; x < SCREEN_WIDTH; x++){
-        i32 offX = startX;
-        i32 offY = startY;
-        startX = geti28(startX + dx);
-        startY = geti28(startY + dy);
-        if(!windowShouldDraw(ppu, x, y, bg_idx, win_mask[x]))
-            continue;
-        offX >>= 8;
-        offY >>= 8;
-        if(!wrapping){
-            if(offX < 0 || offX >= bg_width)
-                continue;
-            if(offY < 0 || offY >= bg_height)
-                continue;
-        } else {
-            offX = wrapValue(offX, bg_width);
-            offY = wrapValue(offY, bg_height);
-        }
+    LINE_AFFINE_RENDER(
+        bg_idx,
         u8 tileIdx = screen_base_block[(offX >> 3) + (offY >> 3) * (bg_width >> 3)];
-        u8* tilePtr = &VRAM[(char_base_block << 14) + tileIdx*64];
+        u8* tilePtr = &ppu->VRAM[(char_base_block << 14) + tileIdx*64];
         u8 px = offX % 8;
         u8 py = offY % 8;
 
         bool transparent = false;
-        int bg_col = getTilePixel(tilePtr, px, py, ppu->PALETTE_RAM, 0, true, &transparent);
-        if(!transparent){
-            int out_col = applyColorEffect(ppu, bg_col, bg_idx, blend_info[x], pixels[x + y * SCREEN_WIDTH], win_mask[x]);
-            pixels[x + y * SCREEN_WIDTH] = out_col;
-            blend_info[x] = bg_idx;
-        }
-    }
-
-    ppu->INTERNAL_BGX[aff_idx] = geti28(ppu->INTERNAL_BGX[aff_idx] + dmx);
-    ppu->INTERNAL_BGY[aff_idx] = geti28(ppu->INTERNAL_BGY[aff_idx] + dmy);
+        u16 bg_col = getTilePixel(tilePtr, px, py, ppu->PALETTE_RAM, 0, true, &transparent);
+        if(transparent)
+            continue;
+        ,
+        AFFINE_WRAP
+    );
 }
 
 void renderLineMode(ppu_t* ppu, bgType* bg_type){
@@ -281,7 +293,7 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
                     break;
 
                     case BITMAP_3:
-                    renderLineBitmap3(ppu, blend_info);
+                    renderLineBitmap3(ppu, blend_info, win_mask);
                     break;
 
                     case BITMAP_4:
@@ -289,7 +301,7 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
                     break;
 
                     case BITMAP_5:
-                    renderLineBitmap5(ppu, blend_info);
+                    renderLineBitmap5(ppu, blend_info, win_mask);
                     break;
                 }
         }
@@ -309,46 +321,47 @@ void renderLineMode(ppu_t* ppu, bgType* bg_type){
     }
 }
 
-void renderLineBitmap3(ppu_t* ppu, u8* blend_info){
-    int y = ppu->VCOUNT;
-    for(int x = 0; x < SCREEN_WIDTH; x++){
-        int idx = x + y * SCREEN_WIDTH;
-        u16 col555 = getRgb555FromMemory(ppu->VRAM, idx);
-        pixels[idx] = col555;
-        blend_info[x] = 2;
-    }
+void renderLineBitmap3(ppu_t* ppu, u8* blend_info, winType* win_mask){
+    int bg_width = SCREEN_WIDTH;
+    int bg_height = SCREEN_HEIGHT;
+
+    LINE_AFFINE_RENDER(
+        2,
+        u16 bg_col = getRgb555FromMemory(ppu->VRAM, offX + offY * SCREEN_WIDTH);
+        ,
+        NO_AFFINE_WRAP
+    );
 }
 
 void renderLineBitmap4(ppu_t* ppu, u8* blend_info, winType* win_mask){
-    int y = ppu->VCOUNT;
+    int bg_width = SCREEN_WIDTH;
+    int bg_height = SCREEN_HEIGHT;
     int bg_offset = ((bool)(ppu->DISPCNT & (1 << 4))) * 0xA000;
-    for(int x = 0; x < SCREEN_WIDTH; x++){
-        if(!windowShouldDraw(ppu, x, y, 2, win_mask[x]))
-            continue;
-        int idx = x + y * SCREEN_WIDTH;
+
+    LINE_AFFINE_RENDER(
+        2,
+        int idx = offX + offY * SCREEN_WIDTH;
         u8 palIdx = ppu->VRAM[bg_offset + idx];
         if(!palIdx)
             continue;
-        u16 col555 = getRgb555FromMemory(ppu->PALETTE_RAM, palIdx);
-        col555 = applyColorEffect(ppu, col555, 2, blend_info[x], pixels[idx], win_mask[x]);
-        pixels[idx] = col555;
-        blend_info[x] = 2;
-    }
+        u16 bg_col = getRgb555FromMemory(ppu->PALETTE_RAM, palIdx);
+        ,
+        NO_AFFINE_WRAP
+    );
 }
 
-void renderLineBitmap5(ppu_t* ppu, u8* blend_info){
-    int y = ppu->VCOUNT;
-    if(y >= 128)
-        return;
+void renderLineBitmap5(ppu_t* ppu, u8* blend_info, winType* win_mask){
+    int bg_width = 160;
+    int bg_height = 128;
     int bg_offset = ((bool)(ppu->DISPCNT & (1 << 4))) * 0xA000;
-    for(int x = 0; x < 160; x++){
-        int vram_idx = x + y * 160;
-        int screen_idx = x + y * SCREEN_WIDTH;
-        u16 col555;
-        col555 = getRgb555FromMemory(ppu->VRAM + bg_offset, vram_idx);
-        pixels[screen_idx] = col555;
-        blend_info[x] = 2;
-    }
+
+    LINE_AFFINE_RENDER(
+        2,
+        int vram_idx = offX + offY * 160;
+        u16 bg_col = getRgb555FromMemory(ppu->VRAM + bg_offset, vram_idx);
+        ,  
+        NO_AFFINE_WRAP
+    );
 }
 
 bool windowShouldDraw(ppu_t* ppu, u8 x, u8 y, int renderType, winType win_type){

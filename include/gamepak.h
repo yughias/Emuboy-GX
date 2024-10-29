@@ -24,12 +24,11 @@ typedef struct gamepak_t {
 
     void* internalData;
 
-    uint8_t waitstates[3][2];
+    u8 waitstates[3][2];
     u8 sram_wait;
 } gamepak_t;
 
-
-void getSavFilename(char* savFilename, const char* romFilename);
+void changeFilenameExtension(char* newFilename, const char* baseFilename, const char* extension);
 void loadGamePak(gamepak_t* gamepak, const char* romFilename);
 void setupGamePakType(gamepak_t* gamepak);
 void setupRomOnlyMemory(gamepak_t* gamepak);
