@@ -1,5 +1,4 @@
 #ifdef _WIN32
-#define _WIN32_WINNT _WIN32_WINNT_VISTA
 #define WIN32_LEAN_AND_MEAN
 #include <SDL2/SDL_syswm.h>
 #include <windows.h>
@@ -16,7 +15,7 @@
 #ifdef __EMSCRIPTEN__
 #define WINDOW_MAGNIFICATION 1
 #else
-#define WINDOW_MAGNIFICATION 3
+#define WINDOW_MAGNIFICATION 2
 #endif
 
 unsigned int displayWidth;
@@ -182,10 +181,6 @@ int main(int argc, char* argv[]){
     main_argc = argc;
     main_argv = argv;
 
-    #ifdef _WIN32
-    SetProcessDPIAware();
-    #endif
-
     SDL_Init(
         SDL_INIT_VIDEO |
         SDL_INIT_AUDIO |
@@ -199,6 +194,7 @@ int main(int argc, char* argv[]){
 
     SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI_PS4_RUMBLE, "1");
     SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI_PS5_RUMBLE, "1");
+    SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
