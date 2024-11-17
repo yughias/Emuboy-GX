@@ -7,100 +7,110 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool pause = false;
-int speed = 1;
-gba_t gba;
-
-SDL_AudioSpec audioSpec;
-SDL_AudioDeviceID audioDev;
-
-void freeAll(){
-    frontend_writeSavToFile(&gba, getArgv(1));
-
-    freeGbaRecorder();
-    freeGba(&gba);
-}
+float lastMousePressed = 0;
 
 void setup(){
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
     setScaleMode(NEAREST);
     setTitle(u8"エミュボーイ　GX");
 
+    if(getArgc() != 2)
+        frontend_filename[0] = 0;
+    else
+        strcpy(frontend_filename, getArgv(1));
+
+    frontend_createMenu();
+
     char* exe_path = SDL_GetBasePath();
     char data_path[FILENAME_MAX];
     char logo_path[FILENAME_MAX];
-    char bios_path[FILENAME_MAX];
 
     strncpy(data_path, exe_path, FILENAME_MAX - 1);
     strncat(data_path, "data/", FILENAME_MAX - 1);
     strncpy(logo_path, data_path, FILENAME_MAX - 1);
-    strncpy(bios_path, data_path, FILENAME_MAX - 1);
+    strncpy(frontend_bios_path, data_path, FILENAME_MAX - 1);
 
     strncat(logo_path, "logo.bmp", FILENAME_MAX - 1);
 
     setWindowIcon(logo_path);
     frameRate(REFRESH_RATE);
     #ifndef EMSCRIPTEN
-    strncat(bios_path, "gba_bios.bin", FILENAME_MAX - 1);
+    strncat(frontend_bios_path, "gba_bios.bin", FILENAME_MAX - 1);
     #else
-    strncat(bios_path, "vba_bios.bin", FILENAME_MAX - 1);
+    strncat(frontend_bios_path, "vba_bios.bin", FILENAME_MAX - 1);
     #endif
 
+    SDL_AudioSpec audioSpec;
     audioSpec.freq = 44100;
     audioSpec.channels = 2;
     audioSpec.format = AUDIO_S16;
     audioSpec.samples = SAMPLE_PER_CALL;
     audioSpec.callback = audioCallback;
-    audioSpec.userdata = &gba.apu.sample_buffer;
-    audioDev = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &audioSpec, 0);
+    audioSpec.userdata = &frontend_gba.apu.sample_buffer;
+    frontend_audioDev = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &audioSpec, 0);
 
-    initGba(&gba, bios_path, getArgv(1), audioSpec);
+    initGba(&frontend_gba, frontend_bios_path, frontend_filename, audioSpec);
 
     noRender();
 
     init_keypad();
 
-    onExit = freeAll;
+    onExit = frontend_free;
 
-    SDL_PauseAudioDevice(audioDev, 0);
+    SDL_PauseAudioDevice(frontend_audioDev, 0);
 }
 
-void loop(){    
+void loop(){   
     check_controller_connection();
+
+    if(isMouseReleased){
+        float newPressed = millis();
+        if(newPressed - lastMousePressed < 300)
+            fullScreen();
+        lastMousePressed = newPressed;
+    }
 
     if(isKeyReleased){
         if(keyReleased == '-')
-            speed = speed == 1 ? 1 : speed >> 1;
+            frontend_decreaseSpeed();
         if(keyReleased == '=')
-            speed <<= 1;
-        if(keyReleased == SDLK_F1)
-            frontend_triggerGbaAudioRecorder(audioDev, gba.apu.audioSpec, getArgv(1));
+            frontend_increaseSpeed();
+        if(keyReleased == SDLK_F1){
+            char filename[FILENAME_MAX];
+            getFilenameWithDate(filename, frontend_filename);
+            frontend_triggerGbaAudioRecorder(frontend_audioDev, frontend_gba.apu.audioSpec, filename);
+        }
         if(keyReleased == SDLK_F2)
-            frontend_startCheatEngineSearch(&gba);
+            frontend_startCheatEngineSearch(&frontend_gba);
         if(keyReleased == SDLK_F3)
-            frontend_continueCheatEngineSearch(&gba);
+            frontend_continueCheatEngineSearch(&frontend_gba);
         if(keyReleased == SDLK_F4)
-            frontend_writeToFoundAddressesCheatEngine(&gba);
+            frontend_writeToFoundAddressesCheatEngine(&frontend_gba);
         if(keyReleased == SDLK_F5)
-            frontend_writeToSingleAddressCheatEngine(&gba);
-        if(keyReleased == SDLK_F12)
-            frontend_writeScreenShotToFile(pixels, width, height, getArgv(1));
-
-        if(keystate[SDL_SCANCODE_LCTRL]){
-            if(keyReleased == SDLK_p)
-                pause ^= 1;
-            if(keyReleased == SDLK_r)
-                resetGba(&gba);
-            if(keyReleased == SDLK_s)
-                frontend_writeSaveStateToFile(&gba, getArgv(1));
-            if(keyReleased == SDLK_l)
-                frontend_readSaveStateFromFile(&gba, getArgv(1));
+            frontend_writeToSingleAddressCheatEngine(&frontend_gba);
+        if(keyReleased == SDLK_F12){
+            char filename[FILENAME_MAX];
+            getFilenameWithDate(filename, frontend_filename);
+            frontend_writeScreenShotToFile(pixels, width, height, filename);
         }
 
-        gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * speed / gba.apu.audioSpec.freq;
-        gba.ppu.frameSkip = speed >> 1;
+        if(keystate[SDL_SCANCODE_LCTRL]){
+            if(keyReleased == SDLK_o)
+                frontend_loadGame();
+            if(keyReleased == SDLK_p)
+                frontend_changePauseState();
+            if(keyReleased == SDLK_r)
+                frontend_reset();
+            if(keyReleased == SDLK_s)
+                frontend_writeSaveStateToFile(&frontend_gba, frontend_filename);
+            if(keyReleased == SDLK_l)
+                frontend_readSaveStateFromFile(&frontend_gba, frontend_filename);
+        }
+
+        frontend_gba.apu.samplePushRate = CYCLES_PER_FRAME * REFRESH_RATE * frontend_speed / frontend_gba.apu.audioSpec.freq;
+        frontend_gba.ppu.frameSkip = frontend_speed >> 1;
     }
 
-    for(int i = 0; i < speed && !pause; i++)
-        emulateGba(&gba);
+    for(int i = 0; i < frontend_speed && !frontend_pause; i++)
+        emulateGba(&frontend_gba);
 }

@@ -5,9 +5,12 @@
 #include "flash.h"
 #include "eeprom.h"
 
+#include "zip/zip.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 u8 gamePakEmptySaveRead(gamepak_t* gamepak, u16 addr){ return 0x00; }
 void gamePakEmptySaveWrite(gamepak_t* gamepak, u16 addr, u8 byte){ return; }
@@ -22,38 +25,58 @@ void changeFilenameExtension(char* newFilename, const char* baseFilename, const 
         strcat(newFilename, extension);
 }
 
+void getFilenameWithDate(char* newFilename, const char* baseFilename){
+    char date[FILENAME_MAX];
+    time_t t = time(NULL);
+    struct tm* info = localtime(&t);
+    sprintf(date, "_%04d%02d%02d_%02d%02d%02d.gba", info->tm_year + 1900, info->tm_mon + 1, info->tm_mday, info->tm_hour, info->tm_min, info->tm_sec);
+    changeFilenameExtension(newFilename, baseFilename, date);
+}
+
 void loadGamePak(gamepak_t* gamepak, const char* romFilename){
-    FILE* fptr = fopen(romFilename, "rb");
-    if(!fptr){
-        printf("can't open rom\n");
-        gamepak->ROM_SIZE = 0;
-        gamepak->ROM = NULL;
-        gamepak->internalData = NULL;
-        gamepak->savMemory = NULL;
-        gamepak->type = NO_GAMEPAK;
-        return;
-    }
+    char* ext = strrchr(romFilename, '.');
+    if(!ext || (strcmp(ext, ".gba") && strcmp(ext, ".zip")))
+        goto error;
 
-    fseek(fptr, 0, SEEK_END);
-    gamepak->ROM_SIZE = ftell(fptr);
-    rewind(fptr);
-
-    bool nes_mirror = gamepak->ROM_SIZE == 1 << 20;
-
-    if(nes_mirror){
-        // classic nes games that are 1Mb in size requires mirror!
-        const int n_mirror = 4;
-        gamepak->ROM = malloc(gamepak->ROM_SIZE*n_mirror);
-        fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
-        fclose(fptr);
-        for(int i = 1; i < n_mirror; i++){
-            memcpy(gamepak->ROM + gamepak->ROM_SIZE*i, gamepak->ROM, gamepak->ROM_SIZE);
-        }
-        gamepak->ROM_SIZE *= n_mirror;
-    } else {
+    if(!strcmp(ext, ".gba")){
+        FILE* fptr = fopen(romFilename, "rb");
+        if(!fptr)
+            goto error;
+        fseek(fptr, 0, SEEK_END);
+        gamepak->ROM_SIZE = ftell(fptr);
+        rewind(fptr);
         gamepak->ROM = malloc(gamepak->ROM_SIZE);
         fread(gamepak->ROM, 1, gamepak->ROM_SIZE, fptr);
         fclose(fptr);
+    }
+    
+    if(!strcmp(ext, ".zip")){
+        struct zip_t *zip = zip_open(romFilename, 0, 'r');
+        if(!zip)
+            goto error;
+        int n = zip_entries_total(zip);
+        bool found = false;
+        for(int i = 0; i < n && !found; i++){
+            zip_entry_openbyindex(zip, i);
+            if( !strcmp(".gba", strrchr(zip_entry_name(zip), '.') )){
+                found = true;
+                zip_entry_read(zip, (void **)&gamepak->ROM, &gamepak->ROM_SIZE);
+            }
+            zip_entry_close(zip);
+        }
+        zip_close(zip);
+        if(!found)
+            goto error;
+    }
+    
+    bool nes_mirror = gamepak->ROM_SIZE == 1 << 20;
+    if(nes_mirror){
+        // classic nes games that are 1Mb in size requires mirror!
+        const int n_mirror = 4;
+        gamepak->ROM = realloc(gamepak->ROM, gamepak->ROM_SIZE*n_mirror);
+        for(int i = 1; i < n_mirror; i++)
+            memcpy(gamepak->ROM + gamepak->ROM_SIZE*i, gamepak->ROM, gamepak->ROM_SIZE);
+        gamepak->ROM_SIZE *= n_mirror;
     }
 
     setupGamePakType(gamepak);
@@ -62,12 +85,21 @@ void loadGamePak(gamepak_t* gamepak, const char* romFilename){
         char savFilename[FILENAME_MAX];
         changeFilenameExtension(savFilename, romFilename, ".sav");
 
-        fptr = fopen(savFilename, "rb");
+        FILE* fptr = fopen(savFilename, "rb");
         if(fptr){
             fread(gamepak->savMemory, 1, gamepak->savMemorySize, fptr);
             fclose(fptr);
         }
     }
+
+    return;
+    error:
+    printf("can't open rom\n");
+    gamepak->ROM_SIZE = 0;
+    gamepak->ROM = NULL;
+    gamepak->internalData = NULL;
+    gamepak->savMemory = NULL;
+    gamepak->type = NO_GAMEPAK;
 }
 
 void setupGamePakType(gamepak_t* gamepak){

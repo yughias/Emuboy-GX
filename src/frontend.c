@@ -4,10 +4,53 @@
 #include "gba_serializer.h"
 #include "cheat_engine.h"
 
+#include "tinyfiledialogs.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 #include "SDL_MAINLOOP.h"
+
+SDL_AudioDeviceID frontend_audioDev;
+gba_t frontend_gba;
+bool frontend_pause = false;
+int frontend_speed = 1;
+char frontend_filename[FILENAME_MAX];
+char frontend_bios_path[FILENAME_MAX];
+
+#define SET_SPEED(x) frontend_speed = x; frontend_gba.ppu.frameSkip = x >> 1
+
+#define SPEED_LEVELS 4
+static buttonId speed_buttons[SPEED_LEVELS];
+
+#define DEF_FRONTEND_BUTTON_FUNC(name, body) \
+void button_ ## name () { body }
+
+DEF_FRONTEND_BUTTON_FUNC(frontend_writeSaveStateToFile, frontend_writeSaveStateToFile(&frontend_gba, frontend_filename);)
+DEF_FRONTEND_BUTTON_FUNC(frontend_readSaveStateFromFile, frontend_readSaveStateFromFile(&frontend_gba, frontend_filename);)
+DEF_FRONTEND_BUTTON_FUNC(frontend_startCheatEngineSearch, frontend_startCheatEngineSearch(&frontend_gba); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_continueCheatEngineSearch, frontend_continueCheatEngineSearch(&frontend_gba); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_writeToFoundAddressesCheatEngine, frontend_writeToFoundAddressesCheatEngine(&frontend_gba); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_writeToSingleAddressCheatEngine, frontend_writeToSingleAddressCheatEngine(&frontend_gba); )
+
+DEF_FRONTEND_BUTTON_FUNC(frontend_setSpeed1, SET_SPEED(1); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_setSpeed2, SET_SPEED(2); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_setSpeed4, SET_SPEED(4); )
+DEF_FRONTEND_BUTTON_FUNC(frontend_setSpeed8, SET_SPEED(8); )
+
+DEF_FRONTEND_BUTTON_FUNC(frontend_writeScreenShotToFile, 
+    char bmpFileName[FILENAME_MAX];
+    getFilenameWithDate(bmpFileName, frontend_filename);
+    frontend_writeScreenShotToFile(pixels, width, height, bmpFileName);
+)
+
+DEF_FRONTEND_BUTTON_FUNC(frontend_triggerGbaAudioRecorder, 
+    char wavFileName[FILENAME_MAX];
+    getFilenameWithDate(wavFileName, frontend_filename);
+    frontend_triggerGbaAudioRecorder(frontend_audioDev, frontend_gba.apu.audioSpec, wavFileName);
+)
 
 static u16 convert_bgr555_to_rgb555_pixel(u16 pix){
     u16 out = 0;
@@ -69,24 +112,32 @@ void frontend_writeScreenShotToFile(void* pixels, int width, int height, const c
 
 void frontend_startCheatEngineSearch(gba_t* gba){
     u32 value;
-    printf("(start scan for value?) ");
-    scanf("%d", &value);
+    char* input = tinyfd_inputBox("NEW CHEAT ENGINE SEARCH", "value to search?", "0");
+    if(!input)
+        return;
+    value = atoi(input);
+
     cheatEngineNewSearch(gba, value);
     cheatEnginePrintAddresses();
 }
 
 void frontend_continueCheatEngineSearch(gba_t* gba){
     u32 value;
-    printf("(continue scan for value?) ");
-    scanf("%d", &value);
+    char* input = tinyfd_inputBox("CONTINUE CHEAT ENGINE SEARCH", "value to search?", "0");
+    if(!input)
+        return;
+    value = atoi(input);
+
     cheatEngineContinueSearch(gba, value);
     cheatEnginePrintAddresses();
 }
 
 void frontend_writeToFoundAddressesCheatEngine(gba_t* gba){
     u32 value;
-    printf("(write value?) ");
-    scanf("%d", &value);
+    char* input = tinyfd_inputBox("WRITE VALUE TO ALL FOUND ADDRESSES", "value to write?", "0");
+    if(!input)
+        return;
+    value = atoi(input);
     cheatEngineWriteToFoundAddresses(gba, value);
 }
 
@@ -141,4 +192,88 @@ void frontend_readSaveStateFromFile(gba_t* gba, const char* baseFilename){
     fclose(fptr);
     deserializeGba(savestate_data, gba);
     free(savestate_data);
+}
+
+void frontend_createMenu(){
+    menuId fileMenu = addMenuTo(-1, L"File", false);
+    menuId emulationMenu = addMenuTo(-1, L"Emulation", false);
+    menuId toolsMenu = addMenuTo(-1, L"Tools", false);
+
+    addButtonTo(fileMenu, L"Open ROM\tCtrl+O", frontend_loadGame);
+    addButtonTo(fileMenu, L"Load State\tCtrl+L", button_frontend_readSaveStateFromFile);
+    addButtonTo(fileMenu, L"Save State\tCtrl+S", button_frontend_writeSaveStateToFile);
+
+    addButtonTo(emulationMenu, L"Pause\tCtrl+P", frontend_changePauseState);
+    addButtonTo(emulationMenu, L"Reset\tCtrl+R", frontend_reset);
+    menuId speedMenu = addMenuTo(emulationMenu, L"Speed", true);
+
+    speed_buttons[0] = addButtonTo(speedMenu, L"1x", button_frontend_setSpeed1);
+    speed_buttons[1] = addButtonTo(speedMenu, L"2x", button_frontend_setSpeed2);
+    speed_buttons[2] = addButtonTo(speedMenu, L"4x", button_frontend_setSpeed4);
+    speed_buttons[3] = addButtonTo(speedMenu, L"8x", button_frontend_setSpeed8);
+    checkRadioButton(speed_buttons[0]);
+
+    addButtonTo(toolsMenu, L"ScreenShot\tF12", button_frontend_writeScreenShotToFile);
+    addButtonTo(toolsMenu, L"Record Audio\tF1", button_frontend_triggerGbaAudioRecorder); 
+
+    menuId cheatEngineMenu = addMenuTo(toolsMenu, L"Cheat Engine", false);
+    addButtonTo(cheatEngineMenu, L"Start New Scan\tF2", button_frontend_startCheatEngineSearch);
+    addButtonTo(cheatEngineMenu, L"Continue Scan\tF3", button_frontend_continueCheatEngineSearch);
+    addButtonTo(cheatEngineMenu, L"Write Value To All Results\tF4", button_frontend_writeToFoundAddressesCheatEngine);
+    addButtonTo(cheatEngineMenu, L"Write Value To Address\tF5", button_frontend_writeToSingleAddressCheatEngine);
+}
+
+void frontend_changePauseState(){
+    frontend_pause ^= 1;
+}
+
+void frontend_reset(){
+    resetGba(&frontend_gba);
+}
+
+void frontend_setNewSpeed(int new_speed){
+    SET_SPEED(new_speed);
+    int idx = log(new_speed)/log(2);
+    checkRadioButton(speed_buttons[idx]);
+}
+
+void frontend_increaseSpeed(){
+    int new_speed = frontend_speed * 2;
+    if(new_speed != 1 << SPEED_LEVELS)
+        frontend_setNewSpeed(new_speed);
+}
+
+void frontend_decreaseSpeed(){
+    int new_speed = frontend_speed / 2;
+    if(new_speed != 0)
+        frontend_setNewSpeed(new_speed);
+}
+
+void frontend_loadGame(){
+    char* new_filename;
+    char const* ext[2] = {"*.gba", "*.zip"};
+
+    new_filename = tinyfd_openFileDialog(
+        "Select ROM",
+	    NULL,
+	    2, 
+	    ext,
+	    NULL,
+	    0
+    );
+
+    if(!new_filename)
+        return;
+
+    frontend_free();
+    strcpy(frontend_filename, new_filename);
+    SDL_AudioSpec audioSpec = frontend_gba.apu.audioSpec;
+    initGba(&frontend_gba, frontend_bios_path, frontend_filename, audioSpec);
+}
+
+void frontend_free(){
+    frontend_writeSavToFile(&frontend_gba, frontend_filename);
+
+    freeGbaRecorder();
+    freeGba(&frontend_gba);
 }

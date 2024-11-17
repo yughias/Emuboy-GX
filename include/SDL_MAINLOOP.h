@@ -4,10 +4,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
-#ifdef MAINLOOP_WINDOWS
-#include <windows.h>
-#endif
-
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,6 +36,7 @@ extern int pmouseY;
 extern int mouseX;
 extern int mouseY;
 extern bool isMousePressed;
+extern bool isMouseReleased;
 extern bool isMouseDragged;
 extern button mouseButton;
 extern bool isKeyPressed;
@@ -83,11 +80,10 @@ void setVoidColor(int, int, int);
 
 typedef size_t menuId;
 typedef size_t buttonId;
-#ifdef MAINLOOP_WINDOWS
+#ifdef _WIN32
 menuId addMenuTo(menuId, const wchar_t*, bool);
 buttonId addButtonTo(menuId, const wchar_t*, void (*callback)());
 void checkRadioButton(buttonId); 
-void getAbsoluteDir(char*); 
 #else
 #define addMenuTo(a, b, c) 0
 #define addButtonTo(a, b, c) 0 

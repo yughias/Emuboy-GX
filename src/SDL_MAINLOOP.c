@@ -1,11 +1,23 @@
+#ifdef _WIN32
+#define _WIN32_WINNT _WIN32_WINNT_VISTA
+#define WIN32_LEAN_AND_MEAN
+#include <SDL2/SDL_syswm.h>
+#include <windows.h>
+#endif
+
 #include "SDL_MAINLOOP.h"
-#undef main
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
 #define MAX_NAME  64
+
+#ifdef __EMSCRIPTEN__
+#define WINDOW_MAGNIFICATION 1
+#else
+#define WINDOW_MAGNIFICATION 3
+#endif
 
 unsigned int displayWidth;
 unsigned int displayHeight;
@@ -22,6 +34,7 @@ int pmouseY;
 int mouseX;
 int mouseY;
 bool isMousePressed = false;
+bool isMouseReleased = false;
 bool isMouseDragged = false;
 button mouseButton;
 bool isKeyPressed = false;
@@ -101,15 +114,10 @@ void calculateRescaleVars();
 void renderBufferToWindow();
 int filterResize(void*, SDL_Event*);
 
-#ifdef MAINLOOP_WINDOWS
-#include <SDL2/SDL_syswm.h>
-#include <windows.h>
-#include <shlwapi.h>
-
-char absolutePath[1024];
-
+#ifdef _WIN32
 HWND hwnd = NULL;
 HMENU mainMenu = NULL;
+WNDPROC defaultWndProc;
 
 typedef struct {
     menuId parent_menu;
@@ -131,6 +139,7 @@ HWND getWindowHandler();
 void createMainMenu();
 void updateButtonVect(void (*callback)(), menuId);
 void updateMenuVect(HMENU, bool);
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 #endif
 
@@ -173,9 +182,8 @@ int main(int argc, char* argv[]){
     main_argc = argc;
     main_argv = argv;
 
-    #ifdef MAINLOOP_WINDOWS
-    GetModuleFileName(NULL, absolutePath, 1024);
-    PathRemoveFileSpec(absolutePath);
+    #ifdef _WIN32
+    SetProcessDPIAware();
     #endif
 
     SDL_Init(
@@ -202,13 +210,14 @@ int main(int argc, char* argv[]){
 
     updateWindowIcon();
 
-    #ifdef MAINLOOP_WINDOWS
+    #ifdef _WIN32
     hwnd = getWindowHandler();
+    defaultWndProc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)MainWndProc);
 
     if(mainMenu && !(winFlags & SDL_WINDOW_FULLSCREEN_DESKTOP))
         SetMenu(hwnd, mainMenu);
 
-    SDL_SetWindowSize(window, width, height);
+    SDL_SetWindowSize(window, width*WINDOW_MAGNIFICATION, height*WINDOW_MAGNIFICATION);
     #endif
 
     SDL_ShowWindow(window);
@@ -251,7 +260,7 @@ int main(int argc, char* argv[]){
         shader_list = tmp;
     }
 
-    #ifdef MAINLOOP_WINDOWS
+    #ifdef _WIN32
     free(buttons);
     free(menus);
     #endif
@@ -265,30 +274,9 @@ int main(int argc, char* argv[]){
 void mainloop(){
     frameCount++;
 
-    #ifdef MAINLOOP_WINDOWS
-    MSG msg;
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-    {   
-        if(msg.message == WM_COMMAND){
-            unsigned int button_id = LOWORD(msg.wParam); 
-            if(button_id < n_button){
-                checkRadioButton(button_id);
-                if(buttons[button_id].callback)
-                    (*buttons[button_id].callback)();
-            }
-        }
-
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-    #endif
-
     pmouseX = mouseX;
     pmouseY = mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
-    #ifndef __EMSCRIPTEN__
-    calculateRescaleVars();
-    #endif
     mouseX -= localX;
     mouseY -= localY;
     mouseX *= width/render_width;
@@ -304,6 +292,7 @@ void mainloop(){
     SDL_Event event;
     isKeyReleased = false;
     isKeyPressed = false;
+    isMouseReleased = false;
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_WINDOWEVENT:
@@ -336,6 +325,7 @@ void mainloop(){
 
             case SDL_MOUSEBUTTONUP:
             isMousePressed = false;
+            isMouseReleased = true;
             break;
         }
     }
@@ -357,7 +347,8 @@ void size(int w, int h){
     if(!window){
         width = w;
         height = h;
-        window = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, winFlags);
+        window = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width*WINDOW_MAGNIFICATION, height*WINDOW_MAGNIFICATION, winFlags);
+        calculateRescaleVars();
 
         #ifndef __EMSCRIPTEN__
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
@@ -366,10 +357,10 @@ void size(int w, int h){
         drawBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGR555, SDL_TEXTUREACCESS_STREAMING, width, height);
         SDL_LockTextureToSurface(drawBuffer, NULL, &surface);
 
-        #ifndef __EMSCRIPTEN__
         setScaleMode(scale_mode);
         SDL_SetEventFilter(filterResize, NULL);
 
+        #ifndef __EMSCRIPTEN__
         glCreateShader = (PFNGLCREATESHADERPROC)SDL_GL_GetProcAddress("glCreateShader");
         glShaderSource = (PFNGLSHADERSOURCEPROC)SDL_GL_GetProcAddress("glShaderSource");
         glCompileShader = (PFNGLCOMPILESHADERPROC)SDL_GL_GetProcAddress("glCompileShader");
@@ -424,23 +415,23 @@ Uint64 millis(){
 }
 
 void fullScreen(){
-    #ifdef MAINLOOP_WINDOWS
+    #ifdef _WIN32
     if(hwnd && window && mainMenu){
         if(winFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
             SetMenu(hwnd, mainMenu);
         else
             SetMenu(hwnd, NULL);
-        SDL_SetWindowSize(window, width, height);
     }
     #endif
 
-    if(!(winFlags & SDL_WINDOW_FULLSCREEN_DESKTOP))
-        winFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else 
-        winFlags &= ~(SDL_WINDOW_FULLSCREEN_DESKTOP);
-    
-    if(window)
+    winFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+    if(window){
         SDL_SetWindowFullscreen(window, winFlags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_RestoreWindow(window);
+        SDL_SetWindowSize(window, width*WINDOW_MAGNIFICATION, height*WINDOW_MAGNIFICATION);
+        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    }
 }
 
 void background(int col){
@@ -646,10 +637,18 @@ int filterResize(void* userdata, SDL_Event* event){
     return 1;
 }
 
-#ifdef MAINLOOP_WINDOWS
-void getAbsoluteDir(char* dst){
-    strcpy(dst, absolutePath);
-    strcat(dst, "\\");
+#ifdef _WIN32
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
+    switch(uMsg){
+        case WM_COMMAND:  
+        unsigned int button_id = wParam; 
+        checkRadioButton(button_id);
+        if(buttons[button_id].callback)
+            (*buttons[button_id].callback)();
+        return 0;
+    }
+
+    return CallWindowProc(defaultWndProc, hwnd, uMsg, wParam, lParam);
 }
 
 HWND getWindowHandler(){
@@ -718,10 +717,8 @@ buttonId addButtonTo(menuId parentId, const wchar_t* string, void (*callback)())
 }
 
 void checkRadioButton(buttonId button_id){
-    if(button_id < n_button){
-        menuId menu_id = buttons[button_id].parent_menu;
-        if(menu_id < n_menu && menus[menu_id].is_radio)
-            CheckMenuRadioItem(menus[menu_id].hMenu, 0, menus[menu_id].n_button-1, buttons[button_id].position, MF_BYPOSITION);
-    }
+    menuId menu_id = buttons[button_id].parent_menu;
+    if(menu_id < n_menu && menus[menu_id].is_radio)
+        CheckMenuRadioItem(menus[menu_id].hMenu, 0, menus[menu_id].n_button-1, buttons[button_id].position, MF_BYPOSITION);
 }
 #endif

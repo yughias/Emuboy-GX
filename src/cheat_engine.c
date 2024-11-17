@@ -45,6 +45,7 @@ for(int i = 0; i < ram_size / sizeof(u32); i++){ \
 }
 
 void cheatEnginePrintAddresses(){
+    printf("<found values>\n");
     for(int i = 0; i < possible_addresses.size / sizeof(address_t); i++){
         address_t* addr_struct = &((address_t*)possible_addresses.buffer)[i];
         printf("%X byte: %d\n", addr_struct->address, addr_struct->type);

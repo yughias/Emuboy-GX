@@ -29,6 +29,7 @@ typedef struct gamepak_t {
 } gamepak_t;
 
 void changeFilenameExtension(char* newFilename, const char* baseFilename, const char* extension);
+void getFilenameWithDate(char* newFilename, const char* baseFilename);
 void loadGamePak(gamepak_t* gamepak, const char* romFilename);
 void setupGamePakType(gamepak_t* gamepak);
 void setupRomOnlyMemory(gamepak_t* gamepak);
